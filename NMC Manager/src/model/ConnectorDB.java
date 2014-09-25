@@ -9,6 +9,8 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import org.postgresql.util.PSQLException;
+
 public class ConnectorDB {
 	private static Connection db;
 	
@@ -49,7 +51,13 @@ public class ConnectorDB {
 			PreparedStatement st = db.prepareStatement(query);
 			rs = st.executeQuery();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			switch(((PSQLException)e).getServerErrorMessage().getSQLState().substring(0, 2)){
+				case "42": JOptionPane.showMessageDialog(null, "Erreur de syntaxe ou violation d'accès détectée!"
+						+ "\nValeur: "+((PSQLException)e).getServerErrorMessage());
+						break;
+				default: System.out.println("Error: "+((PSQLException)e).getServerErrorMessage().getSQLState());
+			}
+			
 		}
 		return rs;
 	}
