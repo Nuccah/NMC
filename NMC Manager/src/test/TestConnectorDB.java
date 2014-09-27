@@ -3,8 +3,6 @@ package test;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.JOptionPane;
-
 import model.ConnectorDB;
 
 import org.junit.Test;

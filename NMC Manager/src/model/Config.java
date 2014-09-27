@@ -46,6 +46,9 @@ public class Config {
 	 */
 	public void init(){
 		this.setProp("program_title", "Nukama MediaCenter Manager");
+		this.setProp("url_db", "//localhost/nmc_db");
+		this.setProp("user_db", "nmc_admin");
+		this.setProp("pass_db", "ephec2014");
 		this.saveProp();
 	}
 	

@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -14,6 +15,12 @@ import org.postgresql.util.PSQLException;
 public class ConnectorDB {
 	private static Connection db;
 	
+	/**
+	 * Permet d'ouvrir la connexion à la DB 
+	 * @param url : addresse de la db (ex: "//localhost/ma_db")
+	 * @param user : utilisateur de la db
+	 * @param password : mot de passe de l'utilisateur de la db
+	 */
 	public static void openConnection(String url, String user, String password){
 		String uri = "jdbc:postgresql:"+url;
 		Properties props = new Properties();
@@ -33,7 +40,7 @@ public class ConnectorDB {
 	public static void closeConnection(){
 		try {
 			ConnectorDB.db.close();
-		} catch (SQLException e) {
+		} catch (SQLException e) {	
 			JOptionPane.showMessageDialog(null, "La connection à la base de données ne s'est pas cloturée!");
 			e.printStackTrace();
 		}
@@ -48,8 +55,9 @@ public class ConnectorDB {
 	public static ResultSet select(String query) {		
 		ResultSet rs = null;
 		try {
-			PreparedStatement st = db.prepareStatement(query);
-			rs = st.executeQuery();
+			Statement st = ConnectorDB.db.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			
+			rs = st.executeQuery(query);
 		} catch (SQLException e) {
 			switch(((PSQLException)e).getServerErrorMessage().getSQLState().substring(0, 2)){
 				case "42": JOptionPane.showMessageDialog(null, "Erreur de syntaxe ou violation d'accès détectée!"
@@ -57,7 +65,7 @@ public class ConnectorDB {
 						break;
 				default: System.out.println("Error: "+((PSQLException)e).getServerErrorMessage().getSQLState());
 			}
-			
+			e.printStackTrace();			
 		}
 		return rs;
 	}
