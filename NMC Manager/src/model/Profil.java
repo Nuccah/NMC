@@ -5,7 +5,7 @@ import java.sql.Date;
 /**
  * Classe comprenant toutes les infos de l'utilisateur connecté
  * @author Antoine
- *
+ * @version 1.0
  */
 public class Profil {
 	private static String username;
@@ -17,7 +17,7 @@ public class Profil {
 	/**
 	 * Initialise toutes les variables du profil à null
 	 */
-	public static void init(){
+	public static void reset(){
 		Profil.username = null;
 		Profil.mail = null;
 		Profil.first_name = null;
@@ -62,7 +62,5 @@ public class Profil {
 	public static void setRegDate(Date reg_date) {
 		Profil.reg_date = reg_date;
 	}
-	
-	
 
 }

@@ -15,59 +15,60 @@ import javax.swing.JOptionPane;
 /**
  * Classe de gestion du fichier de config (.properties) de l'application
  * @author Antoine Ceyssens
- * @version 1.0
+ * @version 1.1
  */
 public class Config {
-	private File cfg_file;
-	private FileInputStream cfg_in;
-	private FileOutputStream cfg_out;
-	private Properties prop;
+	private static File cfg_file;
+	private static FileInputStream cfg_in;
+	private static FileOutputStream cfg_out;
+	private static Properties prop;
 	/**
-	 * Constructeur config
-	 * Met en place le fichier de config
+	 * Initialise le fichier de config
 	 */
-	public Config(){
-		this.cfg_file = new File(".properties");
-		this.prop = new Properties();
-		if(!this.cfg_file.exists()){
+	public static void init(){
+		cfg_file = new File(".properties");
+		prop = new Properties();
+		if(!cfg_file.exists()){
 			try {
-				this.cfg_file.createNewFile();
+				cfg_file.createNewFile();
+				Config.defaultConf();
 			} catch (IOException e) {
 				JOptionPane.showConfirmDialog(null, "Le fichier n'a pas pu être créé!\n"
 						+ "Veuillez essayer de lancer le programme en tant qu'Administrateur.");
 				e.printStackTrace();
 			}
 		}
-		this.loadProp();
+		Config.loadProp();
 	}
 	
 	/**
 	 * Permet d'initialiser les propriétés de bases
 	 */
-	public void init(){
-		this.setProp("program_title", "Nukama MediaCenter Manager");
-		this.setProp("url_db", "//localhost/nmc_db");
-		this.setProp("user_db", "nmc_admin");
-		this.setProp("pass_db", "ephec2014");
-		this.saveProp();
+	public static void defaultConf(){
+		Config.setProp("program_title", "Nukama MediaCenter Manager");
+		Config.setProp("base_title", "NMC - ");
+		Config.setProp("url_db", "//localhost/nmc_db");
+		Config.setProp("user_db", "nmc_admin");
+		Config.setProp("pass_db", "ephec2014");
+		Config.saveProp();
 	}
 	
-	public void setProp(String key, String value){
+	public static void setProp(String key, String value){
 		prop.setProperty(key, value);
 	}
 	
-	public String getProp(String key){
+	public static String getProp(String key){
 		return prop.getProperty(key);
 	}
 	
-	public void removeProp(String key){
+	public static void removeProp(String key){
 		prop.remove(key);
 	}
 	
 	/**
 	 * Ecris le contenu de la hashtable dans le fichier de config
 	 */
-	public void saveProp(){
+	public static void saveProp(){
 		try {
 			cfg_out = new FileOutputStream(cfg_file);
 		} catch (FileNotFoundException e1) {
@@ -86,16 +87,16 @@ public class Config {
 	/**
 	 * Charge les propriétés dans la hashtable prop
 	 */
-	public void loadProp(){
+	public static void loadProp(){
 		try {
-			this.cfg_in = new FileInputStream(this.cfg_file);
+			Config.cfg_in = new FileInputStream(Config.cfg_file);
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Le fichier de config n'a pas pu être trouvé!");
 			e.printStackTrace();
 		}
 		try {
-			this.prop.loadFromXML(cfg_in);
-			this.cfg_in.close();
+			Config.prop.loadFromXML(cfg_in);
+			Config.cfg_in.close();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erreur lors du chargement du fichier de config!");
 			e.printStackTrace();

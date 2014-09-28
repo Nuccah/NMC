@@ -80,4 +80,11 @@ public class ConnectorDB {
 		st.executeQuery();
 		st.close();
 	}
+	/**
+	 * Permet de récupérer l'objet Connection
+	 * @return l'objet Connection
+	 */
+	public static Connection getDB(){
+		return db;
+	}
 }

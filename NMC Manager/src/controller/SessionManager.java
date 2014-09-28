@@ -11,20 +11,19 @@ import model.ConnectorDB;
 import model.Profil;
 
 /**
- * Classe de gestion des Connections à la DB
+ * Classe de gestion des authentifications utilisateur à la DB
  * @author Antoine
- *
+ * @version 1.1
  */
-public class Login {
-	private Config conf;
+public class SessionManager {
 	/**
 	 * Crée une nouvelle instance utilisateur
 	 * @param username : nom d'utilisateur
 	 * @param password : mot de passe de l'utilisateur
+	 * @return Vrai si la connexion a réussi. Faux dans tous les autres cas
 	 */
-	public Login(String username, String password){
-		conf = new Config();
-		ConnectorDB.openConnection(conf.getProp("url_db"), conf.getProp("user_db"), conf.getProp("pass_db"));
+	public static boolean login(String username, String password){
+		ConnectorDB.openConnection(Config.getProp("url_db"), Config.getProp("user_db"), Config.getProp("pass_db"));
 		ResultSet res = ConnectorDB.select("SELECT * FROM nmc_users WHERE login LIKE '"+username+"'");
 		try {
 			res.first();
@@ -41,6 +40,7 @@ public class Login {
 				Profil.setLastName(res.getString("last_name"));
 				Profil.setBirthdate(res.getDate("birthdate"));
 				Profil.setRegDate(res.getDate("reg_date"));
+				return true;
 			} else {
 				JOptionPane.showMessageDialog(null, "Login/Mot de passe invalide!");
 			}
@@ -48,5 +48,19 @@ public class Login {
 			JOptionPane.showMessageDialog(null, "Impossible de vérifier le mot de passe!");
 			e.printStackTrace();
 		}
+		return false;
+	}
+	
+	/**
+	 * Permet la déconnexion du profil
+	 */
+	public static void logout(){
+		Profil.reset();
+		try {
+			if(!ConnectorDB.getDB().isClosed()) ConnectorDB.closeConnection();			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		JOptionPane.showMessageDialog(null, "Vous êtes à présent déconnecté!");
 	}
 }
