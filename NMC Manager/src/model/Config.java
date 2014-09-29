@@ -18,57 +18,67 @@ import javax.swing.JOptionPane;
  * @version 1.1
  */
 public class Config {
-	private static File cfg_file;
-	private static FileInputStream cfg_in;
-	private static FileOutputStream cfg_out;
-	private static Properties prop;
+	private static Config instance = null; 
+	private File cfg_file;
+	private FileInputStream cfg_in;
+	private FileOutputStream cfg_out;
+	private Properties prop;
+	
+	
 	/**
 	 * Initialise le fichier de config
 	 */
-	public static void init(){
+	protected Config(){
 		cfg_file = new File(".properties");
 		prop = new Properties();
 		if(!cfg_file.exists()){
 			try {
 				cfg_file.createNewFile();
-				Config.defaultConf();
+				defaultConf();
 			} catch (IOException e) {
 				JOptionPane.showConfirmDialog(null, "Le fichier n'a pas pu être créé!\n"
 						+ "Veuillez essayer de lancer le programme en tant qu'Administrateur.");
 				e.printStackTrace();
 			}
 		}
-		Config.loadProp();
+		loadProp();
+	}
+	
+	public static Config getInstance(){
+		if(instance == null){
+			instance = new Config();
+		}
+		return instance;
 	}
 	
 	/**
 	 * Permet d'initialiser les propriétés de bases
 	 */
-	public static void defaultConf(){
-		Config.setProp("program_title", "Nukama MediaCenter Manager");
-		Config.setProp("base_title", "NMC - ");
-		Config.setProp("url_db", "//localhost/nmc_db");
-		Config.setProp("user_db", "nmc_admin");
-		Config.setProp("pass_db", "ephec2014");
-		Config.saveProp();
+	public void defaultConf(){
+		setProp("program_title", "Nukama MediaCenter Manager");
+		setProp("base_title", "NMC - ");
+		setProp("url_db", "//localhost/nmc_db");
+		setProp("user_db", "nmc_admin");
+		setProp("pass_db", "ephec2014");
+		saveProp();
 	}
 	
-	public static void setProp(String key, String value){
+	public void setProp(String key, String value){
 		prop.setProperty(key, value);
 	}
 	
-	public static String getProp(String key){
+	public String getProp(String key){
 		return prop.getProperty(key);
 	}
 	
-	public static void removeProp(String key){
+	public void removeProp(String key){
 		prop.remove(key);
 	}
 	
 	/**
 	 * Ecris le contenu de la hashtable dans le fichier de config
 	 */
-	public static void saveProp(){
+	public void saveProp(){
 		try {
 			cfg_out = new FileOutputStream(cfg_file);
 		} catch (FileNotFoundException e1) {
@@ -87,20 +97,22 @@ public class Config {
 	/**
 	 * Charge les propriétés dans la hashtable prop
 	 */
-	public static void loadProp(){
+	public void loadProp(){
 		try {
-			Config.cfg_in = new FileInputStream(Config.cfg_file);
+			cfg_in = new FileInputStream(cfg_file);
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Le fichier de config n'a pas pu être trouvé!");
 			e.printStackTrace();
 		}
 		try {
-			Config.prop.loadFromXML(cfg_in);
-			Config.cfg_in.close();
+			prop.loadFromXML(cfg_in);
+			cfg_in.close();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erreur lors du chargement du fichier de config!");
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 }

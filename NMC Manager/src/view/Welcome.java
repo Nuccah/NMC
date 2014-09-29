@@ -35,7 +35,7 @@ public class Welcome extends JFrame implements ActionListener {
 	 * Initialisation de la fenêtre et de ses composants
 	 */
 	public Welcome() {
-		super(Config.getProp("base_title")+"Bienvenue");
+		super(Config.getInstance().getProp("base_title")+"Bienvenue");
 		setResizable(false);
 		BoxLayout mainBox = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
 		getContentPane().setLayout(mainBox);
@@ -103,7 +103,9 @@ public class Welcome extends JFrame implements ActionListener {
 		if(e.getSource() == btnQuitter){
 			System.exit(0);
 		} else if(e.getSource() == btnSeConnecter){
-			if(SessionManager.login(txtLogin.getText(), String.valueOf(pwdMotDePasse.getPassword()))){
+			if(SessionManager.getInstance().login(txtLogin.getText(), 
+							String.valueOf(pwdMotDePasse.getPassword()))){
+				
 				this.dispose();
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
@@ -111,6 +113,7 @@ public class Welcome extends JFrame implements ActionListener {
 						dbScreen.setVisible(true);
 					}
 				});
+				
 			}
 			
 		}

@@ -23,8 +23,9 @@ public class TestConnectorDB {
 
 	@Test
 	public void testSelect() {
-		ConnectorDB.openConnection("//localhost/nmc_db", "nmc_admin", "ephec2014");
-			ResultSet rs = ConnectorDB.select("SELECT * FROM nmc_permissions");
+		ConnectorDB connDB = ConnectorDB.getInstance();
+		connDB.openConnection("//localhost/nmc_db", "nmc_admin", "ephec2014");
+			ResultSet rs = connDB.select("SELECT * FROM nmc_permissions");
 			try {
 				if(rs.next() || rs.first()) {
 					System.out.println("username: "+rs.getArray("login"));
@@ -35,7 +36,7 @@ public class TestConnectorDB {
 				} 
 				else e.printStackTrace();
 			}
-		ConnectorDB.closeConnection();
+		connDB.closeConnection();
 	}
 
 //	@Test

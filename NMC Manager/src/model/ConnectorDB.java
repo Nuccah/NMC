@@ -13,7 +13,23 @@ import javax.swing.JOptionPane;
 import org.postgresql.util.PSQLException;
 
 public class ConnectorDB {
-	private static Connection db;
+	private static ConnectorDB instance = null;
+	private Connection db;
+	
+	protected ConnectorDB(){
+		// Fake constructor for singleton
+	}
+	
+	/**
+	 * Permet de récupérer/créer l'instance ConnectorDB
+	 * @return l'objet instancié de ConnectorDB
+	 */
+	public static ConnectorDB getInstance(){
+		if(instance == null){
+			instance = new ConnectorDB();
+		}
+		return instance;
+	}
 	
 	/**
 	 * Permet d'ouvrir la connexion à la DB 
@@ -21,13 +37,13 @@ public class ConnectorDB {
 	 * @param user : utilisateur de la db
 	 * @param password : mot de passe de l'utilisateur de la db
 	 */
-	public static void openConnection(String url, String user, String password){
+	public void openConnection(String url, String user, String password){
 		String uri = "jdbc:postgresql:"+url;
 		Properties props = new Properties();
 		props.setProperty("user", user);
 		props.setProperty("password", password);
 		try {
-			ConnectorDB.db = DriverManager.getConnection(uri, props);
+			db = DriverManager.getConnection(uri, props);
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, "Connexion à la base de données impossible!");
 			e.printStackTrace();
@@ -37,14 +53,16 @@ public class ConnectorDB {
 	/**
 	 * Permet la fermeture de la connection à la base de données
 	 */
-	public static void closeConnection(){
+	public void closeConnection(){
 		try {
-			ConnectorDB.db.close();
+			if(!db.isClosed()) db.close();
+			else System.out.println("La connexion à la base de données est déjà fermée!");
 		} catch (SQLException e) {	
 			JOptionPane.showMessageDialog(null, "La connection à la base de données ne s'est pas cloturée!");
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * Permet de réaliser des SELECT sur la base de données "db"
 	 * @param query : La requête à exécuter
@@ -52,10 +70,10 @@ public class ConnectorDB {
 	 * @throws SQLException  Envoyée si la requête n'a pas pu s'exécuter correctement soit à cause de la connection
 	 * soit à cause la syntaxe de la requête
 	 */
-	public static ResultSet select(String query) {		
+	public ResultSet select(String query) {		
 		ResultSet rs = null;
 		try {
-			Statement st = ConnectorDB.db.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement st = db.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			
 			rs = st.executeQuery(query);
 		} catch (SQLException e) {
@@ -69,22 +87,16 @@ public class ConnectorDB {
 		}
 		return rs;
 	}
+	
 	/**
 	 * Permet de réaliser des requêtes de modifications de la base de données "db" (insert, update, delete)
 	 * @param query : La requête à exécuter
 	 * @throws SQLException Envoyée si la requête n'a pas pu s'exécuter correctement soit à cause de la connection
 	 * soit à cause la syntaxe de la requête
 	 */
-	public static void modify(String query) throws SQLException{
+	public void modify(String query) throws SQLException{
 		PreparedStatement st = db.prepareStatement(query);
 		st.executeQuery();
 		st.close();
-	}
-	/**
-	 * Permet de récupérer l'objet Connection
-	 * @return l'objet Connection
-	 */
-	public static Connection getDB(){
-		return db;
 	}
 }

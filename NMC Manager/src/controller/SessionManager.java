@@ -16,15 +16,28 @@ import model.Profil;
  * @version 1.1
  */
 public class SessionManager {
+	private static SessionManager instance = null;
+	
+	protected SessionManager(){
+		// Fake constructor for singleton
+	}
+	
+	public static SessionManager getInstance(){
+		if(instance == null) instance = new SessionManager();
+		return instance;
+	}
+	
 	/**
 	 * Crée une nouvelle instance utilisateur
 	 * @param username : nom d'utilisateur
 	 * @param password : mot de passe de l'utilisateur
 	 * @return Vrai si la connexion a réussi. Faux dans tous les autres cas
 	 */
-	public static boolean login(String username, String password){
-		ConnectorDB.openConnection(Config.getProp("url_db"), Config.getProp("user_db"), Config.getProp("pass_db"));
-		ResultSet res = ConnectorDB.select("SELECT * FROM nmc_users WHERE login LIKE '"+username+"'");
+	public boolean login(String username, String password){
+		Config conf = Config.getInstance();
+		ConnectorDB connDB = ConnectorDB.getInstance();
+		connDB.openConnection(conf.getProp("url_db"), conf.getProp("user_db"), conf.getProp("pass_db"));
+		ResultSet res = connDB.select("SELECT * FROM nmc_users WHERE login LIKE '"+username+"'");
 		try {
 			res.first();
 		} catch (HeadlessException | SQLException e1) {
@@ -33,13 +46,13 @@ public class SessionManager {
 		}
 		try {
 			if(Crypter.verify(Crypter.encrypt(password), res.getString("password"))){
-				JOptionPane.showMessageDialog(null, "Vous êtes à présent connecté!");
-				Profil.setUsername(username);
-				Profil.setMail(res.getString("mail"));
-				Profil.setFirstName(res.getString("first_name"));
-				Profil.setLastName(res.getString("last_name"));
-				Profil.setBirthdate(res.getDate("birthdate"));
-				Profil.setRegDate(res.getDate("reg_date"));
+				Profil pf = Profil.getInstance();
+				pf.setUsername(username);
+				pf.setMail(res.getString("mail"));
+				pf.setFirstName(res.getString("first_name"));
+				pf.setLastName(res.getString("last_name"));
+				pf.setBirthdate(res.getDate("birthdate"));
+				pf.setRegDate(res.getDate("reg_date"));
 				return true;
 			} else {
 				JOptionPane.showMessageDialog(null, "Login/Mot de passe invalide!");
@@ -54,13 +67,8 @@ public class SessionManager {
 	/**
 	 * Permet la déconnexion du profil
 	 */
-	public static void logout(){
-		Profil.reset();
-		try {
-			if(!ConnectorDB.getDB().isClosed()) ConnectorDB.closeConnection();			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		JOptionPane.showMessageDialog(null, "Vous êtes à présent déconnecté!");
+	public void logout(){
+		Profil.getInstance().reset();
+		ConnectorDB.getInstance().closeConnection();	
 	}
 }

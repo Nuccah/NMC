@@ -11,15 +11,16 @@ public class TestLogin {
 
 	@Test
 	public void testLogin() {
-		Config.init();
-		SessionManager.login("admin", "admin");
+		Config.getInstance();
+		SessionManager.getInstance().login("admin", "admin");
 	}
 	
 	@Test
 	public void testLogout(){
-		SessionManager.login("admin", "admin");
-		ConnectorDB.closeConnection();
-		SessionManager.logout();
+		SessionManager sm = SessionManager.getInstance();
+		sm.login("admin", "admin");
+		ConnectorDB.getInstance().closeConnection();
+		sm.logout();
 	}
 
 }

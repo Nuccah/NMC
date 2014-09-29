@@ -24,7 +24,7 @@ public class Dashboard extends JFrame {
 	 * Initialise la fenêtre et ses composants
 	 */
 	public Dashboard() {
-		super(Config.getProp("base_title")+"Nukama Media Center");
+		super(Config.getInstance().getProp("base_title")+"Nukama Media Center");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int width = gd.getDisplayMode().getWidth();
@@ -37,7 +37,8 @@ public class Dashboard extends JFrame {
 		
 		JTextPane txtpnTest = new JTextPane();
 		txtpnTest.setEditable(false);
-		txtpnTest.setText("Salut "+Profil.getUsername()+", ton adresse mail est: "+Profil.getMail());
+		txtpnTest.setText("Salut "+Profil.getInstance().getUsername()+
+				", ton adresse mail est: "+Profil.getInstance().getMail());
 		contentPane.add(txtpnTest);
 	}
 

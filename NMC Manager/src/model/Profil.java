@@ -8,59 +8,74 @@ import java.sql.Date;
  * @version 1.0
  */
 public class Profil {
-	private static String username;
-	private static String mail;
-	private static String first_name;
-	private static String last_name;
-	private static Date birthdate;
-	private static Date reg_date;
+	private static Profil instance = null;
+	private String username;
+	private String mail;
+	private String first_name;
+	private String last_name;
+	private Date birthdate;
+	private Date reg_date;
+	
 	/**
 	 * Initialise toutes les variables du profil à null
 	 */
-	public static void reset(){
-		Profil.username = null;
-		Profil.mail = null;
-		Profil.first_name = null;
-		Profil.last_name = null;
-		Profil.birthdate = null;
-		Profil.reg_date  = null;
+	public void reset(){
+		username = null;
+		mail = null;
+		first_name = null;
+		last_name = null;
+		birthdate = null;
+		reg_date  = null;
 	}
 	
-	public static String getUsername() {
+	protected Profil(){
+		// Fake constructor for singleton
+	}
+	
+	/**
+	 * Permet de créer/récupérer l'instance Profil
+	 * @return l'objet instancié du Profil
+	 */
+	public static Profil getInstance(){
+		if(instance == null) instance = new Profil();
+		return instance;
+	}
+	
+	public String getUsername() {
 		return username;
 	}
-	public static void setUsername(String username) {
-		Profil.username = username;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public static String getMail() {
+	public String getMail() {
 		return mail;
 	}
-	public static void setMail(String mail) {
-		Profil.mail = mail;
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
-	public static String getFirstName() {
+	public String getFirstName() {
 		return first_name;
 	}
-	public static void setFirstName(String first_name) {
-		Profil.first_name = first_name;
+	public void setFirstName(String first_name) {
+		this.first_name = first_name;
 	}
-	public static String getLastName() {
+	public  String getLastName() {
 		return last_name;
 	}
-	public static void setLastName(String last_name) {
-		Profil.last_name = last_name;
+	public void setLastName(String last_name) {
+		this.last_name = last_name;
 	}
-	public static Date getBirthdate() {
+	public Date getBirthdate() {
 		return birthdate;
 	}
-	public static void setBirthdate(Date birthdate) {
-		Profil.birthdate = birthdate;
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
 	}
-	public static Date getRegDate() {
+	public Date getRegDate() {
 		return reg_date;
 	}
-	public static void setRegDate(Date reg_date) {
-		Profil.reg_date = reg_date;
+	public void setRegDate(Date reg_date) {
+		this.reg_date = reg_date;
 	}
 
 }

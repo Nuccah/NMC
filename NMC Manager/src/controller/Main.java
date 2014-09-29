@@ -14,8 +14,8 @@ import model.Profil;
 public class Main {
 
 	public static void main(String[] args) {
-		Config.init();
-		Profil.reset();
+		Config.getInstance();
+		Profil.getInstance().reset();
 		
 		EventQueue.invokeLater(new Runnable() {
 			
