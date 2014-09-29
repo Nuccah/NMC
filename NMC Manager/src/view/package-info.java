@@ -1,11 +1,8 @@
 /**
- * Package des vues de l'applcation
+ *
  */
 /**
- * @category Contenu:
- * 
- * @see
- * 
+ * Package des vues de l'application 
  * @author Antoine Ceyssens
  *
  */

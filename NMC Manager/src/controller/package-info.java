@@ -1,9 +1,8 @@
 /**
- * Package controlleur de l'application
+ *
  */
 /**
- * @category Contenu
- * 
+ * Package controlleur de l'application
  * @author Antoine Ceyssens
  *
  */
