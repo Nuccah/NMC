@@ -31,7 +31,7 @@ public class Config {
 				cfg_file.createNewFile();
 				defaultConf();
 			} catch (IOException e) {
-				System.out.println("Le fichier n'a pas pu être créé!\n"
+				System.out.println("Le fichier n'a pas pu Ãªtre crÃ©Ã©!\n"
 						+ "Veuillez essayer de lancer le programme en tant qu'Administrateur.");
 				e.printStackTrace();
 			}
@@ -47,10 +47,11 @@ public class Config {
 	}
 	
 	/**
-	 * Permet d'initialiser les propriétés de bases
+	 * Permet d'initialiser les propriÃ©tÃ©s de bases
 	 */
 	public void defaultConf(){
-		//TODO: Définir les variables nécessaires au lancement
+		//TODO: DÃ©finir les variables nÃ©cessaires au lancement
+		setProp("base_dir", System.getProperty("user.home")+"/NMC_STOCK");
 		saveProp();
 	}
 	
@@ -73,26 +74,26 @@ public class Config {
 		try {
 			cfg_out = new FileOutputStream(cfg_file);
 		} catch (FileNotFoundException e1) {
-			System.out.println("Le fichier de config n'a pas pu être trouvé!");
+			System.out.println("Le fichier de config n'a pas pu Ãªtre trouvÃ©!");
 			e1.printStackTrace();
 		}
 		try {
 			prop.storeToXML(cfg_out, null);
 			cfg_out.close();
 		} catch (IOException e) {
-			System.out.println("Erreur lors de l'écriture des configurations!");
+			System.out.println("Erreur lors de l'Ã©criture des configurations!");
 			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * Charge les propriétés dans la hashtable prop
+	 * Charge les propriÃ©tÃ©s dans la hashtable prop
 	 */
 	public void loadProp(){
 		try {
 			cfg_in = new FileInputStream(cfg_file);
 		} catch (FileNotFoundException e) {
-			System.out.println("Le fichier de config n'a pas pu être trouvé!");
+			System.out.println("Le fichier de config n'a pas pu Ãªtre trouvÃ©!");
 			e.printStackTrace();
 		}
 		try {

@@ -2,7 +2,7 @@
  * 
  */
 /**
- * Package des modèles du serveur
+ * Package des modÃ¨les du serveur
  * @author Antoine
  *
  */

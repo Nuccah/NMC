@@ -2,7 +2,7 @@
  * 
  */
 /**
- * Package des contrôleurs du serveur
+ * Package des contrÃ´leurs du serveur
  * @author Antoine
  *
  */
