@@ -52,6 +52,9 @@ public class Config {
 	public void defaultConf(){
 		//TODO: Définir les variables nécessaires au lancement
 		setProp("base_dir", System.getProperty("user.home")+"/NMC_STOCK");
+		setProp("url_db", "//localhost/nmc_db");
+		setProp("user_db", "nmc_admin");
+		setProp("pass_db", "ephec2014");
 		saveProp();
 	}
 	
