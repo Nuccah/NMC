@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import controller.Parser;
+
 /**
  * Classe de gestion du fichier de config (.properties) du serveur
  * @author Antoine Ceyssens
@@ -43,6 +45,8 @@ public class Config {
 		if(instance == null){
 			instance = new Config();
 		}
+		File fl = new File(instance.getProp("root_dir"));
+		fl.mkdir();
 		return instance;
 	}
 	
@@ -51,10 +55,14 @@ public class Config {
 	 */
 	public void defaultConf(){
 		//TODO: Définir les variables nécessaires au lancement
-		setProp("base_dir", System.getProperty("user.home")+"/NMC_STOCK");
+		if(Parser.getInstance().isWindows())
+			setProp("root_dir", System.getProperty("user.home")+"\\NMC_STOCK");
+		else 
+			setProp("root_dir", System.getProperty("user.home")+"/NMC_STOCK");
 		setProp("url_db", "//localhost/nmc_db");
 		setProp("user_db", "nmc_admin");
 		setProp("pass_db", "ephec2014");
+		setProp("srv_port", "50001");
 		saveProp();
 	}
 	

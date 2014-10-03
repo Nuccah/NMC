@@ -8,9 +8,10 @@ package controller;
  */
 public class Parser {
 	private static Parser instance = null;
+	private String OS;
 	
 	protected Parser(){
-		
+		OS = System.getProperty("os.name").toLowerCase();
 	}
 	
 	public static Parser getInstance(){
@@ -23,17 +24,17 @@ public class Parser {
 	/**
 	 * Permet de détecter le type de média
 	 * @param filename : fichier média à analyser
-	 * @return 1 - si c'est une vidéo<br />
-	 * 		 2 - si c'est une musique<br />
-	 * 		 3 - si c'est une image<br />
-	 * 		 4 - si c'est un ebook<br />
-	 * 		 -1 - si erreur
+	 * @return video - si c'est une vidéo<br />
+	 * 		 music - si c'est une musique<br />
+	 * 		 picture - si c'est une image<br />
+	 * 		 ebook - si c'est un ebook<br />
+	 * 		 null - si erreur
 	 */
-	public int getMediaType(String filename){
+	public String getMediaType(String filename){
 		int i = filename.lastIndexOf('.');
 		String extension;
 		if(i > 0) extension = filename.substring(i+1);
-		else return -1;
+		else return null;
 		switch(extension.toLowerCase()){
 			case "mp4":
 			case "avi":
@@ -44,21 +45,47 @@ public class Parser {
 			case "vob":
 			case "3gp":
 			case "3g2":
-					return 1;
+					return "video";
 			case "aac":
 			case "mp3":
 			case "wav":
-					return 2;
+					return "music";
 			case "jpeg":
 			case "jpg":
 			case "png":
 			case "gif":
 			case "bmp":
-					return 3;
+					return "picture";
 			case "pdf":
 			case "ebook":
-					return 4;			
+					return "ebook";			
 		}
-		return -1;
+		return null;
+	}
+	
+	
+	
+	public boolean isWindows() {
+		 
+		return (OS.indexOf("win") >= 0);
+ 
+	}
+ 
+	public boolean isMac() {
+ 
+		return (OS.indexOf("mac") >= 0);
+ 
+	}
+ 
+	public boolean isUnix() {
+ 
+		return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
+ 
+	}
+ 
+	public boolean isSolaris() {
+ 
+		return (OS.indexOf("sunos") >= 0);
+ 
 	}
 }
