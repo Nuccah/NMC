@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -8,19 +9,26 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
 import model.Config;
 import model.Profil;
 
 import javax.swing.JMenuBar;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -44,6 +52,7 @@ public class Dashboard extends JFrame implements ActionListener{
 	private JPanel bottomPane;
 	private GridBagLayout main;
 	private JTree menuBar;
+	private JTextArea Test;
 
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -85,7 +94,6 @@ public class Dashboard extends JFrame implements ActionListener{
 		centerPane.add(rightPane);
 		
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
-		splitPane.setDividerLocation(0.5);
 		centerPane.add(splitPane);
 		centerPane.setLayout(new BoxLayout(centerPane, BoxLayout.X_AXIS));
 		getContentPane().add(centerPane, d);
@@ -98,6 +106,22 @@ public class Dashboard extends JFrame implements ActionListener{
 		menuBar();
 		scrollList();
 		bottomBar();
+		
+		menuBar.addTreeSelectionListener(new TreeSelectionListener() {
+		    public void valueChanged(TreeSelectionEvent e) {
+		        DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+		                           menuBar.getLastSelectedPathComponent();
+
+		    /* if nothing is selected */ 
+		        if (node == null) return;
+
+		    /* retrieve the node that was selected */ 
+		        Object nodeInfo = node.getUserObject();
+		        
+		    /* React to the node selection. */
+		        Test.setText((String) nodeInfo);
+		    }
+		});
 	}
 
 	
@@ -159,14 +183,18 @@ public class Dashboard extends JFrame implements ActionListener{
         home.add(mediaNode);
         home.add(uploadNode);
         home.add(usersNode);
+        
+        
          
         //create the tree by passing in the root node
         menuBar = new JTree(home);
+        menuBar.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         leftPane.add(new JScrollPane(menuBar));
+        
 	}
 
 	private void scrollList() {
-		JScrollPane Test = new JScrollPane();
+		Test = new JTextArea(5,20);
 		rightPane.add(Test);
 	}
 
