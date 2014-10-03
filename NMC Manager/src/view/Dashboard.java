@@ -22,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import model.Config;
@@ -111,6 +112,7 @@ public class Dashboard extends JFrame implements ActionListener{
 		    public void valueChanged(TreeSelectionEvent e) {
 		        DefaultMutableTreeNode node = (DefaultMutableTreeNode)
 		                           menuBar.getLastSelectedPathComponent();
+		        TreePath anchor = menuBar.getAnchorSelectionPath();
 
 		    /* if nothing is selected */ 
 		        if (node == null) return;
@@ -119,7 +121,9 @@ public class Dashboard extends JFrame implements ActionListener{
 		        Object nodeInfo = node.getUserObject();
 		        
 		    /* React to the node selection. */
-		        Test.setText((String) nodeInfo);
+		      //  if (anchor.toString() == "Media")
+		        Test.setText(node.toString());
+		        Test.append(" -> " + node.getParent().toString());
 		    }
 		});
 	}
