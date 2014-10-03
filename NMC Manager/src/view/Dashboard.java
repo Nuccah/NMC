@@ -21,9 +21,6 @@ import model.Config;
 import model.Profil;
 
 import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -37,14 +34,6 @@ import controller.SessionManager;
  *
  */
 
-class VerticalMenuBar extends JMenuBar {
-	  private static final LayoutManager grid = new GridLayout(0,1);
-	  public VerticalMenuBar() {
-	    setLayout(grid);
-	  }
-}
-
-
 public class Dashboard extends JFrame implements ActionListener{
 	private static final long serialVersionUID = -5998048938167814342L;
 	private JPanel topPane;
@@ -54,6 +43,7 @@ public class Dashboard extends JFrame implements ActionListener{
 	private JPanel centerPane;
 	private JPanel bottomPane;
 	private GridBagLayout main;
+	private JTree menuBar;
 
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -86,7 +76,9 @@ public class Dashboard extends JFrame implements ActionListener{
 		
 		leftPane = new JPanel();
 		leftPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		leftPane.setLayout(new GridLayout(1,1));
 		centerPane.add(leftPane);
+		
 		
 		rightPane = new JPanel();
 		rightPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -141,17 +133,6 @@ public class Dashboard extends JFrame implements ActionListener{
 	}
 	
 	private void menuBar() {
-//		JMenuBar menuBar = new VerticalMenuBar();
-//		leftPane.add(menuBar);
-//		
-//		JMenu mnHome = new JMenu("Home");
-//		menuBar.add(mnHome);
-//		
-//		JMenu mnMedia = new JMenu("Media");
-//		menuBar.add(mnMedia);
-//		
-//		JMenu mnUsers = new JMenu("User Management");
-//		menuBar.add(mnUsers);
 		
 		//create the root node
         DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
@@ -180,8 +161,8 @@ public class Dashboard extends JFrame implements ActionListener{
         home.add(usersNode);
          
         //create the tree by passing in the root node
-        JTree menuBar = new JTree(home);
-        leftPane.add(menuBar);
+        menuBar = new JTree(home);
+        leftPane.add(new JScrollPane(menuBar));
 	}
 
 	private void scrollList() {
