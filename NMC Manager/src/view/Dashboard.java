@@ -169,9 +169,10 @@ public class Dashboard extends JFrame implements ActionListener{
         uploadNode.add(new DefaultMutableTreeNode("Movies"));
         uploadNode.add(new DefaultMutableTreeNode("Series"));
         DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
-//        usersNode.add(new DefaultMutableTreeNode());
-//        usersNode.add(new DefaultMutableTreeNode());
-//        usersNode.add(new DefaultMutableTreeNode());
+        usersNode.add(new DefaultMutableTreeNode("Create User"));
+        usersNode.add(new DefaultMutableTreeNode("Administration"));
+        usersNode.add(new DefaultMutableTreeNode("Permissions"));        
+        usersNode.add(new DefaultMutableTreeNode("Preferences"));
  
         //add the child nodes to the root node
         home.add(mediaNode);
