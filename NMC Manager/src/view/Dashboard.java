@@ -71,7 +71,7 @@ public class Dashboard extends JFrame implements ActionListener{
 		c.gridheight = 1; c.gridwidth = 1; c.gridx = 0; c.gridy = 0; c.weightx = 1; c.weighty = 0.1;
 		GridBagConstraints d = new GridBagConstraints();
 		d.fill = GridBagConstraints.VERTICAL;
-		d.gridheight = 1; d.gridwidth = 1; d.gridx = 0; d.gridy = 1; d.weightx = 1; d.weighty = 0.8;
+		d.gridheight = 1; d.gridwidth = 1; d.gridx = 0; d.gridy = 1; d.weightx = 1; d.weighty = 0.8; d.fill = GridBagConstraints.BOTH;
 		GridBagConstraints e = new GridBagConstraints();
 		e.gridheight = 1; e.gridwidth = 1; e.gridx = 0; e.gridy = 2; e.weightx = 1; e.weighty = 0.1;
 		
@@ -93,7 +93,7 @@ public class Dashboard extends JFrame implements ActionListener{
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
 		splitPane.setDividerLocation(0.5);
 		centerPane.add(splitPane);
-		
+		centerPane.setLayout(new BoxLayout(centerPane, BoxLayout.X_AXIS));
 		getContentPane().add(centerPane, d);
 		
 		bottomPane = new JPanel();
