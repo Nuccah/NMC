@@ -13,7 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
+import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import model.Config;
 import model.Profil;
@@ -68,7 +70,7 @@ public class Dashboard extends JFrame implements ActionListener{
 		int height = gd.getDisplayMode().getHeight();
 		setBounds((width/2) - (width/3), (height/2) - (height/3), (int)(width/1.5), (int)(height/1.5));
 		GridBagConstraints c = new GridBagConstraints();
-		c.gridheight = 1; c.gridwidth = 1; c.gridx = 0; c.gridy = 0; c.weightx = 1; c.weighty = 0.1;
+		c.gridheight = 1; c.gridwidth = 1; c.gridx = 0; c.gridy = 0; c.weightx = 1; c.weighty = 0.1; c.fill = GridBagConstraints.BOTH;
 		GridBagConstraints d = new GridBagConstraints();
 		d.fill = GridBagConstraints.VERTICAL;
 		d.gridheight = 1; d.gridwidth = 1; d.gridx = 0; d.gridy = 1; d.weightx = 1; d.weighty = 0.8; d.fill = GridBagConstraints.BOTH;
@@ -139,18 +141,46 @@ public class Dashboard extends JFrame implements ActionListener{
 	}
 	
 	private void menuBar() {
-		JMenuBar menuBar = new VerticalMenuBar();
-		leftPane.add(menuBar);
+//		JMenuBar menuBar = new VerticalMenuBar();
+//		leftPane.add(menuBar);
+//		
+//		JMenu mnHome = new JMenu("Home");
+//		menuBar.add(mnHome);
+//		
+//		JMenu mnMedia = new JMenu("Media");
+//		menuBar.add(mnMedia);
+//		
+//		JMenu mnUsers = new JMenu("User Management");
+//		menuBar.add(mnUsers);
 		
-		JMenu mnHome = new JMenu("Home");
-		menuBar.add(mnHome);
-		
-		JMenu mnMedia = new JMenu("Media");
-		menuBar.add(mnMedia);
-		
-		JMenu mnUsers = new JMenu("User Management");
-		menuBar.add(mnUsers);
-		
+		//create the root node
+        DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
+        //create the child nodes
+        DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
+        mediaNode.add(new DefaultMutableTreeNode("Books"));
+        mediaNode.add(new DefaultMutableTreeNode("Images"));
+        mediaNode.add(new DefaultMutableTreeNode("Music"));
+        mediaNode.add(new DefaultMutableTreeNode("Movies"));
+        mediaNode.add(new DefaultMutableTreeNode("Series"));
+        DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Upload");
+        uploadNode.add(new DefaultMutableTreeNode("Books"));
+        uploadNode.add(new DefaultMutableTreeNode("Images"));
+        uploadNode.add(new DefaultMutableTreeNode("Music"));
+        uploadNode.add(new DefaultMutableTreeNode("Movies"));
+        uploadNode.add(new DefaultMutableTreeNode("Series"));
+        DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
+//        usersNode.add(new DefaultMutableTreeNode());
+//        usersNode.add(new DefaultMutableTreeNode());
+//        usersNode.add(new DefaultMutableTreeNode());
+ 
+        //add the child nodes to the root node
+        home.add(mediaNode);
+        home.add(uploadNode);
+        home.add(usersNode);
+         
+        //create the tree by passing in the root node
+        JTree menuBar = new JTree(home);
+        leftPane.add(menuBar);
 	}
 
 	private void scrollList() {
