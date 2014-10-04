@@ -66,8 +66,8 @@ public class TransferManager extends Thread {
 	 */
 	public void sendFile(File fToSend){
 		connect();
-		client.enterLocalPassiveMode();
 		try {
+			client.enterLocalPassiveMode();
 			client.setFileType(FTP.BINARY_FILE_TYPE);
 			
 			InputStream is = new FileInputStream(fToSend);

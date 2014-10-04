@@ -12,6 +12,7 @@ public class Parser {
 	
 	protected Parser(){
 		OS = System.getProperty("os.name").toLowerCase();
+		
 	}
 	
 	public static Parser getInstance(){
