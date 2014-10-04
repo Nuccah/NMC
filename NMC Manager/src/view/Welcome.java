@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import model.Config;
 import controller.SessionManager;
@@ -37,6 +39,16 @@ public class Welcome extends JFrame implements ActionListener {
 	public Welcome() {
 		super(Config.getInstance().getProp("base_title")+"Bienvenue");
 		setResizable(false);
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
 		BoxLayout mainBox = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
 		getContentPane().setLayout(mainBox);
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -63,24 +75,24 @@ public class Welcome extends JFrame implements ActionListener {
 		txtLogin = new JTextField();
 		txtLogin.setToolTipText("Login");
 		txtLogin.setHorizontalAlignment(SwingConstants.CENTER);
-		txtLogin.setBounds(180, 11, 140, 20);
+		txtLogin.setBounds(180, 11, 140, 30);
 		centerPanel.add(txtLogin);
 		txtLogin.setColumns(10);
 		
 		pwdMotDePasse = new JPasswordField();
 		pwdMotDePasse.setToolTipText("Mot de Passe");
 		pwdMotDePasse.setHorizontalAlignment(SwingConstants.CENTER);
-		pwdMotDePasse.setBounds(180, 59, 140, 20);
+		pwdMotDePasse.setBounds(180, 59, 140, 30);
 		centerPanel.add(pwdMotDePasse);
 		
 		JLabel lblLogin = new JLabel("Login :");
 		lblLogin.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblLogin.setBounds(120, 12, 50, 14);
+		lblLogin.setBounds(120, 12, 50, 30);
 		centerPanel.add(lblLogin);
 		
 		JLabel lblMotDePasse = new JLabel("Mot de passe :");
 		lblMotDePasse.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblMotDePasse.setBounds(73, 59, 97, 17);
+		lblMotDePasse.setBounds(73, 59, 97, 30);
 		centerPanel.add(lblMotDePasse);
 		
 		JPanel footerPanel = new JPanel();
@@ -97,7 +109,7 @@ public class Welcome extends JFrame implements ActionListener {
 		btnQuitter.setBounds(251, 28, 122, 29);
 		footerPanel.add(btnQuitter);
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnQuitter){
