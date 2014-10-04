@@ -38,6 +38,8 @@ public class Config {
 				e.printStackTrace();
 			}
 		}
+		File fl = new File(getProp("root_dir"));
+		fl.mkdirs();
 		loadProp();
 	}
 	
@@ -45,8 +47,6 @@ public class Config {
 		if(instance == null){
 			instance = new Config();
 		}
-		File fl = new File(instance.getProp("root_dir"));
-		fl.mkdir();
 		return instance;
 	}
 	
