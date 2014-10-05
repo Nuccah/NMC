@@ -5,7 +5,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
@@ -32,6 +32,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.SwingConstants;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import controller.SessionManager;
 /**
@@ -88,9 +91,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		leftPane = new JPanel();
 		rightPane = new JPanel();
 		bottomPane = new JPanel();
-		fc = new JFileChooser();
-		uploadDataPane = new JPanel();
-		
+
 		topPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		centerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		leftPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -205,38 +206,62 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	}
 
 	private void uploadFilePage(DefaultMutableTreeNode node) {
-		rightPane.removeAll(); rightPane.revalidate();
-		uploadDataPane.removeAll(); uploadDataPane.revalidate();
-		rightPane.setLayout(new GridLayout(1,2));
-		rightPane.add(fc);
-		rightPane.add(uploadDataPane);
-		switch (node.toString()) {
-		case "Upload":
-			Test.setText(node.toString());
-			uploadDataPane.add(Test); 
-			break;
-		case "Books": 
-			Test.setText(node.toString());
-			uploadDataPane.add(Test); 
-			break;
-		case "Images": 
-			Test.setText(node.toString());
-			uploadDataPane.add(Test); 
-			break;
-		case "Music": 
-			Test.setText(node.toString());
-			uploadDataPane.add(Test);  
-			break;
-		case "Movies": 
-			Test.setText(node.toString());
-			uploadDataPane.add(Test); 
-			break;
-		case "Series": 
-			Test.setText(node.toString());
-			uploadDataPane.add(Test);  
-			break;
-		default: break;
+		rightPane.removeAll(); 
+		uploadDataPane = new JPanel();
+		if (node.toString() == "Upload"){
+			rightPane.setLayout(new GridLayout(1,1));
+			rightPane.add(uploadDataPane);
 		}
+		else{
+			int columns = 0;
+			fc = new JFileChooser();
+			FormLayout layout = new FormLayout(
+					"pref, 4dlu, 50dlu, 4dlu, pref",
+					"pref, 2dlu, pref, 2dlu, pref");
+			rightPane.setLayout(new GridLayout(1,2));
+			rightPane.add(fc);
+			rightPane.add(uploadDataPane);
+			uploadDataPane.setLayout(layout);
+			CellConstraints cc = new CellConstraints();
+			uploadDataPane.add(new JButton("Title"),cc.xy(1, 1));
+			uploadDataPane.add(new JButton("Year"),cc.xy(1, 2));
+			switch (node.toString()) {
+			case "Books":
+				uploadDataPane.add(new JButton("Author"),cc.xy(1, 3) );
+				uploadDataPane.add(new JButton("Synopsis"),cc.xy(1, 4));
+				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 5));
+				columns=5;
+				break;
+			case "Images": 
+				uploadDataPane.add(new JButton("Photographer"),cc.xy(1, 3) );
+				columns=3;
+				break;
+			case "Music": 
+				uploadDataPane.add(new JButton("Artist"),cc.xy(1, 3) );
+				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 4) );
+				columns=4;
+				break;
+			case "Movies": 
+				uploadDataPane.add(new JButton("Director"),cc.xy(1, 3));
+				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 4) );
+				uploadDataPane.add(new JButton("Synopsis"),cc.xy(1, 5) );
+				columns=5;
+				break;
+			case "Series": 
+				uploadDataPane.add(new JButton("Synposis"),cc.xy(1, 3) );
+				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 4) );
+				columns=4;
+				break;
+			default: break;
+			}
+			
+			uploadDataPane.add(new JButton("Visibility Level"),cc.xy(1, (columns+1)));
+			uploadDataPane.add(new JButton("Modification Level"));
+			uploadDataPane.add(new JButton("Upload"));
+			uploadDataPane.add(new JButton("Clear"));
+		}
+		uploadDataPane.repaint(); uploadDataPane.revalidate();
+		rightPane.revalidate();
 	}
 
 	private void mediaResultSet(DefaultMutableTreeNode node) {
@@ -286,7 +311,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			}
 		}
 	}
-	
-	
+
+
 
 }
