@@ -42,6 +42,7 @@ public class ConnectorDB {
 		Properties props = new Properties();
 		props.setProperty("user", user);
 		props.setProperty("password", password);
+		//props.setProperty("ssl", "true");
 		try {
 			db = DriverManager.getConnection(uri, props);
 		} catch (SQLException e) {
