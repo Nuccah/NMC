@@ -8,8 +8,10 @@ import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -30,6 +32,7 @@ import model.Profil;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.SwingConstants;
 
@@ -56,6 +59,36 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JTextArea Test;
 	private JFileChooser fc;
 	private JPanel uploadDataPane;
+	private JButton uploadButton = new JButton("Upload");;
+	private JButton clearButton = new JButton("Clear");
+	private JButton mnProfil = new JButton("Profil");
+	private JButton mnAide = new JButton("Aide");
+	private JButton mnParametres = new JButton("Parametres");
+	private JButton mnQuitter = new JButton("Quitter");
+	private DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
+	private DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
+	private DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Upload");
+	private DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
+	private JLabel titleLabel = new JLabel("Title");
+	private JLabel yearLabel = new JLabel("Year");
+	private JLabel authorLabel = new JLabel("Author");
+	private JLabel synopsisLabel = new JLabel("Synopsis");
+	private JLabel genreLabel = new JLabel("Genre");
+	private JLabel photographerLabel = new JLabel("Photographer");
+	private JLabel artistLabel = new JLabel("Artist");
+	private JLabel directorLabel = new JLabel("Director");
+	private JLabel visibilityLabel = new JLabel("Visibility Level");
+	private JLabel modificationLabel = new JLabel("Modification Level");
+	private JTextField titleField = new JTextField();
+	private JTextField yearField = new JTextField();
+	private JTextField synopsisField = new JTextField();
+	private JTextField genreField = new JTextField();
+	private JComboBox visibilityBox = new JComboBox();
+	private JComboBox modificationBox = new JComboBox();
+	private JTextField personField = new JTextField();
+	
+
+
 
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -91,6 +124,8 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		leftPane = new JPanel();
 		rightPane = new JPanel();
 		bottomPane = new JPanel();
+		uploadDataPane = new JPanel();
+		fc = new JFileChooser();
 
 		topPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		centerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -123,19 +158,15 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 */
 	public void titleBar(){
 
-		JButton mnProfil = new JButton("Profil");
 		mnProfil.setHorizontalAlignment(SwingConstants.LEFT);
 		topPane.add(mnProfil);
 
-		JButton mnParametres = new JButton("Parametres");
 		mnParametres.setHorizontalAlignment(SwingConstants.LEFT);
 		topPane.add(mnParametres);
 
-		JButton mnAide = new JButton("Aide");
 		mnAide.setHorizontalAlignment(SwingConstants.LEFT);
 		topPane.add(mnAide);
 
-		JButton mnQuitter = new JButton("Quitter");
 		mnQuitter.setHorizontalAlignment(SwingConstants.LEFT);
 		mnQuitter.addActionListener(this);
 		topPane.add(mnQuitter);
@@ -144,21 +175,21 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private void menuBar() {
 
 		//create the root node
-		DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
+
+
 		//create the child nodes
-		DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
 		mediaNode.add(new DefaultMutableTreeNode("Books"));
 		mediaNode.add(new DefaultMutableTreeNode("Images"));
 		mediaNode.add(new DefaultMutableTreeNode("Music"));
 		mediaNode.add(new DefaultMutableTreeNode("Movies"));
 		mediaNode.add(new DefaultMutableTreeNode("Series"));
-		DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Upload");
+
 		uploadNode.add(new DefaultMutableTreeNode("Books"));
 		uploadNode.add(new DefaultMutableTreeNode("Images"));
 		uploadNode.add(new DefaultMutableTreeNode("Music"));
 		uploadNode.add(new DefaultMutableTreeNode("Movies"));
 		uploadNode.add(new DefaultMutableTreeNode("Series"));
-		DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
+
 		usersNode.add(new DefaultMutableTreeNode("Create User"));
 		usersNode.add(new DefaultMutableTreeNode("Administration"));
 		usersNode.add(new DefaultMutableTreeNode("Permissions"));        
@@ -168,8 +199,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		home.add(mediaNode);
 		home.add(uploadNode);
 		home.add(usersNode);
-
-
 
 		//create the tree by passing in the root node
 		menuBar = new JTree(home);
@@ -206,17 +235,16 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	}
 
 	private void uploadFilePage(DefaultMutableTreeNode node) {
-		rightPane.removeAll(); 
-		uploadDataPane = new JPanel();
+		rightPane.removeAll();
+		uploadDataPane.removeAll();
 		if (node.toString() == "Upload"){
 			rightPane.setLayout(new GridLayout(1,1));
 			rightPane.add(uploadDataPane);
 		}
 		else{
 			int rows = 0;
-			fc = new JFileChooser();
 			FormLayout layout = new FormLayout(
-					"pref, 4dlu, fill:150dlu",
+					"right:pref, 4dlu, fill:150dlu",
 					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu");
 			rightPane.setLayout(new GridLayout(1,2));
 			rightPane.add(fc);
@@ -224,47 +252,44 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15}});
 			uploadDataPane.setLayout(layout);
 			CellConstraints cc = new CellConstraints();
-			uploadDataPane.add(new JButton("Title"),cc.xy(1, 1));
-			uploadDataPane.add(new JButton("Year"),cc.xy(1, 3));
+			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
+			uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 			switch (node.toString()) {
 			case "Books":
-				uploadDataPane.add(new JButton("Author"),cc.xy(1, 5) );
-				uploadDataPane.add(new JButton("Synopsis"),cc.xy(1, 7));
-				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 9));
+				uploadDataPane.add(authorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(synopsisLabel,cc.xy(1, 7)); uploadDataPane.add(synopsisField,cc.xy(3, 7));
+				uploadDataPane.add(genreLabel,cc.xy(1, 9)); uploadDataPane.add(genreField,cc.xy(3, 9));
 				rows=9;
 				break;
 			case "Images": 
-				uploadDataPane.add(new JButton("Photographer"),cc.xy(1, 5) );
+				uploadDataPane.add(photographerLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
 				rows=5;
 				break;
 			case "Music": 
-				uploadDataPane.add(new JButton("Artist"),cc.xy(1, 5) );
-				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 7) );
+				uploadDataPane.add(artistLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
 				rows=7;
 				break;
 			case "Movies": 
-				uploadDataPane.add(new JButton("Director"),cc.xy(1, 5));
-				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 7) );
-				uploadDataPane.add(new JButton("Synopsis"),cc.xy(1, 9) );
+				uploadDataPane.add(directorLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(synopsisLabel,cc.xy(1, 9) ); uploadDataPane.add(synopsisField,cc.xy(3, 9));
 				rows=9;
 				break;
 			case "Series": 
-				uploadDataPane.add(new JButton("Synposis"),cc.xy(1, 5) );
-				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 7) );
+				uploadDataPane.add(synopsisLabel,cc.xy(1, 5) ); uploadDataPane.add(synopsisField,cc.xy(3, 5));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
 				rows=7;
 				break;
 			default: break;
 			}
-			
-			uploadDataPane.add(new JButton("Visibility Level"),cc.xy(1, (rows+2)));
-			uploadDataPane.add(new JButton("Modification Level"),cc.xy(1, (rows+4)));
-			for(int i=1;i<=(rows+4);i++){
-				if (i % 2 == 1)
-					uploadDataPane.add(new JTextField(),cc.xy(3, i));
-			}
-			uploadDataPane.add(new JButton("Upload"),cc.xy(1, 15));
-			uploadDataPane.add(new JButton("Clear"),cc.xy(3, 15));
+
+			uploadDataPane.add(visibilityLabel,cc.xy(1, (rows+2))); uploadDataPane.add(visibilityBox,cc.xy(3, (rows+2))); 
+			uploadDataPane.add(modificationLabel,cc.xy(1, (rows+4))); uploadDataPane.add(modificationBox,cc.xy(3, (rows+4)));
+			uploadDataPane.add(uploadButton,cc.xy(1, 15));
+			uploadDataPane.add(clearButton,cc.xy(3, 15));
 		}
+
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
 		rightPane.revalidate();
 	}
