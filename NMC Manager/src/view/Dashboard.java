@@ -213,52 +213,57 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			rightPane.add(uploadDataPane);
 		}
 		else{
-			int columns = 0;
+			int rows = 0;
 			fc = new JFileChooser();
 			FormLayout layout = new FormLayout(
-					"pref, 4dlu, 50dlu, 4dlu, pref",
-					"pref, 2dlu, pref, 2dlu, pref");
+					"pref, 4dlu, fill:150dlu",
+					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu");
 			rightPane.setLayout(new GridLayout(1,2));
 			rightPane.add(fc);
 			rightPane.add(uploadDataPane);
+			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15}});
 			uploadDataPane.setLayout(layout);
 			CellConstraints cc = new CellConstraints();
 			uploadDataPane.add(new JButton("Title"),cc.xy(1, 1));
-			uploadDataPane.add(new JButton("Year"),cc.xy(1, 2));
+			uploadDataPane.add(new JButton("Year"),cc.xy(1, 3));
 			switch (node.toString()) {
 			case "Books":
-				uploadDataPane.add(new JButton("Author"),cc.xy(1, 3) );
-				uploadDataPane.add(new JButton("Synopsis"),cc.xy(1, 4));
-				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 5));
-				columns=5;
+				uploadDataPane.add(new JButton("Author"),cc.xy(1, 5) );
+				uploadDataPane.add(new JButton("Synopsis"),cc.xy(1, 7));
+				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 9));
+				rows=9;
 				break;
 			case "Images": 
-				uploadDataPane.add(new JButton("Photographer"),cc.xy(1, 3) );
-				columns=3;
+				uploadDataPane.add(new JButton("Photographer"),cc.xy(1, 5) );
+				rows=5;
 				break;
 			case "Music": 
-				uploadDataPane.add(new JButton("Artist"),cc.xy(1, 3) );
-				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 4) );
-				columns=4;
+				uploadDataPane.add(new JButton("Artist"),cc.xy(1, 5) );
+				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 7) );
+				rows=7;
 				break;
 			case "Movies": 
-				uploadDataPane.add(new JButton("Director"),cc.xy(1, 3));
-				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 4) );
-				uploadDataPane.add(new JButton("Synopsis"),cc.xy(1, 5) );
-				columns=5;
+				uploadDataPane.add(new JButton("Director"),cc.xy(1, 5));
+				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 7) );
+				uploadDataPane.add(new JButton("Synopsis"),cc.xy(1, 9) );
+				rows=9;
 				break;
 			case "Series": 
-				uploadDataPane.add(new JButton("Synposis"),cc.xy(1, 3) );
-				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 4) );
-				columns=4;
+				uploadDataPane.add(new JButton("Synposis"),cc.xy(1, 5) );
+				uploadDataPane.add(new JButton("Genre"),cc.xy(1, 7) );
+				rows=7;
 				break;
 			default: break;
 			}
 			
-			uploadDataPane.add(new JButton("Visibility Level"),cc.xy(1, (columns+1)));
-			uploadDataPane.add(new JButton("Modification Level"));
-			uploadDataPane.add(new JButton("Upload"));
-			uploadDataPane.add(new JButton("Clear"));
+			uploadDataPane.add(new JButton("Visibility Level"),cc.xy(1, (rows+2)));
+			uploadDataPane.add(new JButton("Modification Level"),cc.xy(1, (rows+4)));
+			for(int i=1;i<=(rows+4);i++){
+				if (i % 2 == 1)
+					uploadDataPane.add(new JTextField(),cc.xy(3, i));
+			}
+			uploadDataPane.add(new JButton("Upload"),cc.xy(1, 15));
+			uploadDataPane.add(new JButton("Clear"),cc.xy(3, 15));
 		}
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
 		rightPane.revalidate();
