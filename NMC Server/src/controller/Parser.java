@@ -58,6 +58,9 @@ public class Parser {
 					return "picture";
 			case "pdf":
 			case "ebook":
+			case "epub":
+			case "cbr":
+			case "cbz":
 					return "ebook";			
 		}
 		return null;

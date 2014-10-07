@@ -24,6 +24,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -32,6 +34,7 @@ import model.Profil;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.SwingConstants;
@@ -86,9 +89,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JComboBox visibilityBox = new JComboBox();
 	private JComboBox modificationBox = new JComboBox();
 	private JTextField personField = new JTextField();
-	
-
-
+	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
+	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
+	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
+	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
 
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -148,8 +152,34 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 		titleBar();
 		menuBar();
-		scrollList();
 		bottomBar();
+
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setControlButtonsAreShown(false);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		ActionListener fcSelectionListener = new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				JFileChooser theFileChooser = (JFileChooser)actionEvent.getSource();
+				String command = actionEvent.getActionCommand();
+				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					titleField.setText(selectedFile.getName());
+				}  else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+					titleField.setText(" ");
+				}
+			}
+		};
+		fc.addActionListener(fcSelectionListener);
+
+
+		//		if (fc.getSelectedFile() != null){
+		//			fc.approveSelection();
+		//		}
+		/*
+		 * fc.approveSelection() when file is selected via filechooser... code???
+		 * if (fc.getSelected != NULL) fc.approveSelection();
+		 */
 	}
 
 
@@ -173,10 +203,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	}
 
 	private void menuBar() {
-
-		//create the root node
-
-
 		//create the child nodes
 		mediaNode.add(new DefaultMutableTreeNode("Books"));
 		mediaNode.add(new DefaultMutableTreeNode("Images"));
@@ -206,11 +232,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		menuBar.addTreeSelectionListener(this);
 		leftPane.add(new JScrollPane(menuBar));
 
-	}
-
-	@SuppressWarnings("unused")
-	private void scrollList() {
-		Test = new JTextArea(5,20);
 	}
 
 	private void bottomBar() {
@@ -259,26 +280,31 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				uploadDataPane.add(authorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 7)); uploadDataPane.add(synopsisField,cc.xy(3, 7));
 				uploadDataPane.add(genreLabel,cc.xy(1, 9)); uploadDataPane.add(genreField,cc.xy(3, 9));
+				fc.setFileFilter(bookFilter);
 				rows=9;
 				break;
 			case "Images": 
 				uploadDataPane.add(photographerLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
+				fc.setFileFilter(imageFilter);
 				rows=5;
 				break;
 			case "Music": 
 				uploadDataPane.add(artistLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
+				fc.setFileFilter(musicFilter);
 				rows=7;
 				break;
 			case "Movies": 
 				uploadDataPane.add(directorLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 9) ); uploadDataPane.add(synopsisField,cc.xy(3, 9));
+				fc.setFileFilter(videoFilter);
 				rows=9;
 				break;
 			case "Series": 
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 5) ); uploadDataPane.add(synopsisField,cc.xy(3, 5));
 				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
+				fc.setFileFilter(videoFilter);
 				rows=7;
 				break;
 			default: break;
@@ -321,6 +347,8 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		SessionManager.getInstance().logout();
 		System.exit(0);
 	}
+	
+	
 
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -341,7 +369,5 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			}
 		}
 	}
-
-
 
 }
