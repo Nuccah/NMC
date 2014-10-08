@@ -347,9 +347,30 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			progressMonitor = new JProgressBar(0, (int) fc.getSelectedFile().length());
-			uploadDataPane.add(progressMonitor, cc.xy(3, 16));
-			uploadDataPane.repaint(); uploadDataPane.revalidate();
+			new Thread() {
+		          public void run() {
+		            try {
+		              // open the file, wrapping it in a ProgressMonitorInputStream
+		              InputStream in = new FileInputStream("c:Bigfile.bin");
+		              ProgressMonitorInputStream pm = 
+		                  new ProgressMonitorInputStream(f,"Reading the big file",in);
+		              // read the file. If it's taking too long, the progress
+		              //   monitor will appear. The amount of time is roughly
+		              //   1/100th of the estimated read time (based on how long
+		              //   it took to read the first 1/100th of the file.)
+		              //   Note that by default, the dialog won't appear unless
+		              //   the overall estimate is over 2 seconds.
+		              int c;
+		              while((c=pm.read()) != -1) {
+		                // do something
+		              }
+		              pm.close(); // needs better error handling, of course...
+		            }
+		            catch(Exception ex) {
+		              ex.printStackTrace();
+		            }
+		          }
+		        }.start();
 			new Thread(this).start();
 			TransferManager.getInstance().sendFile(fc.getSelectedFile());
 		}
