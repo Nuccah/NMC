@@ -82,6 +82,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JLabel directorLabel = new JLabel("Director");
 	private JLabel visibilityLabel = new JLabel("Visibility Level");
 	private JLabel modificationLabel = new JLabel("Modification Level");
+	private JLabel filenameLabel = new JLabel("Filename");
 	private JTextField titleField = new JTextField();
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
@@ -89,6 +90,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JComboBox visibilityBox = new JComboBox();
 	private JComboBox modificationBox = new JComboBox();
 	private JTextField personField = new JTextField();
+	private JTextField filenameField = new JTextField();
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
 	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
 	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
@@ -266,11 +268,11 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			int rows = 0;
 			FormLayout layout = new FormLayout(
 					"right:pref, 4dlu, fill:150dlu",
-					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu");
+					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu");
 			rightPane.setLayout(new GridLayout(1,2));
 			rightPane.add(fc);
 			rightPane.add(uploadDataPane);
-			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15}});
+			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
 			CellConstraints cc = new CellConstraints();
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
@@ -312,8 +314,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 			uploadDataPane.add(visibilityLabel,cc.xy(1, (rows+2))); uploadDataPane.add(visibilityBox,cc.xy(3, (rows+2))); 
 			uploadDataPane.add(modificationLabel,cc.xy(1, (rows+4))); uploadDataPane.add(modificationBox,cc.xy(3, (rows+4)));
-			uploadDataPane.add(uploadButton,cc.xy(1, 15));
-			uploadDataPane.add(clearButton,cc.xy(3, 15));
+			uploadDataPane.add(filenameLabel,cc.xy(1, (rows+6))); uploadDataPane.add(filenameField,cc.xy(3, (rows+6)));
+			uploadDataPane.add(uploadButton,cc.xy(1, 17));
+			uploadDataPane.add(clearButton,cc.xy(3, 17));
 		}
 
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
