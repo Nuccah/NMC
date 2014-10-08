@@ -13,12 +13,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
+import javax.swing.ProgressMonitor;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
@@ -96,6 +98,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox> cbList = new ArrayList<JComboBox>();
+	private ProgressMonitor progressMonitor;
 	
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -342,7 +345,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			TransferManager.getInstance().sendFile(fc.getSelectedFile());
+			progressMonitor = new ProgressMonitor(this,
+                    "Running a Long Task",
+                    "", 0, 100);
+			TransferManager.getInstance().sendFile(fc.getSelectedFile(), progressMonitor, fc.getSelectedFile());
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
