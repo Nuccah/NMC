@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.ProgressMonitor;
 
 import model.Config;
@@ -65,10 +67,10 @@ public class TransferManager extends Thread {
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
 	 * @param fToSend : Fichier à téléverser sur le serveur
+	 * @param uploadDataPane 
 	 * @param progressMonitor 
-	 * @param file 
 	 */
-	public void sendFile(File fToSend, ProgressMonitor progressMonitor, File file){
+	public void sendFile(File fToSend, JPanel uploadDataPane, JProgressBar progressMonitor){
 		connect();
 		try {
 			client.enterLocalPassiveMode();
@@ -83,7 +85,8 @@ public class TransferManager extends Thread {
 			read = 0;
 			while((read = is.read(bytesIn)) != -1){
 				os.write(bytesIn, 0, read);
-				progressMonitor.setProgress((int) (read/file.length()));
+				progressMonitor.setValue((int) (((read/fToSend.length())*100)));
+				uploadDataPane.repaint(); uploadDataPane.revalidate();
 			}
 			is.close();
 			os.close();

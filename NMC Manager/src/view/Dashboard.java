@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.EventQueue;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -98,8 +99,8 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox> cbList = new ArrayList<JComboBox>();
-	private ProgressMonitor progressMonitor;
-	
+	private CellConstraints cc;
+
 	/**
 	 * Initialise la fenêtre et ses composants
 	 */
@@ -269,7 +270,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			rightPane.add(uploadDataPane);
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
-			CellConstraints cc = new CellConstraints();
+			cc = new CellConstraints();
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
 			uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 			switch (node.toString()) {
@@ -345,10 +346,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			progressMonitor = new ProgressMonitor(this,
-                    "Running a Long Task",
-                    "", 0, 100);
-			TransferManager.getInstance().sendFile(fc.getSelectedFile(), progressMonitor, fc.getSelectedFile());
+			JProgressBar progressMonitor = new JProgressBar(0, (int) fc.getSelectedFile().length());
+			uploadDataPane.add(progressMonitor, cc.xy(3, 16));
+			uploadDataPane.repaint(); uploadDataPane.revalidate();
+			TransferManager.getInstance().sendFile(fc.getSelectedFile(), uploadDataPane, progressMonitor);
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
