@@ -35,12 +35,16 @@ import model.Profil;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.SwingConstants;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import controller.SessionManager;
+import controller.TransferManager;
 /**
  * Fenêtre principale du programme
  * @author Derek
@@ -90,7 +94,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
 	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
 	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
-
+	private List<JTextField> fieldList = new ArrayList<JTextField>();
+	private List<JComboBox> cbList = new ArrayList<JComboBox>();
+	
 	/**
 	 * Initialise la fenêtre et ses composants
 	 */
@@ -150,33 +156,22 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		titleBar();
 		menuBar();
 		bottomBar();
-
+		
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setControlButtonsAreShown(false);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.addActionListener(this);
 
-		ActionListener fcSelectionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				JFileChooser theFileChooser = (JFileChooser)actionEvent.getSource();
-				String command = actionEvent.getActionCommand();
-				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
-					File selectedFile = theFileChooser.getSelectedFile();
-					titleField.setText(selectedFile.getName());
-				}  else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
-					titleField.setText(" ");
-				}
-			}
-		};
-		fc.addActionListener(fcSelectionListener);
-
-
-		//		if (fc.getSelectedFile() != null){
-		//			fc.approveSelection();
-		//		}
-		/*
-		 * fc.approveSelection() when file is selected via filechooser... code???
-		 * if (fc.getSelected != NULL) fc.approveSelection();
-		 */
+		fieldList.add(titleField);
+		fieldList.add(yearField);
+		fieldList.add(synopsisField);
+		fieldList.add(genreField);
+		fieldList.add(personField);
+		cbList.add(modificationBox);
+		cbList.add(visibilityBox);
+		
+		uploadButton.addActionListener(this);
+		clearButton.addActionListener(this);
 	}
 
 
@@ -342,8 +337,29 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		SessionManager.getInstance().logout();
-		System.exit(0);
+		if(e.getSource() == mnQuitter){
+			SessionManager.getInstance().logout();
+			System.exit(0);
+		}
+		else if(e.getSource() == uploadButton){
+			TransferManager.getInstance().sendFile(fc.getSelectedFile());
+		}
+		else if(e.getSource() == clearButton){
+			for (JTextField fl : fieldList) 
+				  fl.setText("");
+			for (JComboBox cbl : cbList)
+				cbl.setSelectedItem(null);
+		}
+		else{
+			JFileChooser theFileChooser = (JFileChooser)e.getSource();
+			String command = e.getActionCommand();
+			if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+				File selectedFile = theFileChooser.getSelectedFile();
+				titleField.setText(selectedFile.getName());
+			}  else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+				titleField.setText(" ");
+			}
+		}
 	}
 	
 	
