@@ -62,7 +62,7 @@ public class Welcome extends JFrame implements ActionListener {
 		headerPanel.setLayout(null);
 		
 		JLabel lblConnexion = new JLabel("Connexion");
-		lblConnexion.setBounds(166, 26, 109, 29);
+		lblConnexion.setBounds(166, 26, 200, 29);
 		headerPanel.add(lblConnexion);
 		lblConnexion.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		lblConnexion.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -87,12 +87,12 @@ public class Welcome extends JFrame implements ActionListener {
 		
 		JLabel lblLogin = new JLabel("Login :");
 		lblLogin.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblLogin.setBounds(120, 12, 50, 30);
+		lblLogin.setBounds(127, 12, 50, 30);
 		centerPanel.add(lblLogin);
 		
 		JLabel lblMotDePasse = new JLabel("Mot de passe :");
 		lblMotDePasse.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblMotDePasse.setBounds(73, 59, 97, 30);
+		lblMotDePasse.setBounds(70, 59, 112, 30);
 		centerPanel.add(lblMotDePasse);
 		
 		JPanel footerPanel = new JPanel();
