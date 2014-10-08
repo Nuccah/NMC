@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.EventQueue;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -13,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -21,7 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
-import javax.swing.ProgressMonitor;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
@@ -100,7 +100,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox> cbList = new ArrayList<JComboBox>();
 	private CellConstraints cc;
-	private JProgressBar progressMonitor;
+	private JProgressBar pb;
 
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -161,7 +161,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		titleBar();
 		menuBar();
 		bottomBar();
-		
+
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setControlButtonsAreShown(false);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -174,7 +174,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		fieldList.add(personField);
 		cbList.add(modificationBox);
 		cbList.add(visibilityBox);
-		
+
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
 	}
@@ -313,6 +313,11 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			uploadDataPane.add(modificationLabel,cc.xy(1, (rows+4))); uploadDataPane.add(modificationBox,cc.xy(3, (rows+4)));
 			uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			uploadDataPane.add(clearButton,cc.xy(3, 17));
+			
+//			pb = new JProgressBar(0, 100);
+//			pb.setValue(0);
+//			pb.setStringPainted(true);
+//			uploadDataPane.add(pb,cc.xy(3, 15));
 		}
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
 		rightPane.revalidate();
@@ -347,36 +352,31 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			new Thread() {
-		          public void run() {
-		            try {
-		              // open the file, wrapping it in a ProgressMonitorInputStream
-		              InputStream in = new FileInputStream("c:Bigfile.bin");
-		              ProgressMonitorInputStream pm = 
-		                  new ProgressMonitorInputStream(f,"Reading the big file",in);
-		              // read the file. If it's taking too long, the progress
-		              //   monitor will appear. The amount of time is roughly
-		              //   1/100th of the estimated read time (based on how long
-		              //   it took to read the first 1/100th of the file.)
-		              //   Note that by default, the dialog won't appear unless
-		              //   the overall estimate is over 2 seconds.
-		              int c;
-		              while((c=pm.read()) != -1) {
-		                // do something
-		              }
-		              pm.close(); // needs better error handling, of course...
-		            }
-		            catch(Exception ex) {
-		              ex.printStackTrace();
-		            }
-		          }
-		        }.start();
-			new Thread(this).start();
+			pb = new JProgressBar();
+			pb.setMinimum(0);
+			pb.setMaximum(100);
+			pb.setValue(0);
+			pb.setStringPainted(true);
+			uploadDataPane.add(pb,cc.xy(3, 15));
 			TransferManager.getInstance().sendFile(fc.getSelectedFile());
+			while(TransferManager.getInstance().getRead() < (fc.getSelectedFile().length()-1)){
+				final int currentValue = TransferManager.getInstance().getRead();
+	            try {
+	                SwingUtilities.invokeLater(new Runnable() {
+	                    public void run() {
+	                        pb.setValue(currentValue);
+	                    }
+	                });
+	                java.lang.Thread.sleep(100);
+	            } catch (InterruptedException e1) {
+	                JOptionPane.showMessageDialog(getContentPane(), e1.getMessage());
+	            }
+			}
+			
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
-				  fl.setText("");
+				fl.setText("");
 			for (JComboBox cbl : cbList)
 				cbl.setSelectedItem(null);
 		}
@@ -391,8 +391,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			}
 		}
 	}
-	
-	
+
+
 
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -416,8 +416,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 
 	@Override
 	public void run() {
-		progressMonitor.setValue((int) (TransferManager.getInstance().getRead()/fc.getSelectedFile().length()));	
-		uploadDataPane.repaint(); uploadDataPane.revalidate();
+
 	}
 
 }
