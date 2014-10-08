@@ -30,6 +30,7 @@ public class TransferManager extends Thread {
 	protected TransferManager(){
 		client = new FTPClient();
 		conf = Config.getInstance();
+		read = 0;
 	}
 	/**
 	 * Permet de récupérer l'instance de TransferManager
@@ -66,11 +67,9 @@ public class TransferManager extends Thread {
 	}
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
-	 * @param fToSend : Fichier à téléverser sur le serveur
-	 * @param uploadDataPane 
-	 * @param progressMonitor 
+	 * @param fToSend : Fichier à téléverser sur le serveur 
 	 */
-	public void sendFile(File fToSend/*, JPanel uploadDataPane, JProgressBar progressMonitor*/){
+	public void sendFile(File fToSend){
 		connect();
 		try {
 			client.enterLocalPassiveMode();
@@ -85,8 +84,6 @@ public class TransferManager extends Thread {
 			read = 0;
 			while((read = is.read(bytesIn)) != -1){
 				os.write(bytesIn, 0, read);
-//				progressMonitor.setValue((int) (((read/fToSend.length())*100)));
-//				uploadDataPane.repaint(); uploadDataPane.revalidate();
 			}
 			is.close();
 			os.close();
@@ -95,13 +92,11 @@ public class TransferManager extends Thread {
 			e.printStackTrace();
 		} finally {
 			close();
+			read = 0;
 		}
 	}
 	
 	public int getRead() {
 		return read;
-	}
-	public void setRead(int read) {
-		this.read = read;
 	}
 }

@@ -54,7 +54,7 @@ import controller.TransferManager;
  *
  */
 
-public class Dashboard extends JFrame implements ActionListener, TreeSelectionListener{
+public class Dashboard extends JFrame implements Runnable, ActionListener, TreeSelectionListener{
 	private static final long serialVersionUID = -5998048938167814342L;
 	private JPanel topPane;
 	private JSplitPane splitPane;
@@ -100,6 +100,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox> cbList = new ArrayList<JComboBox>();
 	private CellConstraints cc;
+	private JProgressBar progressMonitor;
 
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -346,10 +347,11 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-//			JProgressBar progressMonitor = new JProgressBar(0, (int) fc.getSelectedFile().length());
-//			uploadDataPane.add(progressMonitor, cc.xy(3, 16));
-//			uploadDataPane.repaint(); uploadDataPane.revalidate();
-			TransferManager.getInstance().sendFile(fc.getSelectedFile()/*, uploadDataPane, progressMonitor*/);
+			progressMonitor = new JProgressBar(0, (int) fc.getSelectedFile().length());
+			uploadDataPane.add(progressMonitor, cc.xy(3, 16));
+			uploadDataPane.repaint(); uploadDataPane.revalidate();
+			new Thread(this).start();
+			TransferManager.getInstance().sendFile(fc.getSelectedFile());
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
@@ -388,6 +390,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			default: parentPage(node); break;
 			}
 		}
+	}
+
+
+	@Override
+	public void run() {
+		progressMonitor.setValue((int) (TransferManager.getInstance().getRead()/fc.getSelectedFile().length()));	
+		uploadDataPane.repaint(); uploadDataPane.revalidate();
 	}
 
 }
