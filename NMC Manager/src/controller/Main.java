@@ -2,9 +2,9 @@ package controller;
 
 import java.awt.EventQueue;
 
-import view.Welcome;
 import model.Config;
 import model.Profil;
+import view.Welcome;
 
 /**
  * Classe principale du programme

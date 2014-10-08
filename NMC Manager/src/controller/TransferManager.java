@@ -7,9 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.ProgressMonitor;
 
 import model.Config;
 
@@ -70,7 +67,7 @@ public class TransferManager extends Thread {
 	 * @param uploadDataPane 
 	 * @param progressMonitor 
 	 */
-	public void sendFile(File fToSend/*, JPanel uploadDataPane, JProgressBar progressMonitor*/){
+	public void sendFile(File fToSend){
 		connect();
 		try {
 			client.enterLocalPassiveMode();
@@ -85,8 +82,6 @@ public class TransferManager extends Thread {
 			read = 0;
 			while((read = is.read(bytesIn)) != -1){
 				os.write(bytesIn, 0, read);
-//				progressMonitor.setValue((int) (((read/fToSend.length())*100)));
-//				uploadDataPane.repaint(); uploadDataPane.revalidate();
 			}
 			is.close();
 			os.close();

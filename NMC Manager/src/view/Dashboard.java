@@ -1,11 +1,15 @@
 package view;
 
-import java.awt.EventQueue;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -14,14 +18,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
-import javax.swing.ProgressMonitor;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
@@ -34,14 +37,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import model.Config;
 import model.Profil;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.SwingConstants;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -346,10 +341,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-//			JProgressBar progressMonitor = new JProgressBar(0, (int) fc.getSelectedFile().length());
-//			uploadDataPane.add(progressMonitor, cc.xy(3, 16));
-//			uploadDataPane.repaint(); uploadDataPane.revalidate();
-			TransferManager.getInstance().sendFile(fc.getSelectedFile()/*, uploadDataPane, progressMonitor*/);
+			TransferManager.getInstance().sendFile(fc.getSelectedFile());
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
