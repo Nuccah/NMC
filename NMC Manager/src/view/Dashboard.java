@@ -35,8 +35,6 @@ import model.Profil;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Vector;
-
 import javax.swing.SwingConstants;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -59,7 +57,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JPanel bottomPane;
 	private GridBagLayout main;
 	private JTree menuBar;
-	private JTextArea Test;
 	private JFileChooser fc;
 	private JPanel uploadDataPane;
 	private JButton uploadButton = new JButton("Upload");;
@@ -82,7 +79,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JLabel directorLabel = new JLabel("Director");
 	private JLabel visibilityLabel = new JLabel("Visibility Level");
 	private JLabel modificationLabel = new JLabel("Modification Level");
-	private JLabel filenameLabel = new JLabel("Filename");
 	private JTextField titleField = new JTextField();
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
@@ -90,7 +86,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JComboBox visibilityBox = new JComboBox();
 	private JComboBox modificationBox = new JComboBox();
 	private JTextField personField = new JTextField();
-	private JTextField filenameField = new JTextField();
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
 	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
 	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
@@ -245,7 +240,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	}
 
 	private void homePage(DefaultMutableTreeNode node) {
-		Test.setText(node.toString());
+		rightPane.removeAll();
+		rightPane.add(new JTextArea(node.toString()));
+		rightPane.revalidate();
 	}
 
 	private void parentPage(DefaultMutableTreeNode node) {
@@ -253,7 +250,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		case "Media": mediaResultSet(node); break;
 		case "Upload": uploadFilePage(node); break;
 		case "User Administration": userAdmin(node); break;
-		default: Test.setText(node.toString()); break;
+		default: homePage(node); break;
 		}
 	}
 
@@ -314,33 +311,31 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 			uploadDataPane.add(visibilityLabel,cc.xy(1, (rows+2))); uploadDataPane.add(visibilityBox,cc.xy(3, (rows+2))); 
 			uploadDataPane.add(modificationLabel,cc.xy(1, (rows+4))); uploadDataPane.add(modificationBox,cc.xy(3, (rows+4)));
-			uploadDataPane.add(filenameLabel,cc.xy(1, (rows+6))); uploadDataPane.add(filenameField,cc.xy(3, (rows+6)));
 			uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			uploadDataPane.add(clearButton,cc.xy(3, 17));
 		}
-
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
 		rightPane.revalidate();
 	}
 
 	private void mediaResultSet(DefaultMutableTreeNode node) {
 		switch (node.toString()) {
-		case "Media": Test.setText(node.toString()); break;
-		case "Books": Test.setText(node.toString()); break;
-		case "Images": Test.setText(node.toString()); break;
-		case "Music": Test.setText(node.toString()); break;
-		case "Movies": Test.setText(node.toString()); break;
-		case "Series": Test.setText(node.toString()); break;
+		case "Media": homePage(node); break;
+		case "Books": homePage(node); break;
+		case "Images": homePage(node); break;
+		case "Music": homePage(node); break;
+		case "Movies": homePage(node); break;
+		case "Series": homePage(node); break;
 		default: break;
 		}
 	}
 
 	private void userAdmin(DefaultMutableTreeNode node) {
 		switch (node.toString()) {
-		case "Create User": Test.setText(node.toString()); break;
-		case "Administration": Test.setText(node.toString()); break;
-		case "Permissions": Test.setText(node.toString()); break;
-		case "Preferences": Test.setText(node.toString()); break;
+		case "Create User": homePage(node); break;
+		case "Administration": homePage(node); break;
+		case "Permissions": homePage(node); break;
+		case "Preferences": homePage(node); break;
 		default: break;
 		}
 	}
@@ -367,8 +362,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			case "Media": mediaResultSet(node); break;
 			case "Upload": uploadFilePage(node);	break;
 			case "User Administration": userAdmin(node); break;
-			case "Home": parentPage(node);
-			default: Test.setText(node.toString()); break;
+			default: parentPage(node); break;
 			}
 		}
 	}
