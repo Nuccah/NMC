@@ -60,6 +60,11 @@ public class Config {
 		setProp("url_db", "//localhost/nmc_db");
 		setProp("user_db", "nmc_admin");
 		setProp("pass_db", "ephec2014");
+		setProp("srv_url", "localhost");
+		setProp("srv_port", "50002");
+		setProp("ftp_port", "50001");
+		setProp("ftp_user", "ftpadmin");
+		setProp("ftp_pass", "ephec2014");
 		saveProp();
 	}
 	

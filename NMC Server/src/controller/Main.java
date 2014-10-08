@@ -1,4 +1,7 @@
 package controller;
+
+import model.Config;
+
 /**
  * Classe principale du serveur
  * @author Antoine Ceyssens
@@ -7,8 +10,8 @@ package controller;
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		Config.getInstance();
+		TransferManager.getInstance().start();
 	}
 
 }
