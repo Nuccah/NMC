@@ -346,10 +346,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			JProgressBar progressMonitor = new JProgressBar(0, (int) fc.getSelectedFile().length());
-			uploadDataPane.add(progressMonitor, cc.xy(3, 16));
-			uploadDataPane.repaint(); uploadDataPane.revalidate();
-			TransferManager.getInstance().sendFile(fc.getSelectedFile(), uploadDataPane, progressMonitor);
+//			JProgressBar progressMonitor = new JProgressBar(0, (int) fc.getSelectedFile().length());
+//			uploadDataPane.add(progressMonitor, cc.xy(3, 16));
+//			uploadDataPane.repaint(); uploadDataPane.revalidate();
+			TransferManager.getInstance().sendFile(fc.getSelectedFile()/*, uploadDataPane, progressMonitor*/);
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 

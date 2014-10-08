@@ -70,7 +70,7 @@ public class TransferManager extends Thread {
 	 * @param uploadDataPane 
 	 * @param progressMonitor 
 	 */
-	public void sendFile(File fToSend, JPanel uploadDataPane, JProgressBar progressMonitor){
+	public void sendFile(File fToSend/*, JPanel uploadDataPane, JProgressBar progressMonitor*/){
 		connect();
 		try {
 			client.enterLocalPassiveMode();
@@ -85,8 +85,8 @@ public class TransferManager extends Thread {
 			read = 0;
 			while((read = is.read(bytesIn)) != -1){
 				os.write(bytesIn, 0, read);
-				progressMonitor.setValue((int) (((read/fToSend.length())*100)));
-				uploadDataPane.repaint(); uploadDataPane.revalidate();
+//				progressMonitor.setValue((int) (((read/fToSend.length())*100)));
+//				uploadDataPane.repaint(); uploadDataPane.revalidate();
 			}
 			is.close();
 			os.close();
