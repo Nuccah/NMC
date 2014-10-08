@@ -28,6 +28,7 @@ public class Config {
 	protected Config(){
 		cfg_file = new File(".properties");
 		prop = new Properties();
+		System.out.println("Exists: "+cfg_file.exists());
 		if(!cfg_file.exists()){
 			try {
 				cfg_file.createNewFile();
@@ -38,9 +39,10 @@ public class Config {
 				e.printStackTrace();
 			}
 		}
-		File fl = new File(getProp("root_dir"));
-		fl.mkdirs();
 		loadProp();
+		File fl = new File(getProp("root_dir"));
+		if(!fl.exists()) fl.mkdirs();
+		
 	}
 	
 	public static Config getInstance(){
