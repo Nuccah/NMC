@@ -95,6 +95,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox> cbList = new ArrayList<JComboBox>();
 	private CellConstraints cc;
+	private DefaultMutableTreeNode node;
 
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -341,7 +342,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			TransferManager.getInstance().sendFile(fc.getSelectedFile());
+			TransferManager.getInstance().sendFile(node.toString(), fc.getSelectedFile());
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
@@ -364,7 +365,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	
 
 	public void valueChanged(TreeSelectionEvent e) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+		node = (DefaultMutableTreeNode)
 				menuBar.getLastSelectedPathComponent();
 
 		/* if nothing is selected */ 

@@ -28,7 +28,6 @@ public class Config {
 	protected Config(){
 		cfg_file = new File(".properties");
 		prop = new Properties();
-		System.out.println("Exists: "+cfg_file.exists());
 		if(!cfg_file.exists()){
 			try {
 				cfg_file.createNewFile();
@@ -42,6 +41,17 @@ public class Config {
 		loadProp();
 		File fl = new File(getProp("root_dir"));
 		if(!fl.exists()) fl.mkdirs();
+		String slash = Parser.getInstance().getSlash();
+		File vid = new File(getProp("root_dir")+slash+"Movies");
+		if(!vid.exists()) vid.mkdir();
+		File music = new File(getProp("root_dir")+slash+"Music");
+		if(!music.exists()) music.mkdir();
+		File pic = new File(getProp("root_dir")+slash+"Images");
+		if(!pic.exists()) pic.mkdir();
+		File series = new File(getProp("root_dir")+slash+"Series");
+		if(!series.exists()) series.mkdir();
+		File ebooks = new File(getProp("root_dir")+slash+"Books");
+		if(!ebooks.exists()) ebooks.mkdir();
 		
 	}
 	
@@ -56,11 +66,7 @@ public class Config {
 	 * Permet d'initialiser les propriétés de bases
 	 */
 	public void defaultConf(){
-		//TODO: Définir les variables nécessaires au lancement
-		if(Parser.getInstance().isWindows())
-			setProp("root_dir", System.getProperty("user.home")+"\\NMC_STOCK");
-		else 
-			setProp("root_dir", System.getProperty("user.home")+"/NMC_STOCK");
+		setProp("root_dir", System.getProperty("user.home")+Parser.getInstance().getSlash()+"NMC_STOCK");
 		setProp("url_db", "//localhost/nmc_db");
 		setProp("user_db", "nmc_admin");
 		setProp("pass_db", "ephec2014");
