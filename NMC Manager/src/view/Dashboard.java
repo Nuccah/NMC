@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -9,6 +11,7 @@ import java.awt.GridLayout;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -100,7 +103,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
 	private CellConstraints cc;
-	private JProgressBar pb;
+	private JFrame dialogFrame = new JFrame();
+	private JProgressBar dpb;
 
 	/**
 	 * Initialise la fenêtre et ses composants
@@ -352,13 +356,38 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			Thread queryThread = new Thread() {
+			dialogFrame.setSize(50, 150);
+			final JDialog dlg = new JDialog(dialogFrame, "Progress Dialog", true);
+		    dpb = new JProgressBar(0, (int) fc.getSelectedFile().length());
+		    dlg.add(BorderLayout.CENTER, dpb);
+		    dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
+		    dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		    dlg.setSize(300, 75);
+		    dlg.setLocationRelativeTo(dialogFrame);
+		    dlg.setVisible(true);
+		    Thread progressThread = new Thread() {
 				public void run() {
-					runQueries();
+					System.out.println("6");
+					updateProgress(dialogFrame);
+					System.out.println("7");
 				}
 			};
-			queryThread.start();
-			updateProgress();
+			progressThread.start();
+		    System.out.println("1");
+//			Thread queryThread = new Thread() {
+//				public void run() {
+//					System.out.println("2");
+					runQueries();
+//					System.out.println("3");
+//				}
+//			};
+			System.out.println("4");
+//			queryThread.start();
+			System.out.println("5");
+			
+			System.out.println("8");
+			
+			System.out.println("9");
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
@@ -382,19 +411,13 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		TransferManager.getInstance().sendFile(fc.getSelectedFile());
 	}
 
-	private void updateProgress() {
-		SwingUtilities.invokeLater(new Runnable() {
+	private void updateProgress(final JFrame dialogFrame) {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				JOptionPane.showMessageDialog(getContentPane(),
-						
-						JOptionPane.INFORMATION_MESSAGE
-						);
-				pb = new JProgressBar();
-				pb.setMinimum(0);
-				pb.setMaximum(100);
-				pb.setValue(0);
-				pb.setStringPainted(true);
-				uploadDataPane.add(pb,cc.xy(3, 15));
+				dialogFrame.setVisible(true);
+//				while(TransferManager.getInstance().getRead() < fc.getSelectedFile().length()-1){
+//					dpb.setValue(TransferManager.getInstance().getRead());
+//				}
 			}
 		});
 	}
