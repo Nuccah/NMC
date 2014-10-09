@@ -8,10 +8,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -116,6 +118,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		main = new GridBagLayout();
 		main.rowWeights = new double[]{0.0, 1.0, 0.0};
 		main.columnWeights = new double[]{1.0};
+		URL iconURL = getClass().getResource("nmc.png");
+		ImageIcon icon = new ImageIcon(iconURL);
+		setIconImage(icon.getImage());
 		getContentPane().setLayout(main);
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int width = gd.getDisplayMode().getWidth();
@@ -179,7 +184,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 * Barre de menu titulaire
 	 */
 	public void titleBar(){
-
+		
 		mnProfil.setHorizontalAlignment(SwingConstants.LEFT);
 		topPane.add(mnProfil);
 
@@ -192,6 +197,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		mnQuitter.setHorizontalAlignment(SwingConstants.LEFT);
 		mnQuitter.addActionListener(this);
 		topPane.add(mnQuitter);
+		
+		topPane.repaint();
+		topPane.revalidate();
 	}
 
 	private void menuBar() {

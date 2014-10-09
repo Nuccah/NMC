@@ -7,8 +7,10 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -56,6 +58,10 @@ public class Welcome extends JFrame implements ActionListener {
 		int height = gd.getDisplayMode().getHeight();
 		setBounds((width/2) - (450/2), (height/2) - (300/2), 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		URL iconURL = getClass().getResource("nmc.png");
+		ImageIcon icon = new ImageIcon(iconURL);
+		setIconImage(icon.getImage());
 		
 		JPanel headerPanel = new JPanel();
 		getContentPane().add(headerPanel);
