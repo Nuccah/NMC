@@ -63,11 +63,12 @@ public class TransferManager extends Thread {
 	}
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
-	 * @param fToSend : Fichier à téléverser sur le serveur
-	 * @param uploadDataPane 
-	 * @param progressMonitor 
+	 * @param directory : Dossier de placement du fichier sur le serveur <br />
+	 * 			Ce paramètre est facultatif <br />
+	 * 			Attention : Le dossier doit avoir été créé au préalable sur le serveur
+	 * @param fToSend : Fichier à téléverser sur le serveur 
 	 */
-	public void sendFile(File fToSend){
+	public void sendFile(String directory, File fToSend){
 		connect();
 		try {
 			client.enterLocalPassiveMode();
@@ -75,7 +76,9 @@ public class TransferManager extends Thread {
 			
 			InputStream is = new FileInputStream(fToSend);
 			
-			String filename = fToSend.getName();			
+			String filename = null;
+			if(directory == null) filename = fToSend.getName();
+			else filename = "/"+directory+"/"+fToSend.getName();
 			OutputStream os = client.storeUniqueFileStream(filename);
 			
 			byte[] bytesIn = new byte[4096];
