@@ -90,15 +90,15 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
 	private JTextField genreField = new JTextField();
-	private JComboBox visibilityBox = new JComboBox();
-	private JComboBox modificationBox = new JComboBox();
+	private JComboBox<String> visibilityBox = new JComboBox<String>();
+	private JComboBox<String> modificationBox = new JComboBox<String>();
 	private JTextField personField = new JTextField();
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
 	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
 	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
 	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
-	private List<JComboBox> cbList = new ArrayList<JComboBox>();
+	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
 	private CellConstraints cc;
 	private JProgressBar pb;
 
@@ -313,11 +313,11 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			uploadDataPane.add(modificationLabel,cc.xy(1, (rows+4))); uploadDataPane.add(modificationBox,cc.xy(3, (rows+4)));
 			uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			uploadDataPane.add(clearButton,cc.xy(3, 17));
-			
-//			pb = new JProgressBar(0, 100);
-//			pb.setValue(0);
-//			pb.setStringPainted(true);
-//			uploadDataPane.add(pb,cc.xy(3, 15));
+
+			//			pb = new JProgressBar(0, 100);
+			//			pb.setValue(0);
+			//			pb.setStringPainted(true);
+			//			uploadDataPane.add(pb,cc.xy(3, 15));
 		}
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
 		rightPane.revalidate();
@@ -352,32 +352,18 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			pb = new JProgressBar();
-			pb.setMinimum(0);
-			pb.setMaximum(100);
-			pb.setValue(0);
-			pb.setStringPainted(true);
-			uploadDataPane.add(pb,cc.xy(3, 15));
-			TransferManager.getInstance().sendFile(fc.getSelectedFile());
-			while(TransferManager.getInstance().getRead() < (fc.getSelectedFile().length()-1)){
-				final int currentValue = TransferManager.getInstance().getRead();
-	            try {
-	                SwingUtilities.invokeLater(new Runnable() {
-	                    public void run() {
-	                        pb.setValue(currentValue);
-	                    }
-	                });
-	                java.lang.Thread.sleep(100);
-	            } catch (InterruptedException e1) {
-	                JOptionPane.showMessageDialog(getContentPane(), e1.getMessage());
-	            }
-			}
-			
+			Thread queryThread = new Thread() {
+				public void run() {
+					runQueries();
+				}
+			};
+			queryThread.start();
+			updateProgress();
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
 				fl.setText("");
-			for (JComboBox cbl : cbList)
+			for (JComboBox<?> cbl : cbList)
 				cbl.setSelectedItem(null);
 		}
 		else{
@@ -392,7 +378,26 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 	}
 
+	private void runQueries() {
+		TransferManager.getInstance().sendFile(fc.getSelectedFile());
+	}
 
+	private void updateProgress() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				JOptionPane.showMessageDialog(getContentPane(),
+						
+						JOptionPane.INFORMATION_MESSAGE
+						);
+				pb = new JProgressBar();
+				pb.setMinimum(0);
+				pb.setMaximum(100);
+				pb.setValue(0);
+				pb.setStringPainted(true);
+				uploadDataPane.add(pb,cc.xy(3, 15));
+			}
+		});
+	}
 
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
