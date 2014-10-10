@@ -87,15 +87,15 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
 	private JTextField genreField = new JTextField();
-	private JComboBox visibilityBox = new JComboBox();
-	private JComboBox modificationBox = new JComboBox();
+	private JComboBox<String> visibilityBox = new JComboBox<String>();
+	private JComboBox<String> modificationBox = new JComboBox<String>();
 	private JTextField personField = new JTextField();
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
 	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
 	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
 	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
-	private List<JComboBox> cbList = new ArrayList<JComboBox>();
+	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
 	private CellConstraints cc;
 	private DefaultMutableTreeNode node;
 
@@ -355,7 +355,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
 				  fl.setText("");
-			for (JComboBox cbl : cbList)
+			for (JComboBox<?> cbl : cbList)
 				cbl.setSelectedItem(null);
 		}
 		else{
