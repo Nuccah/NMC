@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -19,6 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -314,6 +316,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 			uploadDataPane.add(visibilityLabel,cc.xy(1, (rows+2))); uploadDataPane.add(visibilityBox,cc.xy(3, (rows+2))); 
 			uploadDataPane.add(modificationLabel,cc.xy(1, (rows+4))); uploadDataPane.add(modificationBox,cc.xy(3, (rows+4)));
+			uploadButton.setEnabled(false);
 			uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			uploadDataPane.add(clearButton,cc.xy(3, 17));
 		}
@@ -363,13 +366,25 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			String command = e.getActionCommand();
 			if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 				File selectedFile = theFileChooser.getSelectedFile();
-				if (((double)((selectedFile.length()/1024)/1024)/1024) > 10){
-					
+				if (((double)(((selectedFile.length()/1024)/1024)/1024)) > 10){
+					int n = JOptionPane.showConfirmDialog((JPanel) getContentPane(),
+						    "The file you wish to upload is larger\n"
+						    + "than 10GB, are you sure you wish.\n"
+						    + "to upload this file?",
+						    "Upload Warning",
+						    JOptionPane.YES_NO_OPTION);
+					if (n == JOptionPane.NO_OPTION) {
+						theFileChooser.setSelectedFile(null);
+					}
+					else{
+						titleField.setText(selectedFile.getName());
+						uploadButton.setEnabled(true);
+					}
 				}
 				else{
-					
+					titleField.setText(selectedFile.getName());
+					uploadButton.setEnabled(true);
 				}
-				titleField.setText(selectedFile.getName());
 			}  else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 				titleField.setText(" ");
 			}
