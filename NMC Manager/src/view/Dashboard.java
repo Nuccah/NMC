@@ -363,6 +363,12 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			String command = e.getActionCommand();
 			if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 				File selectedFile = theFileChooser.getSelectedFile();
+				if (((double)((selectedFile.length()/1024)/1024)/1024) > 10){
+					
+				}
+				else{
+					
+				}
 				titleField.setText(selectedFile.getName());
 			}  else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 				titleField.setText(" ");
