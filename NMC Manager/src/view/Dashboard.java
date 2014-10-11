@@ -1,16 +1,22 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -25,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
@@ -40,9 +47,12 @@ import model.Profil;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.SwingConstants;
 
@@ -57,7 +67,7 @@ import controller.TransferManager;
  *
  */
 
-public class Dashboard extends JFrame implements Runnable, ActionListener, TreeSelectionListener{
+public class Dashboard extends JFrame implements Runnable, ActionListener, TreeSelectionListener, PropertyChangeListener{
 	private static final long serialVersionUID = -5998048938167814342L;
 	private JPanel topPane;
 	private JSplitPane splitPane;
@@ -104,8 +114,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
 	private CellConstraints cc;
 	private JFrame dialogFrame = new JFrame();
-	private JProgressBar dpb;
-
+	private JProgressBar progressBar;
+	private Task task;
 	/**
 	 * Initialise la fenêtre et ses composants
 	 */
@@ -317,11 +327,6 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			uploadDataPane.add(modificationLabel,cc.xy(1, (rows+4))); uploadDataPane.add(modificationBox,cc.xy(3, (rows+4)));
 			uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			uploadDataPane.add(clearButton,cc.xy(3, 17));
-
-			//			pb = new JProgressBar(0, 100);
-			//			pb.setValue(0);
-			//			pb.setStringPainted(true);
-			//			uploadDataPane.add(pb,cc.xy(3, 15));
 		}
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
 		rightPane.revalidate();
@@ -349,6 +354,31 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 	}
 
+	public void progressBar() {
+		//Create the demo's UI.
+		final JDialog dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
+
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		dlg.add(BorderLayout.CENTER, progressBar);
+		dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
+		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dlg.setSize(300, 75);
+		dlg.setLocationRelativeTo(dialogFrame);
+		dlg.setVisible(true);
+	}
+
+	/**
+	 * Invoked when task's progress property changes.
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ("progress" == evt.getPropertyName()) {
+			int progress = (Integer) evt.getNewValue();
+			progressBar.setValue(progress);
+		} 
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == mnQuitter){
@@ -356,38 +386,21 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			dialogFrame.setSize(50, 150);
-			final JDialog dlg = new JDialog(dialogFrame, "Progress Dialog", true);
-		    dpb = new JProgressBar(0, (int) fc.getSelectedFile().length());
-		    dlg.add(BorderLayout.CENTER, dpb);
-		    dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
-		    dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		    dlg.setSize(300, 75);
-		    dlg.setLocationRelativeTo(dialogFrame);
-		    dlg.setVisible(true);
-		    Thread progressThread = new Thread() {
+			//Instances of javax.swing.SwingWorker are not reusuable, so
+			//we create new instances as needed.
+			
+			task = new Task();
+			task.addPropertyChangeListener(this);
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			
+			task.execute();
+			EventQueue.invokeLater(new Runnable() {
 				public void run() {
-					System.out.println("6");
-					updateProgress(dialogFrame);
-					System.out.println("7");
+					progressBar();
+					setCursor(null); //turn off the wait cursor
 				}
-			};
-			progressThread.start();
-		    System.out.println("1");
-//			Thread queryThread = new Thread() {
-//				public void run() {
-//					System.out.println("2");
-					runQueries();
-//					System.out.println("3");
-//				}
-//			};
-			System.out.println("4");
-//			queryThread.start();
-			System.out.println("5");
-			
-			System.out.println("8");
-			
-			System.out.println("9");
+			});
+			//			TransferManager.getInstance().sendFile(fc.getSelectedFile());
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
@@ -405,21 +418,6 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				titleField.setText(" ");
 			}
 		}
-	}
-
-	private void runQueries() {
-		TransferManager.getInstance().sendFile(fc.getSelectedFile());
-	}
-
-	private void updateProgress(final JFrame dialogFrame) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				dialogFrame.setVisible(true);
-//				while(TransferManager.getInstance().getRead() < fc.getSelectedFile().length()-1){
-//					dpb.setValue(TransferManager.getInstance().getRead());
-//				}
-			}
-		});
 	}
 
 	public void valueChanged(TreeSelectionEvent e) {
@@ -441,10 +439,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 	}
 
-
 	@Override
 	public void run() {
+		// TODO Auto-generated method stub
 
 	}
-
 }
