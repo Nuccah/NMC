@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -56,25 +57,19 @@ import controller.TransferManager;
 public class Dashboard extends JFrame implements ActionListener, TreeSelectionListener{
 	private static final long serialVersionUID = -5998048938167814342L;
 	private JPanel topPane;
-	private JSplitPane splitPane;
 	private JPanel leftPane;
 	private JPanel rightPane;
 	private JPanel centerPane;
 	private JPanel bottomPane;
-	private GridBagLayout main;
-	private JTree menuBar;
-	private JFileChooser fc;
 	private JPanel uploadDataPane;
+	
 	private JButton uploadButton = new JButton("Upload");;
 	private JButton clearButton = new JButton("Clear");
 	private JButton mnProfil = new JButton("Profil");
 	private JButton mnAide = new JButton("Aide");
 	private JButton mnParametres = new JButton("Parametres");
 	private JButton mnQuitter = new JButton("Quitter");
-	private DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
-	private DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
-	private DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Upload");
-	private DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
+	
 	private JLabel titleLabel = new JLabel("Title");
 	private JLabel yearLabel = new JLabel("Year");
 	private JLabel authorLabel = new JLabel("Author");
@@ -85,22 +80,35 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JLabel directorLabel = new JLabel("Director");
 	private JLabel visibilityLabel = new JLabel("Visibility Level");
 	private JLabel modificationLabel = new JLabel("Modification Level");
+	
+	private JTree menuBar;
+	private JFileChooser fc;
+	
+	private DefaultMutableTreeNode node;
+	private DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
+	private DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
+	private DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Upload");
+	private DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
+
 	private JTextField titleField = new JTextField();
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
 	private JTextField genreField = new JTextField();
+	private JTextField personField = new JTextField();
+	
 	private JComboBox<String> visibilityBox = new JComboBox<String>();
 	private JComboBox<String> modificationBox = new JComboBox<String>();
-	private JTextField personField = new JTextField();
+	private List<JTextField> fieldList = new ArrayList<JTextField>();
+	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
+	
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
 	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
 	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
 	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
-	private List<JTextField> fieldList = new ArrayList<JTextField>();
-	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
-	private CellConstraints cc;
-	private DefaultMutableTreeNode node;
-
+	
+	private GridBagConstraints lc = new GridBagConstraints();
+	private GridBagConstraints rc = new GridBagConstraints();
+	
 	/**
 	 * Initialise la fenêtre et ses composants
 	 */
@@ -117,9 +125,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		} catch (Exception e) {
 			// If Nimbus is not available, you can set the GUI to another look and feel.
 		}
-		main = new GridBagLayout();
-		main.rowWeights = new double[]{0.0, 1.0, 0.0};
-		main.columnWeights = new double[]{1.0};
+		GridBagLayout main = new GridBagLayout();
 		URL iconURL = getClass().getResource("nmc.png");
 		ImageIcon icon = new ImageIcon(iconURL);
 		setIconImage(icon.getImage());
@@ -128,11 +134,11 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		int width = gd.getDisplayMode().getWidth();
 		int height = gd.getDisplayMode().getHeight();
 		setBounds((width/2) - (width/3), (height/2) - (height/3), (int)(width/1.5), (int)(height/1.5));
-		GridBagConstraints c = new GridBagConstraints(), d = new GridBagConstraints(), e = new GridBagConstraints();
-		c.gridheight = 1; c.gridwidth = 1; c.gridx = 0; c.gridy = 0; c.weightx = 1; c.weighty = 0.1; c.fill = GridBagConstraints.BOTH;
-		d.gridheight = 1; d.gridwidth = 1; d.gridx = 0; d.gridy = 1; d.weightx = 1; d.weighty = 0.8; d.fill = GridBagConstraints.BOTH;
-		e.gridheight = 1; e.gridwidth = 1; e.gridx = 0; e.gridy = 2; e.weightx = 1; e.weighty = 0.1; e.fill = GridBagConstraints.BOTH;
-
+		GridBagConstraints tc = new GridBagConstraints(), cc = new GridBagConstraints(), bc = new GridBagConstraints();
+		tc.gridx = 0; tc.gridy = 0; tc.weightx = 1; tc.weighty = 0.1; tc.fill = GridBagConstraints.BOTH;
+		cc.gridx = 0; cc.gridy = 1; cc.weightx = 1; cc.weighty = 0.8; cc.fill = GridBagConstraints.BOTH;
+		bc.gridx = 0; bc.gridy = 2; bc.weightx = 1; bc.weighty = 0.1; bc.fill = GridBagConstraints.BOTH;
+		
 		topPane = new JPanel();
 		centerPane = new JPanel();
 		leftPane = new JPanel();
@@ -149,16 +155,18 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 		leftPane.setLayout(new GridLayout(1,1));
 		rightPane.setLayout(new GridLayout(1,1));
-		centerPane.setLayout(new BoxLayout(centerPane, BoxLayout.X_AXIS));
+		centerPane.setLayout(new GridBagLayout());
+		
+		System.out.println(getSize().toString());
+		leftPane.setMinimumSize(new Dimension(getSize().width/5, getSize().height));
+		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
+		rc.gridx = 1; rc.gridy = 0; rc.weightx = 0.75; rc.weighty = 1; rc.fill = GridBagConstraints.BOTH;
 
-		centerPane.add(leftPane);
-		centerPane.add(rightPane);
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
-		centerPane.add(splitPane);
-
-		getContentPane().add(topPane, c);
-		getContentPane().add(centerPane, d);
-		getContentPane().add(bottomPane, e);
+		centerPane.add(leftPane, lc);
+		centerPane.add(rightPane, rc);
+		getContentPane().add(topPane, tc);
+		getContentPane().add(centerPane, cc);
+		getContentPane().add(bottomPane, bc);
 
 		titleBar();
 		menuBar();
@@ -276,7 +284,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			rightPane.add(uploadDataPane);
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
-			cc = new CellConstraints();
+			CellConstraints cc = new CellConstraints();
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
 			uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 			switch (node.toString()) {
