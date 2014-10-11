@@ -163,7 +163,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		titleBar();
 		menuBar();
 		bottomBar();
-		
+
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setControlButtonsAreShown(false);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -176,7 +176,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		fieldList.add(personField);
 		cbList.add(modificationBox);
 		cbList.add(visibilityBox);
-		
+
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
 	}
@@ -186,7 +186,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 * Barre de menu titulaire
 	 */
 	public void titleBar(){
-		
+
 		mnProfil.setHorizontalAlignment(SwingConstants.LEFT);
 		topPane.add(mnProfil);
 
@@ -199,7 +199,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		mnQuitter.setHorizontalAlignment(SwingConstants.LEFT);
 		mnQuitter.addActionListener(this);
 		topPane.add(mnQuitter);
-		
+
 		topPane.repaint();
 		topPane.revalidate();
 	}
@@ -357,24 +357,26 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
-				  fl.setText("");
+				fl.setText("");
 			for (JComboBox<?> cbl : cbList)
 				cbl.setSelectedItem(null);
+			uploadButton.setEnabled(false);
 		}
 		else{
 			JFileChooser theFileChooser = (JFileChooser)e.getSource();
 			String command = e.getActionCommand();
 			if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 				File selectedFile = theFileChooser.getSelectedFile();
-				if (((double)(((selectedFile.length()/1024)/1024)/1024)) > 10){
+				if (((double)(((selectedFile.length()/1024)/1024))) > 10){
 					int n = JOptionPane.showConfirmDialog((JPanel) getContentPane(),
-						    "The file you wish to upload is larger\n"
-						    + "than 10GB, are you sure you wish.\n"
-						    + "to upload this file?",
-						    "Upload Warning",
-						    JOptionPane.YES_NO_OPTION);
+							"The file you wish to upload is larger\n"
+									+ "than 10GB, are you sure you wish.\n"
+									+ "to upload this file?",
+									"Upload Warning",
+									JOptionPane.YES_NO_OPTION);
 					if (n == JOptionPane.NO_OPTION) {
-						theFileChooser.setSelectedFile(null);
+						fc.cancelSelection();
+						uploadButton.setEnabled(false);
 					}
 					else{
 						titleField.setText(selectedFile.getName());
@@ -385,13 +387,15 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 					titleField.setText(selectedFile.getName());
 					uploadButton.setEnabled(true);
 				}
-			}  else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+			}  
+			else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 				titleField.setText(" ");
+				uploadButton.setEnabled(false);
 			}
 		}
 	}
-	
-	
+
+
 
 	public void valueChanged(TreeSelectionEvent e) {
 		node = (DefaultMutableTreeNode)
