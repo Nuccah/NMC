@@ -2,20 +2,15 @@ package controller;
 
 import java.io.File;
 import java.util.ArrayList;
-//TODO: Modifier la classe pour gérer l'intégrité des fichiers multimédias
+
 /**
  * Classe de suppression définitive de fichiers sur le serveur
  * @author Antoine Ceyssens
  *
  */
-public class Deleter implements Runnable {
+public class Deleter {
 	private static Deleter instance = null;
 	private ArrayList<File> listFileToDelete;
-	
-	@Override
-	public void run() {
-		deleteFile();
-	}
 	
 	protected Deleter(){
 		listFileToDelete = new ArrayList<File>();
