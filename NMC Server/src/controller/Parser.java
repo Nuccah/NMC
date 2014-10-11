@@ -21,23 +21,17 @@ public class Parser {
 		}
 		return instance;
 	}
-	
 	/**
-	 * Permet de détecter le type de média
-	 * @param filename : fichier média à analyser
-	 * @return video - si c'est une vidéo<br />
-	 * 		 music - si c'est une musique<br />
-	 * 		 picture - si c'est une image<br />
-	 * 		 ebook - si c'est un ebook<br />
-	 * 		 null - si erreur
+	 * Définit si le fichier passé en paramètre doit être converti ou non
+	 * @param filename : Nom du fichier à vérifier
+	 * @return Vrai - si le fichier doit être converti
 	 */
-	public String getMediaType(String filename){
+	public boolean mustBeConverted(String filename){
 		int i = filename.lastIndexOf('.');
 		String extension;
 		if(i > 0) extension = filename.substring(i+1);
-		else return null;
+		else return false;
 		switch(extension.toLowerCase()){
-			case "mp4":
 			case "avi":
 			case "mkv":
 			case "flv":
@@ -46,25 +40,15 @@ public class Parser {
 			case "vob":
 			case "3gp":
 			case "3g2":
-					return "video";
 			case "aac":
-			case "mp3":
 			case "wav":
-					return "music";
-			case "jpeg":
-			case "jpg":
-			case "png":
-			case "gif":
-			case "bmp":
-					return "picture";
-			case "pdf":
-			case "ebook":
-			case "epub":
-			case "cbr":
-			case "cbz":
-					return "ebook";			
+			case "flac":
+			case "m4v":
+				return true;
+			default:
+				return false;
 		}
-		return null;
+
 	}
 	
 	/**
