@@ -21,7 +21,11 @@ public class Parser {
 		}
 		return instance;
 	}
-	
+	/**
+	 * Définit si le fichier passé en paramètre doit être converti ou non
+	 * @param filename : Nom du fichier à vérifier
+	 * @return Vrai - si le fichier doit être converti
+	 */
 	public boolean mustBeConverted(String filename){
 		int i = filename.lastIndexOf('.');
 		String extension;
@@ -38,6 +42,8 @@ public class Parser {
 			case "3g2":
 			case "aac":
 			case "wav":
+			case "flac":
+			case "m4v":
 				return true;
 			default:
 				return false;

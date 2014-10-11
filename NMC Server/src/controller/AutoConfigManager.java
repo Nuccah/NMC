@@ -1,11 +1,8 @@
 package controller;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import model.Config;
 /**
@@ -45,11 +42,11 @@ public class AutoConfigManager extends Thread {
 	}
 
 	private void sendConfig(Socket client) throws IOException{
-		ArrayList<String> listConf = new ArrayList<String>();
+		//ArrayList<String> listConf = new ArrayList<String>();
 		//TODO: Définir les configs à envoyer + sécuriser
 		
-		ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
-		ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+		//ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+		//ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
 		
 	}
 	
