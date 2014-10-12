@@ -7,14 +7,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.ProgressMonitor;
 
 import model.Config;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
+import view.FTPException;
 
 /**
  * Classe de gestion des téléversements et téléchargements de fichiers médias sur/depuis le serveur
@@ -25,16 +25,17 @@ public class TransferManager extends Thread {
 	private static TransferManager instance = null;
 	private FTPClient client;
 	private Config conf;
-	private int read;
+	private OutputStream os;
 	
 	protected TransferManager(){
 		client = new FTPClient();
 		conf = Config.getInstance();
-		read = 0;
 	}
+	
 	/**
 	 * Permet de récupérer l'instance de TransferManager
 	 * Instancie l'obojet TransferManager si ce n'était pas déjà le cas
+	 * @throws FTPException
 	 * @return L'instance TransferManager 
 	 */
 	public static TransferManager getInstance(){
@@ -43,60 +44,70 @@ public class TransferManager extends Thread {
 		return instance;
 	}
 
-	private void connect(){
+	public void connect() throws FTPException{
 		try {
 			client.connect(conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")));
 			if(!client.login(conf.getProp("ftp_user"), conf.getProp("ftp_pass")))
-				JOptionPane.showMessageDialog(null, "Connexion refusée Login/Mot de passe FTP invalide!");
-		} catch (NumberFormatException | IOException e) {
-			JOptionPane.showMessageDialog(null, "Impossible de contacter le serveur média!");
-			e.printStackTrace();
+				throw new FTPException("FTP serve refused connection.");
+			client.enterLocalPassiveMode();
+		} catch ( IOException e) {
+			throw new FTPException("I/O error: " + e.getMessage());
 		}		
 	}
 
-	private void close(){
-		try {
-			if(client.isConnected()){
-				client.logout();
-				client.disconnect();
-			}
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Une erreur s'est produite lors de la clôture de la connexion FTP!");
-			e.printStackTrace();
-		}
-	}
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
 	 * @param fToSend : Fichier à téléverser sur le serveur 
+	 * @throws FTPException if client-server communication error occurred
 	 */
-	public void sendFile(File fToSend){
-		connect();
+	public void sendFile(File fToSend) throws FTPException{
 		try {
-			client.enterLocalPassiveMode();
-			client.setFileType(FTP.BINARY_FILE_TYPE);
+			if(!client.setFileType(FTP.BINARY_FILE_TYPE))
+				throw new FTPException("Could not set binary file type.");;
 			
-			InputStream is = new FileInputStream(fToSend);
-			
+//			InputStream is = new FileInputStream(fToSend);
+//			
 			String filename = fToSend.getName();			
-			OutputStream os = client.storeUniqueFileStream(filename);
+			os = client.storeUniqueFileStream(filename);
 			
-			byte[] bytesIn = new byte[4096];
-			read = 0;
-			while((read = is.read(bytesIn)) != -1){
-				os.write(bytesIn, 0, read);
-			}
-			is.close();
-			os.close();
+//			byte[] bytesIn = new byte[4096];
+//			read = 0;
+//			while((read = is.read(bytesIn)) != -1){
+//				
+//			}
+//			is.close();
+			
 			// The File has been correctly uploaded
 		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			close();
-			read = 0;
+			throw new FTPException("Error uploading file: " + e.getMessage());
 		}
+//		} finally {
+//			close();
+//			read = 0;
+//		}
 	}
 	
-	public int getRead() {
-		return read;
+	public void writeFile(byte[] bytes, int offset, int length) 
+			throws IOException{
+		os.write(bytes, offset, length);
+	}
+	
+	public void finish() throws IOException{
+		os.close();
+	}
+	
+	public void close() throws FTPException{
+		if (client.isConnected()){
+			try {
+				if(!client.logout()){
+					throw new FTPException("Could not log out from the server");
+                }
+				client.disconnect();
+			} catch (IOException e) {
+				throw new FTPException("Error disconnect from the server: "
+                        + e.getMessage());
+			}
+		};
+		
 	}
 }

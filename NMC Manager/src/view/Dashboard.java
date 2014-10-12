@@ -116,10 +116,17 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JFrame dialogFrame = new JFrame();
 	private JProgressBar progressBar;
 	private Task task;
+	private static Dashboard instance = null;
+	
+	public static Dashboard getInstance(){
+		if(instance == null) instance = new Dashboard();
+		return instance;
+	}
+	
 	/**
 	 * Initialise la fenêtre et ses composants
 	 */
-	public Dashboard() {
+	protected Dashboard() {
 		super(Config.getInstance().getProp("base_title")+"Nukama Media Center");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
@@ -389,10 +396,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			//Instances of javax.swing.SwingWorker are not reusuable, so
 			//we create new instances as needed.
 			
-			task = new Task();
+			task = new Task(fc.getSelectedFile());
 			task.addPropertyChangeListener(this);
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			
 			task.execute();
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
@@ -400,7 +406,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					setCursor(null); //turn off the wait cursor
 				}
 			});
-			//			TransferManager.getInstance().sendFile(fc.getSelectedFile());
+			//			
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
@@ -437,6 +443,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			default: parentPage(node); break;
 			}
 		}
+	}
+	
+	public JFileChooser getFc() {
+		return fc;
 	}
 
 	@Override
