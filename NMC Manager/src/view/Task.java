@@ -7,9 +7,6 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream.GetField;
-import java.util.Random;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
@@ -20,14 +17,16 @@ import controller.TransferManager;
  *
  */
 
-
 public class Task extends SwingWorker<Void, Void> {
 	/*
 	 * Main task. Executed in background thread.
 	 */
 	private File uploadFile;
 	private static final int BUFFER_SIZE = 4096;
-	
+
+	/** Task Constructor
+	 * @param selectedFile file to be uploaded
+	 */
 	public Task(File selectedFile) {
 		this.uploadFile = selectedFile;
 	}
@@ -51,7 +50,7 @@ public class Task extends SwingWorker<Void, Void> {
 			}
 			inputStream.close();
 			TransferManager.getInstance().finish();
-		} catch (FTPException e){
+		} catch (IOException | FTPException e){
 			JOptionPane.showMessageDialog(null,  "Error upload file: " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
@@ -70,10 +69,9 @@ public class Task extends SwingWorker<Void, Void> {
 	public void done() {
 		Toolkit.getDefaultToolkit().beep();
 		if (!isCancelled()) {
-			
-            JOptionPane.showMessageDialog(null,
-                    "File has been uploaded successfully!", "Message",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
+			JOptionPane.showMessageDialog(null,
+					"File has been uploaded successfully!", "Message",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 }

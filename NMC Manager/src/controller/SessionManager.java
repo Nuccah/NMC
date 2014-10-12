@@ -17,16 +17,16 @@ import model.Profil;
  */
 public class SessionManager {
 	private static SessionManager instance = null;
-	
+
 	protected SessionManager(){
 		// Fake constructor for singleton
 	}
-	
+
 	public static SessionManager getInstance(){
 		if(instance == null) instance = new SessionManager();
 		return instance;
 	}
-	
+
 	/**
 	 * Crée une nouvelle instance utilisateur
 	 * @param username : nom d'utilisateur
@@ -63,7 +63,7 @@ public class SessionManager {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Permet la déconnexion du profil
 	 */

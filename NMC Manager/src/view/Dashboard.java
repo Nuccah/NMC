@@ -9,19 +9,13 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
-
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -30,8 +24,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
@@ -52,15 +44,13 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
 import javax.swing.SwingConstants;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import controller.SessionManager;
-import controller.TransferManager;
+
 /**
  * Fenêtre principale du programme
  * @author Derek
@@ -117,12 +107,16 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JProgressBar progressBar;
 	private Task task;
 	private static Dashboard instance = null;
-	
+
+	/**
+	 * Creates instance of Dashboard
+	 * @return
+	 */
 	public static Dashboard getInstance(){
 		if(instance == null) instance = new Dashboard();
 		return instance;
 	}
-	
+
 	/**
 	 * Initialise la fenêtre et ses composants
 	 */
@@ -220,6 +214,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		topPane.add(mnQuitter);
 	}
 
+	/**
+	 * Bar de menu pour les gestions possibles
+	 */
 	private void menuBar() {
 		//create the child nodes
 		mediaNode.add(new DefaultMutableTreeNode("Books"));
@@ -252,6 +249,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 
 	}
 
+	/**
+	 * Bottom bar containing Copyright information
+	 */
 	private void bottomBar() {
 		JTextPane txtpnTest = new JTextPane();
 		txtpnTest.setEditable(false);
@@ -260,12 +260,20 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		bottomPane.add(txtpnTest);
 	}
 
+	/**
+	 * Home page of client program
+	 * @param node --- TO DELETE
+	 */
 	private void homePage(DefaultMutableTreeNode node) {
 		rightPane.removeAll();
 		rightPane.add(new JTextArea(node.toString()));
 		rightPane.revalidate();
 	}
 
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
 	private void parentPage(DefaultMutableTreeNode node) {
 		switch (node.toString()) {
 		case "Media": mediaResultSet(node); break;
@@ -275,6 +283,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 	}
 
+	/**
+	 * Creation and layout of required upload components
+	 * @param node
+	 */
 	private void uploadFilePage(DefaultMutableTreeNode node) {
 		rightPane.removeAll();
 		uploadDataPane.removeAll();
@@ -339,6 +351,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		rightPane.revalidate();
 	}
 
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
 	private void mediaResultSet(DefaultMutableTreeNode node) {
 		switch (node.toString()) {
 		case "Media": homePage(node); break;
@@ -351,6 +367,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 	}
 
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
 	private void userAdmin(DefaultMutableTreeNode node) {
 		switch (node.toString()) {
 		case "Create User": homePage(node); break;
@@ -361,6 +381,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 	}
 
+	/**
+	 * Creation of new progress bar, dialog for each upload
+	 */
 	public void progressBar() {
 		//Create the demo's UI.
 		dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
@@ -397,7 +420,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		else if(e.getSource() == uploadButton){
 			//Instances of javax.swing.SwingWorker are not reusuable, so
 			//we create new instances as needed.
-			
+
 			task = new Task(fc.getSelectedFile());
 			task.addPropertyChangeListener(this);
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -445,10 +468,6 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			default: parentPage(node); break;
 			}
 		}
-	}
-	
-	public JFileChooser getFc() {
-		return fc;
 	}
 
 	@Override
