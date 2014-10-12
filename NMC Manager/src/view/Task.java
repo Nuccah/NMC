@@ -26,6 +26,7 @@ public class Task extends SwingWorker<Void, Void> {
 	 * Main task. Executed in background thread.
 	 */
 	private File uploadFile;
+	private static final int BUFFER_SIZE = 4096;
 	
 	public Task(File selectedFile) {
 		this.uploadFile = selectedFile;
@@ -37,7 +38,7 @@ public class Task extends SwingWorker<Void, Void> {
 			TransferManager.getInstance().connect();
 			TransferManager.getInstance().sendFile(uploadFile);
 			FileInputStream inputStream = new FileInputStream(uploadFile);
-			byte[] buffer = new byte[4096];
+			byte[] buffer = new byte[BUFFER_SIZE]; 
 			int bytesRead = -1;
 			long totalBytesRead = 0;
 			int percentCompleted = 0;
@@ -68,6 +69,11 @@ public class Task extends SwingWorker<Void, Void> {
 	@Override
 	public void done() {
 		Toolkit.getDefaultToolkit().beep();
-
+		if (!isCancelled()) {
+			
+            JOptionPane.showMessageDialog(null,
+                    "File has been uploaded successfully!", "Message",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
 	}
 }

@@ -113,7 +113,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
 	private CellConstraints cc;
-	private JFrame dialogFrame = new JFrame();
+	private JDialog dlg;
 	private JProgressBar progressBar;
 	private Task task;
 	private static Dashboard instance = null;
@@ -363,7 +363,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 
 	public void progressBar() {
 		//Create the demo's UI.
-		final JDialog dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
+		dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
 
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setValue(0);
@@ -372,9 +372,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
 		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dlg.setSize(300, 75);
-		dlg.setLocationRelativeTo(dialogFrame);
+		dlg.setLocationRelativeTo((Frame) getOwner());
 		dlg.setVisible(true);
 	}
+
 
 	/**
 	 * Invoked when task's progress property changes.
@@ -383,6 +384,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		if ("progress" == evt.getPropertyName()) {
 			int progress = (Integer) evt.getNewValue();
 			progressBar.setValue(progress);
+			if(progress == 100) dlg.dispose();
 		} 
 	}
 
