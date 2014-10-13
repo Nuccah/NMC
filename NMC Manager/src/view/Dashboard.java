@@ -1,6 +1,9 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -9,22 +12,24 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -47,14 +52,14 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import controller.SessionManager;
-import controller.TransferManager;
+
 /**
  * Fenêtre principale du programme
  * @author Derek
  *
  */
 
-public class Dashboard extends JFrame implements ActionListener, TreeSelectionListener{
+public class Dashboard extends JFrame implements Runnable, ActionListener, TreeSelectionListener, PropertyChangeListener{
 	private static final long serialVersionUID = -5998048938167814342L;
 	private JPanel topPane;
 	private JPanel leftPane;
@@ -94,6 +99,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
 	private JTextField genreField = new JTextField();
+
 	private JTextField personField = new JTextField();
 	
 	private JComboBox<String> visibilityBox = new JComboBox<String>();
@@ -109,10 +115,25 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private GridBagConstraints lc = new GridBagConstraints();
 	private GridBagConstraints rc = new GridBagConstraints();
 	
+	private CellConstraints cc;
+	private JDialog dlg;
+	private JProgressBar progressBar;
+	private Task task;
+	private static Dashboard instance = null;
+
+	/**
+	 * Creates instance of Dashboard
+	 * @return
+	 */
+	public static Dashboard getInstance(){
+		if(instance == null) instance = new Dashboard();
+		return instance;
+	}
+
 	/**
 	 * Initialise la fenêtre et ses composants
 	 */
-	public Dashboard() {
+	protected Dashboard() {
 		super(Config.getInstance().getProp("base_title")+"Nukama Media Center");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
@@ -212,6 +233,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		topPane.revalidate();
 	}
 
+	/**
+	 * Bar de menu pour les gestions possibles
+	 */
 	private void menuBar() {
 		//create the child nodes
 		mediaNode.add(new DefaultMutableTreeNode("Books"));
@@ -244,6 +268,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 	}
 
+	/**
+	 * Bottom bar containing Copyright information
+	 */
 	private void bottomBar() {
 		JTextPane txtpnTest = new JTextPane();
 		txtpnTest.setEditable(false);
@@ -252,12 +279,20 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		bottomPane.add(txtpnTest);
 	}
 
+	/**
+	 * Home page of client program
+	 * @param node --- TO DELETE
+	 */
 	private void homePage(DefaultMutableTreeNode node) {
 		rightPane.removeAll();
 		rightPane.add(new JTextArea(node.toString()));
 		rightPane.revalidate();
 	}
 
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
 	private void parentPage(DefaultMutableTreeNode node) {
 		switch (node.toString()) {
 		case "Media": mediaResultSet(node); break;
@@ -267,6 +302,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 	}
 
+	/**
+	 * Creation and layout of required upload components
+	 * @param node
+	 */
 	private void uploadFilePage(DefaultMutableTreeNode node) {
 		rightPane.removeAll();
 		uploadDataPane.removeAll();
@@ -284,7 +323,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			rightPane.add(uploadDataPane);
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
-			CellConstraints cc = new CellConstraints();
+			cc = new CellConstraints();
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
 			uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 			switch (node.toString()) {
@@ -332,6 +371,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		rightPane.revalidate();
 	}
 
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
 	private void mediaResultSet(DefaultMutableTreeNode node) {
 		switch (node.toString()) {
 		case "Media": homePage(node); break;
@@ -344,6 +387,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 	}
 
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
 	private void userAdmin(DefaultMutableTreeNode node) {
 		switch (node.toString()) {
 		case "Create User": homePage(node); break;
@@ -354,6 +401,36 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 	}
 
+	/**
+	 * Creation of new progress bar, dialog for each upload
+	 */
+	public void progressBar() {
+		//Create the demo's UI.
+		dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
+
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		dlg.add(BorderLayout.CENTER, progressBar);
+		dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
+		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dlg.setSize(300, 75);
+		dlg.setLocationRelativeTo((Frame) getOwner());
+		dlg.setVisible(true);
+	}
+
+
+	/**
+	 * Invoked when task's progress property changes.
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ("progress" == evt.getPropertyName()) {
+			int progress = (Integer) evt.getNewValue();
+			progressBar.setValue(progress);
+			if(progress == 100) dlg.dispose();
+		} 
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == mnQuitter){
@@ -361,7 +438,20 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			TransferManager.getInstance().sendFile(node.toString(), fc.getSelectedFile());
+			//Instances of javax.swing.SwingWorker are not reusuable, so
+			//we create new instances as needed.
+
+			task = new Task(node.toString(), fc.getSelectedFile());
+			task.addPropertyChangeListener(this);
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			task.execute();
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					progressBar();
+					setCursor(null); //turn off the wait cursor
+				}
+			});
+			//			
 		}
 		else if(e.getSource() == clearButton){
 			for (JTextField fl : fieldList) 
@@ -375,7 +465,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			String command = e.getActionCommand();
 			if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 				File selectedFile = theFileChooser.getSelectedFile();
-				if (((double)(((selectedFile.length()/1024)/1024))) > 10){
+				if (((double)(((selectedFile.length()/1024)/1024/1024))) > 5){
 					int n = JOptionPane.showConfirmDialog((JPanel) getContentPane(),
 							"The file you wish to upload is larger\n"
 									+ "than 10GB, are you sure you wish.\n"
@@ -424,4 +514,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 	}
 
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+
+	}
 }

@@ -1,17 +1,14 @@
 package controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-
-import javax.swing.JOptionPane;
 
 import model.Config;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import view.FTPException;
 
 /**
  * Classe de gestion des téléversements et téléchargements de fichiers médias sur/depuis le serveur
@@ -22,12 +19,13 @@ public class TransferManager extends Thread {
 	private static TransferManager instance = null;
 	private FTPClient client;
 	private Config conf;
-	private int read;
-	
+	private OutputStream os;
+
 	protected TransferManager(){
 		client = new FTPClient();
 		conf = Config.getInstance();
 	}
+
 	/**
 	 * Permet de récupérer l'instance de TransferManager
 	 * Instancie l'obojet TransferManager si ce n'était pas déjà le cas
@@ -39,67 +37,77 @@ public class TransferManager extends Thread {
 		return instance;
 	}
 
-	private void connect(){
+	/**Connects client to FTP Server in passive mode
+	 * @throws FTPException if login/pass is not correct
+	 */
+	public void connect() throws FTPException{
 		try {
 			client.connect(conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")));
 			if(!client.login(conf.getProp("ftp_user"), conf.getProp("ftp_pass")))
-				JOptionPane.showMessageDialog(null, "Connexion refusée Login/Mot de passe FTP invalide!");
-		} catch (NumberFormatException | IOException e) {
-			JOptionPane.showMessageDialog(null, "Impossible de contacter le serveur média!");
-			e.printStackTrace();
+				throw new FTPException("FTP serve refused connection.");
+			client.enterLocalPassiveMode();
+		} catch ( IOException e) {
+			throw new FTPException("I/O error: " + e.getMessage());
 		}		
 	}
 
-	private void close(){
-		try {
-			if(client.isConnected()){
-				client.logout();
-				client.disconnect();
-			}
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Une erreur s'est produite lors de la clôture de la connexion FTP!");
-			e.printStackTrace();
-		}
-	}
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
 	 * @param directory : Dossier de placement du fichier sur le serveur <br />
 	 * 			Ce paramètre est facultatif <br />
 	 * 			Attention : Le dossier doit avoir été créé au préalable sur le serveur
 	 * @param fToSend : Fichier à téléverser sur le serveur 
+	 * @throws FTPException if client-server communication error occurred
 	 */
-	public void sendFile(String directory, File fToSend){
-		connect();
+	public void sendFile(String directory, File fToSend) throws FTPException{
+
 		try {
-			client.enterLocalPassiveMode();
+			if(!client.setFileType(FTP.BINARY_FILE_TYPE))
+				throw new FTPException("Could not set binary file type.");;
 			client.setFileType(FTP.BINARY_FILE_TYPE);
-			
-			InputStream is = new FileInputStream(fToSend);
-			
 			String filename = null;
 			if(directory == null) filename = fToSend.getName();
 			else filename = "/"+directory+"/"+fToSend.getName();
-			OutputStream os = client.storeUniqueFileStream(filename);
-			
-			byte[] bytesIn = new byte[4096];
-			read = 0;
-			while((read = is.read(bytesIn)) != -1){
-				os.write(bytesIn, 0, read);
-			}
-			is.close();
-			os.close();
-			// The File has been correctly uploaded
+			os = client.storeUniqueFileStream(filename);
 		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			close();
+			throw new FTPException("Error uploading file: " + e.getMessage());
 		}
 	}
-	
-	public int getRead() {
-		return read;
+
+	/**Write of file onto outputstream
+	 * @param bytes bytes to read
+	 * @param offset from which location in file
+	 * @param length total length of file
+	 * @throws IOException if error when writing to outputstream
+	 */
+	public void writeFile(byte[] bytes, int offset, int length) 
+			throws IOException{
+		os.write(bytes, offset, length);
 	}
-	public void setRead(int read) {
-		this.read = read;
+
+	/** Closes output stream
+	 * @throws IOException
+	 */
+	public void finish() throws IOException{
+		os.close();
+	}
+
+	/** Closes connection between client and server
+	 * @throws FTPException if unable to logout or error when attempting to disconnect
+	 */
+	public void close() throws FTPException{
+		if (client.isConnected()){
+			try {
+				if(!client.logout()){
+					throw new FTPException("Could not log out from the server");
+				}
+				client.disconnect();
+			} catch (IOException e) {
+				throw new FTPException("Error disconnect from the server: "
+						+ e.getMessage());
+			}
+		};
+
 	}
 }
+

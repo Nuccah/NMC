@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.junit.Test;
 
+import view.FTPException;
 import controller.TransferManager;
 
 
@@ -12,7 +13,11 @@ public class TestTransferManager {
 	@Test
 	public void testSendFile() {
 		// Launch Main NMCServer BEFORE launch this test
-		TransferManager.getInstance().sendFile("Movies", new File("C:\\Users\\Antoine Ceyssens\\Downloads\\from_sqli_to_shell.iso"));
+		try {
+			TransferManager.getInstance().sendFile("Movies", new File("C:\\Users\\Antoine Ceyssens\\Downloads\\from_sqli_to_shell.iso"));
+		} catch (FTPException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
