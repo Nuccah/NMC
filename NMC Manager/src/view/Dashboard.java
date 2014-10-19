@@ -494,22 +494,38 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	 * @return boolean whether metadata fields are empty or not
 	 */
 	public boolean verify(String node){
-		if (titleField.getText() == null || yearField.getText() == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+		if (titleField == null)
 			return false;
 		else{
 			switch (node) {
 			case "Books":
-				if (personField.getText() == null)
+				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null)
 					return false;
 				else return true;
-			case "Music": 
-				if (personField.getText() == null)
+			case "Images":
+				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
 					return false;
 				else return true;
-			case "Series":
+			case "Add New Music":
+				if (personField == null)
+					return false;
+				else return true;
+			case "Add New Albums":
+				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+					return false;
+				else return true;
+			case "Movies":
+				if ( visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null)
+					return false;
+				else return true;
+			case "Add New Series":
+				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+					return false;
+				else return true;
+			case "Add New Episodes":
 				if (seriesBox.getSelectedItem() == null)
 					return false;
-				else return true;
+				else return true;	
 			default: return true;
 			}
 		}
