@@ -364,10 +364,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				break;
 			case "Music": 
 				uploadDataPane.add(artistLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(albumLabel,cc.xy(1, 5) ); uploadDataPane.add(albumField,cc.xy(3, 7));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 9));
+				uploadDataPane.add(albumLabel,cc.xy(1, 7) ); uploadDataPane.add(albumField,cc.xy(3, 7));
+				uploadDataPane.add(genreLabel,cc.xy(1, 9) ); uploadDataPane.add(genreField,cc.xy(3, 9));
 				fc.setFileFilter(musicFilter);
-				rows=7;
+				rows=9;
 				break;
 			case "Movies": 
 				uploadDataPane.add(directorLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
@@ -379,9 +379,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			case "Series": 
 				uploadDataPane.add(directorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(seasonLabel,cc.xy(1, 7) ); uploadDataPane.add(seasonField,cc.xy(3, 7));
-				uploadDataPane.add(chronoLabel,cc.xy(1, 7) ); uploadDataPane.add(chronoField,cc.xy(3, 7));
+				uploadDataPane.add(chronoLabel,cc.xy(1, 9) ); uploadDataPane.add(chronoField,cc.xy(3, 9));
 				fc.setFileFilter(videoFilter);
-				rows=7;
+				rows=9;
 				break;
 			default: break;
 			}
