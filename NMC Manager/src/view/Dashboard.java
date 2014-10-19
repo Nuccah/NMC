@@ -315,6 +315,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 		else{
 			int rows = 0;
+			clear();
 			FormLayout layout = new FormLayout(
 					"right:pref, 4dlu, fill:150dlu",
 					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu");
@@ -418,7 +419,48 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		dlg.setLocationRelativeTo((Frame) getOwner());
 		dlg.setVisible(true);
 	}
+	
+	public void clear(){
+		for (JTextField fl : fieldList) 
+			fl.setText("");
+		for (JComboBox<?> cbl : cbList)
+			cbl.setSelectedItem(null);
+		uploadButton.setEnabled(false);
+	}
 
+	/** Determines whether or not metadata fields are empty or not
+	 * @param node the String of the node selected
+	 * @return boolean whether metadata fields are empty or not
+	 */
+	public boolean verify(String node){
+		if (titleField.getText() == null || yearField.getText() == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+			return false;
+		else{
+			switch (node) {
+			case "Books":
+				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
+					return false;
+				else return true;
+			case "Images": 
+				if (personField.getText() == null)
+					return false;
+				else return true;
+			case "Music": 
+				if (personField.getText() == null || genreField.getText() == null)
+					return false;
+				else return true;
+			case "Movies":
+				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
+					return false;
+				else return true;
+			case "Series":
+				if (synopsisField.getText() == null || genreField.getText() == null )
+					return false;
+				else return true;
+			default: return false;
+			}
+		}
+	}
 
 	/**
 	 * Invoked when task's progress property changes.
@@ -438,27 +480,30 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			System.exit(0);
 		}
 		else if(e.getSource() == uploadButton){
-			//Instances of javax.swing.SwingWorker are not reusuable, so
-			//we create new instances as needed.
+			if (!verify(node.toString())){
+				JOptionPane.showMessageDialog(getContentPane(),
+					    "Not all data fields have been set",
+					    "Insufficient Data",
+					    JOptionPane.ERROR_MESSAGE);
+			}
+			else{
+				//Instances of javax.swing.SwingWorker are not reusuable, so
+				//we create new instances as needed.
 
-			task = new Task(node.toString(), fc.getSelectedFile());
-			task.addPropertyChangeListener(this);
-			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			task.execute();
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					progressBar();
-					setCursor(null); //turn off the wait cursor
-				}
-			});
-			//			
+				task = new Task(node.toString(), fc.getSelectedFile());
+				task.addPropertyChangeListener(this);
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				task.execute();
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						progressBar();
+						setCursor(null); //turn off the wait cursor
+					}
+				});
+			}
 		}
 		else if(e.getSource() == clearButton){
-			for (JTextField fl : fieldList) 
-				fl.setText("");
-			for (JComboBox<?> cbl : cbList)
-				cbl.setSelectedItem(null);
-			uploadButton.setEnabled(false);
+			clear();
 		}
 		else{
 			JFileChooser theFileChooser = (JFileChooser)e.getSource();
@@ -492,8 +537,6 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			}
 		}
 	}
-
-
 
 	public void valueChanged(TreeSelectionEvent e) {
 		node = (DefaultMutableTreeNode)
