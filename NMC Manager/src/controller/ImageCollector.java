@@ -3,10 +3,12 @@ package controller;
 public class ImageCollector extends MetaDataCollector{
 	private String photographer;
 	private String filename;
+	private int year;
 	
 	public ImageCollector(String title, int year, int modId, int visId, String filename, String photographer) {
-		super(title, year, modId,visId);
+		super(title, modId,visId);
 		this.photographer = photographer;
+		this.year = year;
 		this.filename = filename;
 		// TODO Auto-generated constructor stub
 	}

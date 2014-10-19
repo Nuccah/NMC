@@ -10,13 +10,15 @@ package controller;
 public class MetaDataCollector {
 	//TODO: Implémenter cette classe et tous ses composants
 	protected String title;
-	protected int year;
 	protected int modificiationID;
 	protected int visibilityID;
 
-	public MetaDataCollector(String title, int year, int modId, int visId){
+	public MetaDataCollector(String title){
 		this.title = title;
-		this.year = year;
+	}
+	
+	public MetaDataCollector(String title, int modId, int visId){
+		this.title = title;
 		this.modificiationID = modId;
 		this.visibilityID = visId;
 	}

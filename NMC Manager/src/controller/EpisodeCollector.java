@@ -2,32 +2,17 @@ package controller;
 
 public class EpisodeCollector extends MetaDataCollector{
 	private String director;
-	private String screenwriter;
+	private String series;
 	private int season;
 	private int chrono;
-	private int duration;
+	private String filename;
 	
-	public EpisodeCollector(String title, int year, int modId, int visId, String filename, int season, int chrono){
-		super(title, year, modId, visId);
-		this.season = season;
-		this.chrono = chrono;
-		this.duration = 0;
-	}
-	
-	public EpisodeCollector(String title, int year, int modId, int visId, String filename, String director, int season, int chrono){
-		super(title, year, modId, visId);
+	public EpisodeCollector(String title, String filename, String series, String director, int season, int chrono){
+		super(title);
 		this.director = director;
+		this.series = series;
 		this.season = season;
 		this.chrono = chrono;
-		this.duration = 0;
-	}
-	
-	public EpisodeCollector(String title, int year, int modId, int visId, String filename, String director, String screenwriter, int season, int chrono){
-		super(title, year, modId, visId);
-		this.director = director;
-		this.screenwriter = screenwriter;
-		this.season = season;
-		this.chrono = chrono;
-		this.duration = 0;
+		this.filename = filename;
 	}
 }

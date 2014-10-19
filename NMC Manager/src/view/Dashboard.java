@@ -77,7 +77,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JPanel bottomPane;
 	private JPanel uploadDataPane;
 	
-	private JButton uploadButton = new JButton("Upload");;
+	private JButton uploadButton = new JButton("Upload");
+	private JButton addButton = new JButton("Confirm");
 	private JButton clearButton = new JButton("Clear");
 	private JButton mnProfil = new JButton("Profil");
 	private JButton mnAide = new JButton("Aide");
@@ -97,6 +98,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JLabel albumLabel = new JLabel("Album");
 	private JLabel seasonLabel = new JLabel("Season");
 	private JLabel chronoLabel = new JLabel("Episode Chronology");
+	private JLabel seriesLabel = new JLabel("Series");
 	
 	private JTree menuBar;
 	private JFileChooser fc;
@@ -106,16 +108,19 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
 	private DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Upload");
 	private DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
+	private DefaultMutableTreeNode seriesNode = new DefaultMutableTreeNode("Series");
+	private DefaultMutableTreeNode musicNode = new DefaultMutableTreeNode("Music");
 
 	private JTextField titleField = new JTextField();
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
 	private JTextField genreField = new JTextField();
-	private JTextField albumField = new JTextField();
 	private JTextField personField = new JTextField();
 	private JTextField chronoField = new JTextField();
 	private JTextField seasonField = new JTextField();
 	
+	private JComboBox<String> albumBox = new JComboBox<String>();
+	private JComboBox<String> seriesBox = new JComboBox<String>();
 	private JComboBox<String> visibilityBox = new JComboBox<String>();
 	private JComboBox<String> modificationBox = new JComboBox<String>();
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
@@ -230,6 +235,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
+		addButton.addActionListener(this);
 	}
 
 
@@ -265,13 +271,18 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		mediaNode.add(new DefaultMutableTreeNode("Music"));
 		mediaNode.add(new DefaultMutableTreeNode("Movies"));
 		mediaNode.add(new DefaultMutableTreeNode("Series"));
-
+		
 		uploadNode.add(new DefaultMutableTreeNode("Books"));
 		uploadNode.add(new DefaultMutableTreeNode("Images"));
-		uploadNode.add(new DefaultMutableTreeNode("Music"));
+		uploadNode.add(musicNode);
 		uploadNode.add(new DefaultMutableTreeNode("Movies"));
-		uploadNode.add(new DefaultMutableTreeNode("Series"));
+		uploadNode.add(seriesNode);
 
+		seriesNode.add(new DefaultMutableTreeNode("Add New Episodes"));
+		seriesNode.add(new DefaultMutableTreeNode("Add New Series"));
+		musicNode.add(new DefaultMutableTreeNode("Add New Music"));
+		musicNode.add(new DefaultMutableTreeNode("Add New Albums"));
+		
 		usersNode.add(new DefaultMutableTreeNode("Create User"));
 		usersNode.add(new DefaultMutableTreeNode("Administration"));
 		usersNode.add(new DefaultMutableTreeNode("Permissions"));        
@@ -320,7 +331,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		case "Media": mediaResultSet(node); break;
 		case "Upload": uploadFilePage(node); break;
 		case "User Administration": userAdmin(node); break;
-		default: homePage(node); break;
+		default: uploadFilePage(node); break;
 		}
 	}
 
@@ -335,61 +346,87 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			rightPane.setLayout(new GridLayout(1,1));
 			rightPane.add(uploadDataPane);
 		}
+		else if(node.toString() == "Music" || node.toString() == "Series"){
+			rightPane.setLayout(new GridLayout(1,1));
+			rightPane.add(uploadDataPane);
+		}
 		else{
-			int rows = 0;
 			clear();
 			FormLayout layout = new FormLayout(
 					"right:pref, 4dlu, fill:150dlu",
 					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu");
-			rightPane.setLayout(new GridLayout(1,2));
-			rightPane.add(fc);
-			rightPane.add(uploadDataPane);
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
 			cc = new CellConstraints();
+			if(node.toString() == "Add New Albums" || node.toString() == "Add New Series"){
+				rightPane.setLayout(new GridLayout(1,1));
+				addButton.setEnabled(true);
+				uploadDataPane.add(addButton,cc.xy(1, 17));
+			}
+			else{
+				rightPane.setLayout(new GridLayout(1,2));
+				rightPane.add(fc);
+				uploadButton.setEnabled(false);
+				uploadDataPane.add(uploadButton,cc.xy(1, 17));
+			}
+			rightPane.add(uploadDataPane);
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
-			uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 			switch (node.toString()) {
 			case "Books":
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(authorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 7)); uploadDataPane.add(synopsisField,cc.xy(3, 7));
 				uploadDataPane.add(genreLabel,cc.xy(1, 9)); uploadDataPane.add(genreField,cc.xy(3, 9));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
 				fc.setFileFilter(bookFilter);
-				rows=9;
 				break;
-			case "Images": 
-				uploadDataPane.add(photographerLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
+			case "Images":
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
+				uploadDataPane.add(photographerLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 7)); uploadDataPane.add(visibilityBox,cc.xy(3, 7)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 9)); uploadDataPane.add(modificationBox,cc.xy(3, 9));
 				fc.setFileFilter(imageFilter);
-				rows=5;
 				break;
-			case "Music": 
-				uploadDataPane.add(artistLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(albumLabel,cc.xy(1, 7) ); uploadDataPane.add(albumField,cc.xy(3, 7));
-				uploadDataPane.add(genreLabel,cc.xy(1, 9) ); uploadDataPane.add(genreField,cc.xy(3, 9));
+			case "Add New Music": 
+				uploadDataPane.add(albumLabel,cc.xy(1, 3)); uploadDataPane.add(albumBox,cc.xy(3, 3));
+				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				fc.setFileFilter(musicFilter);
-				rows=9;
 				break;
-			case "Movies": 
+			case "Movies":
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(directorLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
-				uploadDataPane.add(synopsisLabel,cc.xy(1, 9) ); uploadDataPane.add(synopsisField,cc.xy(3, 9));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7)); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(synopsisLabel,cc.xy(1, 9)); uploadDataPane.add(synopsisField,cc.xy(3, 9));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
 				fc.setFileFilter(videoFilter);
-				rows=9;
 				break;
-			case "Series": 
+			case "Add New Episodes": 
+				uploadDataPane.add(seriesLabel,cc.xy(1, 3)); uploadDataPane.add(seriesBox,cc.xy(3, 3));
 				uploadDataPane.add(directorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(seasonLabel,cc.xy(1, 7) ); uploadDataPane.add(seasonField,cc.xy(3, 7));
 				uploadDataPane.add(chronoLabel,cc.xy(1, 9) ); uploadDataPane.add(chronoField,cc.xy(3, 9));
 				fc.setFileFilter(videoFilter);
-				rows=9;
+				break;
+			case "Add New Series":
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
+				uploadDataPane.add(synopsisLabel,cc.xy(1, 5) ); uploadDataPane.add(synopsisField,cc.xy(3, 5));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 9)); uploadDataPane.add(visibilityBox,cc.xy(3, 9)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 11)); uploadDataPane.add(modificationBox,cc.xy(3, 11));
+				break;
+			case "Add New Albums":
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
+				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(synopsisLabel,cc.xy(1, 9) ); uploadDataPane.add(synopsisField,cc.xy(3, 9));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
+
 				break;
 			default: break;
 			}
-
-			uploadDataPane.add(visibilityLabel,cc.xy(1, (rows+2))); uploadDataPane.add(visibilityBox,cc.xy(3, (rows+2))); 
-			uploadDataPane.add(modificationLabel,cc.xy(1, (rows+4))); uploadDataPane.add(modificationBox,cc.xy(3, (rows+4)));
-			uploadButton.setEnabled(false);
-			uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			uploadDataPane.add(clearButton,cc.xy(3, 17));
 		}
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
@@ -462,26 +499,18 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		else{
 			switch (node) {
 			case "Books":
-				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
-					return false;
-				else return true;
-			case "Images": 
 				if (personField.getText() == null)
 					return false;
 				else return true;
 			case "Music": 
-				if (personField.getText() == null || genreField.getText() == null || albumField.getText() == null)
-					return false;
-				else return true;
-			case "Movies":
-				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
+				if (personField.getText() == null)
 					return false;
 				else return true;
 			case "Series":
-				if (personField.getText() == null || seasonField.getText() == null || chronoField.getText() == null)
+				if (seriesBox.getSelectedItem() == null)
 					return false;
 				else return true;
-			default: return false;
+			default: return true;
 			}
 		}
 	}
@@ -502,6 +531,24 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		if(e.getSource() == mnQuitter){
 			SessionManager.getInstance().logout();
 			System.exit(0);
+		}
+		else if(e.getSource() == addButton){
+			if (!verify(node.toString())){
+				JOptionPane.showMessageDialog(getContentPane(),
+					    "Not all data fields have been set",
+					    "Insufficient Data",
+					    JOptionPane.ERROR_MESSAGE);
+			}
+			else{
+				switch (node.toString()) {
+				case "Add New Albums": albumC = new AlbumCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+						(int)visibilityBox.getSelectedItem(), personField.getText(), synopsisField.getText(), genreField.getText());break;
+				case "Add New Series": seriesC = new SeriesCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+						(int)visibilityBox.getSelectedItem(), synopsisField.getText(), genreField.getText()); break;
+				default: break;
+				}
+				clear();
+			}
 		}
 		else if(e.getSource() == uploadButton){
 			if (!verify(node.toString())){
@@ -525,13 +572,18 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					}
 				});
 				switch (node.toString()) {
-				case "Books": bookC = new BookCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText()); break;
-				case "Images": imageC = new ImageCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText()); break;
-				case "Music": audioC = new AudioCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), albumField.getText()); break;
-				case "Movies": videoC = new VideoCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
-				case "Series": episodeC = new EpisodeCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), Integer.parseInt(seasonField.getText()), Integer.parseInt(chronoField.getText())); break;
+				case "Books": bookC = new BookCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
+				case "Images": imageC = new ImageCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText()); break;
+				case "Add New Music": audioC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), (String) albumBox.getSelectedItem()); break;
+				case "Movies": videoC = new VideoCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
+				case "Add New Episodes": episodeC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), (String) seriesBox.getSelectedItem(), personField.getText(), 
+						Integer.parseInt(seasonField.getText()), Integer.parseInt(chronoField.getText())); break;
 				default: break;
 				}
+				clear();
 			}
 		}
 		else if(e.getSource() == clearButton){
