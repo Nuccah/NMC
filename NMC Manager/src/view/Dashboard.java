@@ -12,6 +12,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.Book;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -51,7 +52,15 @@ import model.Profil;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import controller.AlbumCollector;
+import controller.AudioCollector;
+import controller.BookCollector;
+import controller.EpisodeCollector;
+import controller.ImageCollector;
+import controller.SeriesCollector;
 import controller.SessionManager;
+import controller.MetaDataCollector;
+import controller.VideoCollector;
 
 /**
  * Fenêtre principale du programme
@@ -85,6 +94,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JLabel directorLabel = new JLabel("Director");
 	private JLabel visibilityLabel = new JLabel("Visibility Level");
 	private JLabel modificationLabel = new JLabel("Modification Level");
+	private JLabel albumLabel = new JLabel("Album");
+	private JLabel seasonLabel = new JLabel("Season");
+	private JLabel chronoLabel = new JLabel("Episode Chronology");
 	
 	private JTree menuBar;
 	private JFileChooser fc;
@@ -99,8 +111,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
 	private JTextField genreField = new JTextField();
-
+	private JTextField albumField = new JTextField();
 	private JTextField personField = new JTextField();
+	private JTextField chronoField = new JTextField();
+	private JTextField seasonField = new JTextField();
 	
 	private JComboBox<String> visibilityBox = new JComboBox<String>();
 	private JComboBox<String> modificationBox = new JComboBox<String>();
@@ -120,7 +134,15 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JProgressBar progressBar;
 	private Task task;
 	private static Dashboard instance = null;
-
+	
+	AlbumCollector albumC;
+	AudioCollector audioC;
+	BookCollector bookC;
+	EpisodeCollector episodeC;
+	ImageCollector imageC;
+	SeriesCollector seriesC;
+	VideoCollector videoC;
+	
 	/**
 	 * Creates instance of Dashboard
 	 * @return
@@ -342,7 +364,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				break;
 			case "Music": 
 				uploadDataPane.add(artistLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(albumLabel,cc.xy(1, 5) ); uploadDataPane.add(albumField,cc.xy(3, 7));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 9));
 				fc.setFileFilter(musicFilter);
 				rows=7;
 				break;
@@ -354,8 +377,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				rows=9;
 				break;
 			case "Series": 
-				uploadDataPane.add(synopsisLabel,cc.xy(1, 5) ); uploadDataPane.add(synopsisField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(directorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(seasonLabel,cc.xy(1, 7) ); uploadDataPane.add(seasonField,cc.xy(3, 7));
+				uploadDataPane.add(chronoLabel,cc.xy(1, 7) ); uploadDataPane.add(chronoField,cc.xy(3, 7));
 				fc.setFileFilter(videoFilter);
 				rows=7;
 				break;
@@ -446,7 +470,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					return false;
 				else return true;
 			case "Music": 
-				if (personField.getText() == null || genreField.getText() == null)
+				if (personField.getText() == null || genreField.getText() == null || albumField.getText() == null)
 					return false;
 				else return true;
 			case "Movies":
@@ -454,7 +478,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					return false;
 				else return true;
 			case "Series":
-				if (synopsisField.getText() == null || genreField.getText() == null )
+				if (personField.getText() == null || seasonField.getText() == null || chronoField.getText() == null)
 					return false;
 				else return true;
 			default: return false;
@@ -500,6 +524,14 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 						setCursor(null); //turn off the wait cursor
 					}
 				});
+				switch (node.toString()) {
+				case "Books": bookC = new BookCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText()); break;
+				case "Images": imageC = new ImageCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText()); break;
+				case "Music": audioC = new AudioCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), albumField.getText()); break;
+				case "Movies": videoC = new VideoCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
+				case "Series": episodeC = new EpisodeCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), (int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), Integer.parseInt(seasonField.getText()), Integer.parseInt(chronoField.getText())); break;
+				default: break;
+				}
 			}
 		}
 		else if(e.getSource() == clearButton){
