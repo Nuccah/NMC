@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.Serializable;
+
 /**
  * Classe de gestion des méta données des fichiers à envoyer au serveur
  * 
@@ -7,8 +9,8 @@ package controller;
  * @author Antoine
  *
  */
-public class MetaDataCollector {
-	//TODO: Implémenter cette classe et tous ses composants
+public class MetaDataCollector implements Serializable{
+	private static final long serialVersionUID = 349141030197537212L;
 	protected String title;
 	protected int modificiationID;
 	protected int visibilityID;
@@ -37,5 +39,9 @@ public class MetaDataCollector {
 
 	public MetaDataCollector videoExtraction(){
 		return null;
+	}
+	
+	public String getTitle(){
+		return title;
 	}
 }

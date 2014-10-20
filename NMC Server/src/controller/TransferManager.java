@@ -30,7 +30,7 @@ public class TransferManager extends Thread {
 		FtpServerFactory srvFact = new FtpServerFactory();
 		ListenerFactory factory = new ListenerFactory();
 		
-		factory.setPort(Integer.valueOf(Config.getInstance().getProp("srv_port")));
+		factory.setPort(Integer.valueOf(Config.getInstance().getProp("ftp_port")));
 		
 		srvFact.addListener("default", factory.createListener());
 		
