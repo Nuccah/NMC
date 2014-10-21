@@ -118,7 +118,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private CellConstraints cc;
 	private JDialog dlg;
 	private JProgressBar progressBar;
-	private Task task;
+	private UploadTask uTask;
 	private static Dashboard instance = null;
 
 	/**
@@ -433,33 +433,34 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	 * @return boolean whether metadata fields are empty or not
 	 */
 	public boolean verify(String node){
-		if (titleField.getText() == null || yearField.getText() == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
-			return false;
-		else{
-			switch (node) {
-			case "Books":
-				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
-					return false;
-				else return true;
-			case "Images": 
-				if (personField.getText() == null)
-					return false;
-				else return true;
-			case "Music": 
-				if (personField.getText() == null || genreField.getText() == null)
-					return false;
-				else return true;
-			case "Movies":
-				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
-					return false;
-				else return true;
-			case "Series":
-				if (synopsisField.getText() == null || genreField.getText() == null )
-					return false;
-				else return true;
-			default: return false;
-			}
-		}
+		return true;
+//		if (titleField.getText() == null || yearField.getText() == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+//			return false;
+//		else{
+//			switch (node) {
+//			case "Books":
+//				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
+//					return false;
+//				else return true;
+//			case "Images": 
+//				if (personField.getText() == null)
+//					return false;
+//				else return true;
+//			case "Music": 
+//				if (personField.getText() == null || genreField.getText() == null)
+//					return false;
+//				else return true;
+//			case "Movies":
+//				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
+//					return false;
+//				else return true;
+//			case "Series":
+//				if (synopsisField.getText() == null || genreField.getText() == null )
+//					return false;
+//				else return true;
+//			default: return false;
+//			}
+//		}
 	}
 
 	/**
@@ -490,10 +491,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				//Instances of javax.swing.SwingWorker are not reusuable, so
 				//we create new instances as needed.
 
-				task = new Task(node.toString(), fc.getSelectedFile());
-				task.addPropertyChangeListener(this);
+				uTask = new UploadTask(node.toString(), fc.getSelectedFile());
+				uTask.addPropertyChangeListener(this);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				task.execute();
+				uTask.execute();
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						progressBar();

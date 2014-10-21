@@ -28,6 +28,7 @@ public class Converter {
 	 * Le fichier créé est placé dans le même dossier que celui d'origine
 	 * 
 	 * @param fToConvert : Fichier vidéo à convertir au format .mp4
+	 * @return 
 	 */
 	public void convertToMP4(File fToConvert){
 		String newFileName = fToConvert.getName().substring(0, fToConvert.getName().lastIndexOf("."))+".mp4";
@@ -37,6 +38,7 @@ public class Converter {
 		reader.addListener(ToolFactory.makeWriter(fToConvert.getParent()+Parser.getInstance().getSlash()+newFileName, reader));
 		while(reader.readPacket() == null);
 	}
+	
 	/**
 	 * Convertit le fichier audio entré au format .mp3<br />
 	 * Le fichier créé est placé dans le même dossier que celui d'origine
