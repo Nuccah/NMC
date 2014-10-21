@@ -40,18 +40,22 @@ public class UploadTask extends SwingWorker<Void, Void> {
 	@Override
 	public Void doInBackground() throws Exception {
 		try {
-			System.out.println("0");
-			Converter.getInstance().convertToMP4(uploadFile);
-			System.out.println("1");
+			int percentCompleted = 0;
+			setProgress(percentCompleted);
+			if(directory == "Movies" || directory == "Series"){
+				String filepath = Converter.getInstance().convertToMP4(uploadFile);
+				uploadFile = new File(filepath);
+			}
+			else if(directory == "Music"){
+				String filepath = Converter.getInstance().convertToMP3(uploadFile);
+				uploadFile = new File(filepath);
+			}
 			TransferManager.getInstance().connect();
 			TransferManager.getInstance().sendFile(directory, uploadFile);
 			FileInputStream inputStream = new FileInputStream(uploadFile);
 			byte[] buffer = new byte[BUFFER_SIZE]; 
 			int bytesRead = -1;
 			long totalBytesRead = 0;
-			int percentCompleted = 0;
-			setProgress(percentCompleted);
-			System.out.println("2");
 			long fileSize = uploadFile.length();
 			while ((bytesRead = inputStream.read(buffer)) != -1) {
 				TransferManager.getInstance().writeFile(buffer, 0, bytesRead);
@@ -81,7 +85,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 		Toolkit.getDefaultToolkit().beep();
 		if (!isCancelled()) {
 			JOptionPane.showMessageDialog(null,
-					"File has been uploaded successfully!", "Message",
+					"File has been converted & uploaded successfully!", "Message",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 	}

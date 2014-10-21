@@ -434,33 +434,6 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	 */
 	public boolean verify(String node){
 		return true;
-//		if (titleField.getText() == null || yearField.getText() == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
-//			return false;
-//		else{
-//			switch (node) {
-//			case "Books":
-//				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
-//					return false;
-//				else return true;
-//			case "Images": 
-//				if (personField.getText() == null)
-//					return false;
-//				else return true;
-//			case "Music": 
-//				if (personField.getText() == null || genreField.getText() == null)
-//					return false;
-//				else return true;
-//			case "Movies":
-//				if (personField.getText() == null || genreField.getText() == null || synopsisField.getText() == null )
-//					return false;
-//				else return true;
-//			case "Series":
-//				if (synopsisField.getText() == null || genreField.getText() == null )
-//					return false;
-//				else return true;
-//			default: return false;
-//			}
-//		}
 	}
 
 	/**
@@ -470,7 +443,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		if ("progress" == evt.getPropertyName()) {
 			int progress = (Integer) evt.getNewValue();
 			progressBar.setValue(progress);
-			if(progress == 100) dlg.dispose();
+			if(progress == 0)progressBar.setString("Converting... (this could take some time)");
+			else if(progress == 100) dlg.dispose();
+			else progressBar.setString("Uploading");
 		} 
 	}
 
