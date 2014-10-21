@@ -44,7 +44,7 @@ public class Main {
 						}
 					}
 		});
-		sockTh.setDaemon(true);
+		//sockTh.setDaemon(true);
 		sockTh.start();
 		TransferManager.getInstance().start();
 	}

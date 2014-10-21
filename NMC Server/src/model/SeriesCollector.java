@@ -12,4 +12,18 @@ public class SeriesCollector extends MetaDataCollector{
 		this.genre = genre;
 		this.year = year;
 	}
+
+	public String getSynopsis() {
+		return synopsis;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public int getYear() {
+		return year;
+	}
+	
+	
 }

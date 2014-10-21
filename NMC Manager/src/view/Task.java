@@ -7,9 +7,11 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
+import model.MetaDataCollector;
 import controller.TransferManager;
 
 /**
@@ -23,21 +25,23 @@ public class Task extends SwingWorker<Void, Void> {
 	 */
 	private File uploadFile;
 	private String directory;
+	private MetaDataCollector mdc;
 	private static final int BUFFER_SIZE = 4096;
 
 	/** Task Constructor
 	 * @param selectedFile file to be uploaded
 	 */
-	public Task(String directory, File selectedFile) {
+	public Task(String directory, File selectedFile, MetaDataCollector mdc) {
 		this.uploadFile = selectedFile;
 		this.directory = directory;
+		this.mdc = mdc;
 	}
 
 	@Override
 	public Void doInBackground() throws Exception {
 		try {
 			TransferManager.getInstance().connect();
-			TransferManager.getInstance().sendFile(directory, uploadFile);
+			TransferManager.getInstance().sendFile(directory, uploadFile, mdc);
 			FileInputStream inputStream = new FileInputStream(uploadFile);
 			byte[] buffer = new byte[BUFFER_SIZE]; 
 			int bytesRead = -1;

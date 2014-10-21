@@ -14,4 +14,22 @@ public class AlbumCollector extends MetaDataCollector{
 		this.description = description;
 		this.genre = genre;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getArtist() {
+		return artist;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public int getYear() {
+		return year;
+	}
+	
+	
 }

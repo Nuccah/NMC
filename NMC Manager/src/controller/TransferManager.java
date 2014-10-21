@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import model.Config;
+import model.MetaDataCollector;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+
 import view.FTPException;
 
 /**
@@ -60,15 +62,24 @@ public class TransferManager extends Thread {
 	 * @param fToSend : Fichier à téléverser sur le serveur 
 	 * @throws FTPException if client-server communication error occurred
 	 */
-	public void sendFile(String directory, File fToSend) throws FTPException{
+	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws FTPException{
 
 		try {
 			if(!client.setFileType(FTP.BINARY_FILE_TYPE))
 				throw new FTPException("Could not set binary file type.");;
 			client.setFileType(FTP.BINARY_FILE_TYPE);
 			String filename = null;
-			if(directory == null) filename = fToSend.getName();
-			else filename = "/"+directory+"/"+fToSend.getName();
+			String relPath = null;
+			if(directory == null){
+				filename = fToSend.getName();
+				relPath = filename;
+			}
+			else {
+				filename = "/"+directory+"/"+fToSend.getName();
+				String slash = Parser.getInstance().getSlash();
+				relPath = slash+directory+slash+fToSend.getName();
+			}
+			if(mdc != null) mdc.setRelPath(relPath);
 			os = client.storeUniqueFileStream(filename);
 		} catch (IOException e) {
 			throw new FTPException("Error uploading file: " + e.getMessage());

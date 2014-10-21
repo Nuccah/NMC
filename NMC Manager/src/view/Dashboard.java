@@ -141,12 +141,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private static Dashboard instance = null;
 	
 	AlbumCollector albumC;
-	AudioCollector audioC;
-	BookCollector bookC;
-	EpisodeCollector episodeC;
-	ImageCollector imageC;
 	SeriesCollector seriesC;
-	VideoCollector videoC;
+	MetaDataCollector fileC;
 	
 	/**
 	 * Creates instance of Dashboard
@@ -576,8 +572,19 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			else{
 				//Instances of javax.swing.SwingWorker are not reusuable, so
 				//we create new instances as needed.
-
-				task = new Task(node.toString(), fc.getSelectedFile());
+				switch (node.toString()) {
+				case "Books": fileC = new BookCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
+				case "Images": fileC = new ImageCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText()); break;
+				case "Add New Music": fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), (String) albumBox.getSelectedItem()); break;
+				case "Movies": fileC = new VideoCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
+				case "Add New Episodes": fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), (String) seriesBox.getSelectedItem(), personField.getText(), 
+						Integer.parseInt(seasonField.getText()), Integer.parseInt(chronoField.getText())); break;
+				default: break;
+				}
+				task = new Task(node.toString(), fc.getSelectedFile(), fileC);
 				task.addPropertyChangeListener(this);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				task.execute();
@@ -587,18 +594,6 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 						setCursor(null); //turn off the wait cursor
 					}
 				});
-				switch (node.toString()) {
-				case "Books": bookC = new BookCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
-						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
-				case "Images": imageC = new ImageCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
-						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText()); break;
-				case "Add New Music": audioC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), (String) albumBox.getSelectedItem()); break;
-				case "Movies": videoC = new VideoCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
-						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
-				case "Add New Episodes": episodeC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), (String) seriesBox.getSelectedItem(), personField.getText(), 
-						Integer.parseInt(seasonField.getText()), Integer.parseInt(chronoField.getText())); break;
-				default: break;
-				}
 				clear();
 			}
 		}

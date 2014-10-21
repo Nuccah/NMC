@@ -8,7 +8,7 @@ import model.Config;
 /**
  * Classe permettant l'envoi des configurations automatiquement lorsqu'un client se connecte pour la première fois
  * @author Antoine
- *
+ * @deprecated
  */
 public class AutoConfigManager extends Thread {
 	private static AutoConfigManager instance = null;

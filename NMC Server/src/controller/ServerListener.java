@@ -3,11 +3,7 @@ package controller;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-
-import org.hamcrest.core.IsInstanceOf;
 
 import model.AlbumCollector;
 import model.AudioCollector;
@@ -18,51 +14,65 @@ import model.ImageCollector;
 import model.MetaDataCollector;
 import model.SeriesCollector;
 import model.VideoCollector;
-
+/**
+ * Classe d'écoute Socket et gestion des différentes actions réseau du serveur (hors FTP)
+ * @author Antoine
+ * @version 1.0
+ */
 public class ServerListener implements Runnable {
 	private Socket cl;
+	private ObjectInputStream ois;
+	private ObjectOutputStream oos;
 	
 	protected ServerListener(Socket cl) {
 		this.cl = cl;
 	}
 	
 	public void executeAction() throws IOException, ClassNotFoundException{
-		ObjectInputStream ois = new ObjectInputStream(cl.getInputStream());
-		ObjectOutputStream oos = new ObjectOutputStream(cl.getOutputStream());
+		ois = new ObjectInputStream(cl.getInputStream());
+		oos = new ObjectOutputStream(cl.getOutputStream());
 		
 		switch(String.valueOf(ois.readObject())){
 			case "init" : 
 				oos.writeObject("ACK");
-				sendAutoConfig(ois, oos);
+				sendAutoConfig();
 				break;
 			case "connec":
 				oos.writeObject("ACK");
-				connectCl(ois, oos);
+				connectCl();
 				break;
 			case "meta" :
 				oos.writeObject("ACK");
-				recieveMeta(ois, oos);
+				recieveMeta();
 				break;
 			case "del" :
 				oos.writeObject("ACK");
-				delObject(ois, oos);
+				delObject();
+				break;
+			case "list":
+				oos.writeObject("ACK");
+				sendList();
 				break;
 			default :
 				oos.writeObject("NACK");
 		}
 	}
 	
-	private void sendAutoConfig(ObjectInputStream ois, ObjectOutputStream oos){
+	private void sendAutoConfig(){
 		// TODO: Créer les méthodes nécessaires à l'envoi auto des configs
 	}
 	
-	private void connectCl(ObjectInputStream ois, ObjectOutputStream oos){
+	private void connectCl(){
 		
 	}
-	
-	private void recieveMeta(ObjectInputStream ois, ObjectOutputStream oos) throws ClassNotFoundException, IOException{
-		MetaDataCollector mdc = (MetaDataCollector) ois.readObject();
+	// Permet de recevoir les méta données
+	private void recieveMeta() throws ClassNotFoundException, IOException{
+		Object o = ois.readObject();
+		System.out.println("Object recieved: "+o);
+		MetaDataCollector mdc = (MetaDataCollector) o;
+		mdc.setAbsPath(Config.getInstance().getProp("root_dir")+mdc.getRelPath());
 		Injecter inj = Injecter.getInstance();
+		System.out.println("Server will check Meta Collector Type!!!");
 		if(mdc instanceof AudioCollector){
 			oos.writeObject("ACK");
 			inj.injector((AudioCollector) mdc);
@@ -88,13 +98,18 @@ public class ServerListener implements Runnable {
 			inj.injector((SeriesCollector) mdc);
 		}
 		else if(mdc instanceof VideoCollector){
+			System.out.println("Found!!!");
 			oos.writeObject("ACK");
 			inj.injector((VideoCollector) mdc);
 		}
 		else oos.writeObject("NACK");
 	}
 	
-	private void delObject(ObjectInputStream ois, ObjectOutputStream oos){
+	private void delObject(){
+		
+	}
+
+	private void sendList(){
 		
 	}
 	
