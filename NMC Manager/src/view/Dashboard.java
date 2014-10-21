@@ -46,21 +46,21 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
+import model.AlbumCollector;
+import model.AudioCollector;
+import model.BookCollector;
 import model.Config;
+import model.EpisodeCollector;
+import model.ImageCollector;
+import model.MetaDataCollector;
 import model.Profil;
+import model.SeriesCollector;
+import model.VideoCollector;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import controller.AlbumCollector;
-import controller.AudioCollector;
-import controller.BookCollector;
-import controller.EpisodeCollector;
-import controller.ImageCollector;
-import controller.SeriesCollector;
 import controller.SessionManager;
-import controller.MetaDataCollector;
-import controller.VideoCollector;
 
 /**
  * Fenêtre principale du programme

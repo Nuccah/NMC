@@ -1,6 +1,7 @@
-package controller;
+package model;
 
 public class AudioCollector extends MetaDataCollector{
+	private static final long serialVersionUID = -7220269338111519233L;
 	private String artist;
 	private String album;
 	private String filename;
@@ -10,7 +11,6 @@ public class AudioCollector extends MetaDataCollector{
 		this.artist = artist;
 		this.filename = filename;
 		this.album = album;
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

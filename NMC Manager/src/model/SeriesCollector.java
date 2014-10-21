@@ -1,6 +1,7 @@
-package controller;
+package model;
 
 public class SeriesCollector extends MetaDataCollector{
+	private static final long serialVersionUID = -7536243590487815526L;
 	private String synopsis;
 	private String genre;
 	private int year;

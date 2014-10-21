@@ -15,6 +15,7 @@ import view.FTPException;
  * @author Antoine
  *
  */
+//TODO: Passer en SFTP!!!!
 public class TransferManager extends Thread {
 	private static TransferManager instance = null;
 	private FTPClient client;

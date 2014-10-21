@@ -1,6 +1,7 @@
-package controller;
+package model;
 
 public class AlbumCollector extends MetaDataCollector{
+	private static final long serialVersionUID = -7524508120485511030L;
 	private String description;
 	private String artist;
 	private String genre;
@@ -12,6 +13,5 @@ public class AlbumCollector extends MetaDataCollector{
 		this.year = year;
 		this.description = description;
 		this.genre = genre;
-		// TODO Auto-generated constructor stub
 	}
 }

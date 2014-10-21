@@ -1,6 +1,7 @@
-package controller;
+package model;
 
 public class ImageCollector extends MetaDataCollector{
+	private static final long serialVersionUID = -6557025443275058628L;
 	private String photographer;
 	private String filename;
 	private int year;
@@ -10,7 +11,6 @@ public class ImageCollector extends MetaDataCollector{
 		this.photographer = photographer;
 		this.year = year;
 		this.filename = filename;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

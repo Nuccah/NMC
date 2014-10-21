@@ -3,7 +3,14 @@
  */
 package controller;
 
-import controller.MetaDataCollector.*;
+import model.AlbumCollector;
+import model.AudioCollector;
+import model.BookCollector;
+import model.EpisodeCollector;
+import model.ImageCollector;
+import model.SeriesCollector;
+import model.VideoCollector;
+import model.MetaDataCollector.*;
 
 /**
  * Class permitting to inject metadata into database

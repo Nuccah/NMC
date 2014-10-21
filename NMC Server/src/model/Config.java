@@ -71,7 +71,7 @@ public class Config {
 		setProp("user_db", "nmc_admin");
 		setProp("pass_db", "ephec2014");
 		setProp("ftp_port", "50001");
-		setProp("meta_port", "50002");
+		setProp("sock_port", "50002");
 		saveProp();
 	}
 	

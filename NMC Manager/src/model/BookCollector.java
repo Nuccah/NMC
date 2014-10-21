@@ -1,6 +1,7 @@
-package controller;
+package model;
 
 public class BookCollector extends MetaDataCollector{
+	private static final long serialVersionUID = 1138699093003320810L;
 	private String author;
 	private String genre;
 	private int length;
@@ -15,7 +16,6 @@ public class BookCollector extends MetaDataCollector{
 		this.year = year;
 		this.genre = genre;
 		this.synopsis = synopsis;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

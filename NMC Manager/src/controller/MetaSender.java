@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 
 import model.Config;
+import model.MetaDataCollector;
 /**
  * Permet l'envoi des meta données au serveur
  * @author Antoine Ceyssens

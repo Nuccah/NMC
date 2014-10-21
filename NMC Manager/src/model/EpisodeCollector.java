@@ -1,6 +1,7 @@
-package controller;
+package model;
 
 public class EpisodeCollector extends MetaDataCollector{
+	private static final long serialVersionUID = 5898661708344764422L;
 	private String director;
 	private String series;
 	private int season;

@@ -1,6 +1,7 @@
-package controller;
+package model;
 
 public class VideoCollector extends MetaDataCollector{
+	private static final long serialVersionUID = -2416569935908691795L;
 	private String director;
 	private String genre;
 	private String filename;
@@ -14,7 +15,6 @@ public class VideoCollector extends MetaDataCollector{
 		this.year = year;
 		this.genre = genre;
 		this.synopsis = synopsis;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
