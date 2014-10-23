@@ -108,7 +108,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
 	
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
-	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
+	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav", "wma", "flac");
 	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
 	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
 	
@@ -412,6 +412,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
+		progressBar.setString("Converting... (this could take some time)");
 		dlg.add(BorderLayout.CENTER, progressBar);
 		dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
 		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -443,8 +444,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		if ("progress" == evt.getPropertyName()) {
 			int progress = (Integer) evt.getNewValue();
 			progressBar.setValue(progress);
-			if(progress == 0)progressBar.setString("Converting... (this could take some time)");
-			else if(progress == 100) dlg.dispose();
+			if(progress == 100) dlg.dispose();
 			else progressBar.setString("Uploading");
 		} 
 	}
