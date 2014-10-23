@@ -17,9 +17,10 @@ import org.postgresql.util.PSQLException;
 public class ConnectorDB {
 	private static ConnectorDB instance = null;
 	private Connection db;
+	private Config conf;
 	
 	protected ConnectorDB(){
-		// Fake constructor for singleton
+		this.conf = Config.getInstance();
 	}
 	
 	/**
@@ -35,15 +36,12 @@ public class ConnectorDB {
 	
 	/**
 	 * Permet d'ouvrir la connexion à la DB 
-	 * @param url : addresse de la db (ex: "//localhost/ma_db")
-	 * @param user : utilisateur de la db
-	 * @param password : mot de passe de l'utilisateur de la db
 	 */
-	public void openConnection(String url, String user, String password){
-		String uri = "jdbc:postgresql:"+url;
+	public void openConnection(){
+		String uri = "jdbc:postgresql:"+conf.getProp("url_db");
 		Properties props = new Properties();
-		props.setProperty("user", user);
-		props.setProperty("password", password);
+		props.setProperty("user", conf.getProp("user_db"));
+		props.setProperty("password", conf.getProp("pass_db"));
 		try {
 			db = DriverManager.getConnection(uri, props);
 		} catch (SQLException e) {
