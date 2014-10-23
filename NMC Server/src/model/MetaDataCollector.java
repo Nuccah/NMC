@@ -67,7 +67,23 @@ public class MetaDataCollector implements Serializable{
 		this.relPath = relPath;
 	}
 
+	public int getModificiationID() {
+		return modificiationID;
+	}
 
+	public void setModificiationID(int modificiationID) {
+		this.modificiationID = modificiationID;
+	}
+
+	public int getVisibilityID() {
+		return visibilityID;
+	}
+
+	public void setVisibilityID(int visibilityID) {
+		this.visibilityID = visibilityID;
+	}
+
+	
 	
 	
 }
