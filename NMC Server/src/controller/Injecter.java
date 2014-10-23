@@ -11,6 +11,7 @@ import model.BookCollector;
 import model.ConnectorDB;
 import model.EpisodeCollector;
 import model.ImageCollector;
+import model.Profil;
 import model.SeriesCollector;
 import model.VideoCollector;
 
@@ -34,9 +35,15 @@ public class Injecter {
 	
 	public void injector(AudioCollector audio){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Insert Audio
+		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query2 = "INSERT INTO nmc_tracks values (DEFAULT, '"+audio.getTitle()+"', '"+audio.getFilename()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
+		String query3 =	"INSERT INTO nmc_bands(\"name\") SELECT '"+audio.getArtist()+"' WHERE NOT EXISTS (SELECT id FROM nmc_bands WHERE name = '"+audio.getArtist()+"');";
+		String query4 = "INSERT INTO nmc_tracks_bands VALUES ((SELECT id FROM nmc_tracks ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_bands ORDER BY id DESC LIMIT 1));";
 		try {
-			db.modify(query);
+			db.modify(query1);
+			db.modify(query2);
+			db.modify(query3);
+			db.modify(query4);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

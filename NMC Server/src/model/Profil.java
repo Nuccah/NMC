@@ -11,6 +11,7 @@ import java.sql.Date;
 public class Profil implements Serializable {
 	private static final long serialVersionUID = 1399111452938397134L;
 	private static Profil instance = null;
+	private int id;
 	private String username;
 	private String mail;
 	private String first_name;
@@ -22,6 +23,7 @@ public class Profil implements Serializable {
 	 * Initialise toutes les variables du profil à null
 	 */
 	public void reset(){
+		id = 0;
 		username = null;
 		mail = null;
 		first_name = null;
@@ -41,6 +43,14 @@ public class Profil implements Serializable {
 	public static Profil getInstance(){
 		if(instance == null) instance = new Profil();
 		return instance;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public String getUsername() {

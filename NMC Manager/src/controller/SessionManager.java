@@ -47,6 +47,7 @@ public class SessionManager {
 		try {
 			if(Crypter.verify(Crypter.encrypt(password), res.getString("password"))){
 				Profil pf = Profil.getInstance();
+				pf.setId(Integer.parseInt(res.getString("id")));
 				pf.setUsername(username);
 				pf.setMail(res.getString("mail"));
 				pf.setFirstName(res.getString("first_name"));
