@@ -64,11 +64,11 @@ public class TransferManager extends Thread {
 		try {
 			if(!client.setFileType(FTP.BINARY_FILE_TYPE))
 				throw new FTPException("Could not set binary file type.");;
-			client.setFileType(FTP.BINARY_FILE_TYPE);
-			String filename = null;
-			if(directory == null) filename = fToSend.getName();
-			else filename = "/"+directory+"/"+fToSend.getName();
-			os = client.storeUniqueFileStream(filename);
+				client.setFileType(FTP.BINARY_FILE_TYPE);
+				String filename = null;
+				if(directory == null) filename = fToSend.getName();
+				else filename = "/"+directory+"/"+fToSend.getName();
+				os = client.storeUniqueFileStream(filename);
 		} catch (IOException e) {
 			throw new FTPException("Error uploading file: " + e.getMessage());
 		}

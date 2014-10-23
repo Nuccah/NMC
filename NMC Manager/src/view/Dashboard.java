@@ -67,14 +67,14 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JPanel centerPane;
 	private JPanel bottomPane;
 	private JPanel uploadDataPane;
-	
+
 	private JButton uploadButton = new JButton("Upload");;
 	private JButton clearButton = new JButton("Clear");
 	private JButton mnProfil = new JButton("Profil");
 	private JButton mnAide = new JButton("Aide");
 	private JButton mnParametres = new JButton("Parametres");
 	private JButton mnQuitter = new JButton("Quitter");
-	
+
 	private JLabel titleLabel = new JLabel("Title");
 	private JLabel yearLabel = new JLabel("Year");
 	private JLabel authorLabel = new JLabel("Author");
@@ -85,10 +85,10 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JLabel directorLabel = new JLabel("Director");
 	private JLabel visibilityLabel = new JLabel("Visibility Level");
 	private JLabel modificationLabel = new JLabel("Modification Level");
-	
+
 	private JTree menuBar;
 	private JFileChooser fc;
-	
+
 	private DefaultMutableTreeNode node;
 	private DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
 	private DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
@@ -101,20 +101,20 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JTextField genreField = new JTextField();
 
 	private JTextField personField = new JTextField();
-	
+
 	private JComboBox<String> visibilityBox = new JComboBox<String>();
 	private JComboBox<String> modificationBox = new JComboBox<String>();
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
-	
+
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
 	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav", "wma", "flac");
 	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
 	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
-	
+
 	private GridBagConstraints lc = new GridBagConstraints();
 	private GridBagConstraints rc = new GridBagConstraints();
-	
+
 	private CellConstraints cc;
 	private JDialog dlg;
 	private JProgressBar progressBar;
@@ -159,7 +159,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		tc.gridx = 0; tc.gridy = 0; tc.weightx = 1; tc.weighty = 0.1; tc.fill = GridBagConstraints.BOTH;
 		cc.gridx = 0; cc.gridy = 1; cc.weightx = 1; cc.weighty = 0.8; cc.fill = GridBagConstraints.BOTH;
 		bc.gridx = 0; bc.gridy = 2; bc.weightx = 1; bc.weighty = 0.1; bc.fill = GridBagConstraints.BOTH;
-		
+
 		topPane = new JPanel();
 		centerPane = new JPanel();
 		leftPane = new JPanel();
@@ -177,7 +177,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		leftPane.setLayout(new GridLayout(1,1));
 		rightPane.setLayout(new GridLayout(1,1));
 		centerPane.setLayout(new GridBagLayout());
-		
+
 		System.out.println(getSize().toString());
 		leftPane.setMinimumSize(new Dimension(getSize().width/5, getSize().height));
 		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
@@ -420,7 +420,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		dlg.setLocationRelativeTo((Frame) getOwner());
 		dlg.setVisible(true);
 	}
-	
+
 	public void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText("");
@@ -458,9 +458,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		else if(e.getSource() == uploadButton){
 			if (!verify(node.toString())){
 				JOptionPane.showMessageDialog(getContentPane(),
-					    "Not all data fields have been set",
-					    "Insufficient Data",
-					    JOptionPane.ERROR_MESSAGE);
+						"Not all data fields have been set",
+						"Insufficient Data",
+						JOptionPane.ERROR_MESSAGE);
 			}
 			else{
 				//Instances of javax.swing.SwingWorker are not reusuable, so

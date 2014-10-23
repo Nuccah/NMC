@@ -84,7 +84,7 @@ public class MetaDataCollector {
 
 	class ImageCollector extends MetaDataCollector{
 		private String photographer;
-		
+
 		public ImageCollector() {
 			super();
 			photographer = null;
@@ -104,7 +104,7 @@ public class MetaDataCollector {
 		private String screenwriter;
 		private String genre;
 		private int duration;
-		
+
 		public VideoCollector() {
 			super();
 			director = null;

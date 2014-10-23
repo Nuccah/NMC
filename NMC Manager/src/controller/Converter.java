@@ -12,11 +12,11 @@ import com.xuggle.mediatool.ToolFactory;
  */
 public class Converter {
 	private static Converter instance = null;
-	
+
 	protected Converter(){
-		
+
 	}
-	
+
 	public static Converter getInstance(){
 		if(instance == null){
 			instance = new Converter();
@@ -42,7 +42,7 @@ public class Converter {
 		while(reader.readPacket() == null);
 		return fToConvert.getParent()+Parser.getInstance().getSlash()+newFileName;
 	}
-	
+
 	/**
 	 * Convertit le fichier audio entré au format .mp3<br />
 	 * Le fichier créé est placé dans le même dossier que celui d'origine
