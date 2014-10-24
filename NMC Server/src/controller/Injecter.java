@@ -86,7 +86,7 @@ public class Injecter {
 		String query2 = "INSERT INTO nmc_media values (DEFAULT, '"+book.getTitle()+"', '"+book.getRelPath()+"', '"+book.getVisibilityID()+"', '"+book.getModificiationID()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		String query3 = "INSERT INTO nmc_media_info values ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1), '"+book.getSynopsis()+"', '"+book.getYear()+"';";
 		String query4 =	"INSERT INTO nmc_persons(\"name\") SELECT '"+book.getAuthor()+"' WHERE NOT EXISTS (SELECT id FROM nmc_persons WHERE name = '"+book.getAuthor()+"');";
-		String query5 = "INSERT INTO nmc_media_info_persons VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+book.getAuthor()+"'));";
+		String query5 = "INSERT INTO nmc_media_info_authors VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+book.getAuthor()+"'));";
 		String query6 = "INSERT INTO nmc_categories(\"category\") SELECT '"+book.getGenre()+"' WHERE NOT EXISTS (SELECT id FROM nmc_categories WHERE category = '"+book.getGenre()+"');";
 		String query7 = "INSERT INTO nmc_books_categories VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_categories WHERE category = '"+book.getGenre()+"');";
 		try {
@@ -108,7 +108,7 @@ public class Injecter {
 		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
 		String query2 = "INSERT INTO nmc_media values (DEFAULT, '"+image.getTitle()+"', '"+image.getRelPath()+"', '"+image.getVisibilityID()+"', '"+image.getModificiationID()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		String query3 =	"INSERT INTO nmc_persons(\"name\") SELECT '"+image.getPhotographer()+"' WHERE NOT EXISTS (SELECT id FROM nmc_persons WHERE name = '"+image.getPhotographer()+"');";
-		String query4 = "INSERT INTO nmc_media_info_persons VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+image.getPhotographer()+"'));";
+		String query4 = "INSERT INTO nmc_media_info_photographers VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+image.getPhotographer()+"'));";
 		try {
 			db.modify(query1);
 			db.modify(query2);
@@ -122,9 +122,27 @@ public class Injecter {
 	
 	public void injector(VideoCollector video){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Insert Video
+		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query2 = "INSERT INTO nmc_media VALUES (DEFAULT, '"+video.getTitle()+"', '"+video.getRelPath()+"', '"+video.getVisibilityID()+"', '"+video.getModificiationID()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
+		String query3 = "INSERT INTO nmc_media_info VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1), '"+video.getSynopsis()+"', '"+video.getYear()+"';";
+		String query4 = "INSERT INTO nmc_videos VALUES (DEFAULT, 'false', 0, '"+video.getFilename()+"');";
+		String query5 = "INSERT INTO nmc_media_info_films VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1));";
+		String query6 = "INSERT INTO nmc_categories(\"category\") SELECT '"+video.getGenre()+"' WHERE NOT EXISTS (SELECT id FROM nmc_categories WHERE category = '"+video.getGenre()+"');";
+		String query7 = "INSERT INTO nmc_films_categories VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_categories WHERE category = '"+video.getGenre()+"');";
+		String query8 = "INSERT INTO nmc_persons(\"name\") SELECT '"+video.getDirector()+"' WHERE NOT EXISTS (SELECT id FROM nmc_persons WHERE name = '"+video.getDirector()+"');";
+		String query9 = "INSERT INTO nmc_directors_persons VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+video.getDirector()+"'));";
+		String query10 = "INSERT INTO nmc_users_watched_videos VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), '"+Profil.getInstance().getId()+"', 'false');";
 		try {
-			db.modify(query);
+			db.modify(query1);
+			db.modify(query2);
+			db.modify(query3);
+			db.modify(query4);
+			db.modify(query5);
+			db.modify(query6);
+			db.modify(query7);
+			db.modify(query8);
+			db.modify(query9);
+			db.modify(query10);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -133,9 +151,17 @@ public class Injecter {
 	
 	public void injector(SeriesCollector series){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Insert Series
+		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query2 = "INSERT INTO nmc_media VALUES (DEFAULT, '"+series.getTitle()+"', '"+series.getRelPath()+"', '"+series.getVisibilityID()+"', '"+series.getModificiationID()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
+		String query3 = "INSERT INTO nmc_media_info VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1), '"+series.getSynopsis()+"', '"+series.getYear()+"';";
+		String query4 = "INSERT INTO nmc_categories(\"category\") SELECT '"+series.getGenre()+"' WHERE NOT EXISTS (SELECT id FROM nmc_categories WHERE category = '"+series.getGenre()+"');";
+		String query5 = "INSERT INTO nmc_series_categories VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_categories WHERE category = '"+series.getGenre()+"');";
 		try {
-			db.modify(query);
+			db.modify(query1);
+			db.modify(query2);
+			db.modify(query3);
+			db.modify(query4);
+			db.modify(query5);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -144,9 +170,20 @@ public class Injecter {
 	
 	public void injector(EpisodeCollector episode){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Insert Episode
+		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query2 = "INSERT INTO nmc_videos VALUES (DEFAULT, 'false', 0, '"+episode.getFilename()+"');";
+		String query3 = "INSERT INTO nmc_users_watched_videos VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), '"+Profil.getInstance().getId()+"', 'false');";
+		//TODO: [Derek] DANGER - NEAR CERTAINTY OF MULTIPLE RETURNS - NEEDS ADDITIONAL PARAMETERS
+		String query4 = "INSERT INTO nmc_media_info_series VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE title = '"+episode.getSeries()+"'), '"+episode.getTitle()+"', '"+episode.getSeason()+"', '"+episode.getChrono()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
+		String query5 = "INSERT INTO nmc_persons(\"name\") SELECT '"+episode.getDirector()+"' WHERE NOT EXISTS (SELECT id FROM nmc_persons WHERE name = '"+episode.getDirector()+"');";
+		String query6 = "INSERT INTO nmc_directors_persons VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+episode.getDirector()+"'));";
 		try {
-			db.modify(query);
+			db.modify(query1);
+			db.modify(query2);
+			db.modify(query3);
+			db.modify(query4);
+			db.modify(query5);
+			db.modify(query6);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
