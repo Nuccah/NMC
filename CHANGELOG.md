@@ -1,6 +1,6 @@
 #Changelog NMC Java#
-
-##Changelog RC1##
+----------------
+###Changelog RC1###
 ---------------
 
 First stable version
