@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.HeadlessException;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -153,7 +154,7 @@ public class ServerListener implements Runnable {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	/**
@@ -165,7 +166,7 @@ public class ServerListener implements Runnable {
 			mdc = (MetaDataCollector) ois.readObject();
 		} catch (ClassNotFoundException | IOException e1) {
 			System.out.println("[Error] - Couldn't retrieve meta type from: "+cl.getInetAddress());
-			e1.printStackTrace();
+			//e1.printStackTrace();
 		}
 		mdc.setAbsPath(Config.getInstance().getProp("root_dir")+mdc.getRelPath());
 		Injecter inj = Injecter.getInstance();
@@ -201,7 +202,7 @@ public class ServerListener implements Runnable {
 			else oos.writeObject("NACK");
 		} catch (IOException e){
 			System.out.println("[Error] - Meta Type ACK couldn't be sent to: "+cl.getInetAddress());
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
@@ -228,8 +229,8 @@ public class ServerListener implements Runnable {
 		try {
 			while(!cl.isClosed()) executeAction();
 		} catch (ClassNotFoundException | IOException e) {
-			System.out.println("[Error] - Couldn't define action to execute.");
-			e.printStackTrace();
+			if(e instanceof EOFException) System.out.println("[Info] - Socket "+cl.getInetAddress()+" closed");
+			else System.out.println("[Error] - Couldn't define action to execute.");
 		}
 	}
 
