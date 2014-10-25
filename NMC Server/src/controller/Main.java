@@ -22,15 +22,15 @@ public class Main {
 					@Override
 					public void run() {
 						ServerSocket srv = null;
+						ArrayList<Thread> listTh = null;
 						try {
 							srv = new ServerSocket(Integer.valueOf(Config.getInstance().getProp("sock_port")));
-							ArrayList<Thread> listTh = new ArrayList<Thread>();
+							listTh = new ArrayList<Thread>();
 							do{
 								Socket cl = srv.accept();
 								ServerListener sl = new ServerListener(cl);
 								listTh.add(new Thread(sl));
 								listTh.get(listTh.size() - 1).start();
-								
 							} while(!srv.isClosed());
 						} catch (NumberFormatException | IOException e) {
 							e.printStackTrace();

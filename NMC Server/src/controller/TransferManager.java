@@ -46,8 +46,8 @@ public class TransferManager extends Thread {
 		userManagerFactory.setFile(usProp);
 		UserManager userManager = userManagerFactory.createUserManager();
 		BaseUser bu = new BaseUser();
-		bu.setName("ftpadmin");
-		bu.setPassword("ephec2014");
+		bu.setName(Config.getInstance().getProp("ftp_user"));
+		bu.setPassword(Config.getInstance().getProp("ftp_pass"));
 		java.util.List<Authority> auths = new ArrayList<Authority>();
 		Authority writeP = new WritePermission();
 		auths.add(writeP);

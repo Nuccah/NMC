@@ -59,7 +59,7 @@ import model.VideoCollector;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import controller.SessionManager;
+import controller.SocketManager;
 
 /**
  * Fenêtre principale du programme
@@ -540,7 +540,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == mnQuitter){
-			SessionManager.getInstance().logout();
+			SocketManager.getInstance().logout();
 			System.exit(0);
 		}
 		else if(e.getSource() == addButton){
