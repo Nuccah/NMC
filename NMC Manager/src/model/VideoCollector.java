@@ -22,4 +22,24 @@ public class VideoCollector extends MetaDataCollector{
 		// TODO Auto-generated method stub
 		return super.videoExtraction();
 	}
+
+	public String getDirector() {
+		return director;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public String getSynopsis() {
+		return synopsis;
+	}
+
+	public int getYear() {
+		return year;
+	}
 }

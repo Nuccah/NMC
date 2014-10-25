@@ -15,7 +15,22 @@ public class AudioCollector extends MetaDataCollector{
 	
 	@Override
 	public MetaDataCollector audioExtraction() {
-		// TODO Auto-generated method stub
 		return super.audioExtraction();
 	}
+
+	public String getArtist() {
+		return artist;
+	}
+
+	public String getAlbum() {
+		return album;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+	
+	
+	
+	
 }

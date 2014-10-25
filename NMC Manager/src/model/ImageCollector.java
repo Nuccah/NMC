@@ -15,7 +15,20 @@ public class ImageCollector extends MetaDataCollector{
 
 	@Override
 	public MetaDataCollector imageExtraction() {
-		// TODO Auto-generated method stub
 		return super.imageExtraction();
 	}
+
+	public String getPhotographer() {
+		return photographer;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public int getYear() {
+		return year;
+	}
+	
+	
 }

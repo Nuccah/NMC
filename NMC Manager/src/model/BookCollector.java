@@ -20,8 +20,33 @@ public class BookCollector extends MetaDataCollector{
 
 	@Override
 	public MetaDataCollector bookExtraction() {
-		// TODO Auto-generated method stub
 		return super.bookExtraction();
 	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public String getSynopsis() {
+		return synopsis;
+	}
+
+	public int getYear() {
+		return year;
+	}
+	
+	
 
 }
