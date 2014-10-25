@@ -1,14 +1,23 @@
 package controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import javax.swing.JOptionPane;
 
 import model.Config;
 import model.MetaDataCollector;
 
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
+import org.vngx.jsch.ChannelSftp;
+import org.vngx.jsch.ChannelType;
+import org.vngx.jsch.JSch;
+import org.vngx.jsch.Session;
+import org.vngx.jsch.config.SessionConfig;
+import org.vngx.jsch.exception.JSchException;
+import org.vngx.jsch.exception.SftpException;
 
 import view.FTPException;
 
@@ -17,15 +26,15 @@ import view.FTPException;
  * @author Antoine
  *
  */
-//TODO: Passer en SFTP!!!!
-public class TransferManager extends Thread {
+public class TransferManager {
 	private static TransferManager instance = null;
-	private FTPClient client;
 	private Config conf;
+	private Session session;
+	private ChannelSftp sftpChannel;
 	private OutputStream os;
 
+
 	protected TransferManager(){
-		client = new FTPClient();
 		conf = Config.getInstance();
 	}
 
@@ -40,18 +49,43 @@ public class TransferManager extends Thread {
 		return instance;
 	}
 
-	/**Connects client to FTP Server in passive mode
-	 * @throws FTPException if login/pass is not correct
+	/**
+	 * Connects client to FTP Server in passive mode
+	 * 
 	 */
-	public void connect() throws FTPException{
+	public void connect(){
+		SessionConfig config = new SessionConfig();
+		//config.setProperty(SessionConfig.STRICT_HOST_KEY_CHECKING, "no");
+		File hostKey = new File("hostkey.ser");
+		FileInputStream in = null;
 		try {
-			client.connect(conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")));
-			if(!client.login(conf.getProp("ftp_user"), conf.getProp("ftp_pass")))
-				throw new FTPException("FTP serve refused connection.");
-			client.enterLocalPassiveMode();
-		} catch ( IOException e) {
-			throw new FTPException("I/O error: " + e.getMessage());
-		}		
+			in = new FileInputStream(hostKey);
+		} catch (FileNotFoundException e1) {
+			JOptionPane.showMessageDialog(null, "Host Key file couldn't be found");
+		}
+		byte[] buffer = new byte[4096];
+		String key = new String();
+		try{
+			while(in.read(buffer) != -1) key = key.concat(String.valueOf(buffer));
+		} catch(IOException e){
+			JOptionPane.showMessageDialog(null, "Error while reading host key");
+		}
+		config.setProperty(SessionConfig.KEX_SERVER_HOST_KEY, key);
+		config.setProperty(SessionConfig.KEX_ALGORITHMS, "1");
+		try {
+			session = JSch.getInstance().createSession(conf.getProp("ftp_user"), conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")), config);
+		} catch (NumberFormatException | JSchException e) {
+			JOptionPane.showMessageDialog(null, "Unable to create the SFTP Session");
+			e.printStackTrace();
+		}
+		try {
+			session.connect(conf.getProp("ftp_pass").getBytes());
+			sftpChannel = session.openChannel(ChannelType.SFTP);
+			sftpChannel.connect();
+		} catch (JSchException e) {
+			JOptionPane.showMessageDialog(null, "Unable to connect to the SFTP Server");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -65,9 +99,6 @@ public class TransferManager extends Thread {
 	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws FTPException{
 
 		try {
-			if(!client.setFileType(FTP.BINARY_FILE_TYPE))
-				throw new FTPException("Could not set binary file type.");;
-			client.setFileType(FTP.BINARY_FILE_TYPE);
 			String filename = null;
 			String relPath = null;
 			if(directory == null){
@@ -80,13 +111,14 @@ public class TransferManager extends Thread {
 				relPath = slash+directory+slash+fToSend.getName();
 			}
 			if(mdc != null) mdc.setRelPath(relPath);
-			os = client.storeUniqueFileStream(filename);
-		} catch (IOException e) {
+			os = sftpChannel.put(filename);
+		} catch (SftpException e) {
 			throw new FTPException("Error uploading file: " + e.getMessage());
 		}
 	}
 
-	/**Write of file onto outputstream
+	/**
+	 * Write of file onto outputstream
 	 * @param bytes bytes to read
 	 * @param offset from which location in file
 	 * @param length total length of file
@@ -97,29 +129,20 @@ public class TransferManager extends Thread {
 		os.write(bytes, offset, length);
 	}
 
-	/** Closes output stream
+	/**
+	 * Closes output stream
 	 * @throws IOException
 	 */
 	public void finish() throws IOException{
 		os.close();
 	}
 
-	/** Closes connection between client and server
-	 * @throws FTPException if unable to logout or error when attempting to disconnect
+	/** 
+	 * Closes connection between client and server
 	 */
-	public void close() throws FTPException{
-		if (client.isConnected()){
-			try {
-				if(!client.logout()){
-					throw new FTPException("Could not log out from the server");
-				}
-				client.disconnect();
-			} catch (IOException e) {
-				throw new FTPException("Error disconnect from the server: "
-						+ e.getMessage());
-			}
-		};
-
+	public void close() {
+		if (sftpChannel.isConnected()) sftpChannel.disconnect();
+		if (session.isConnected()) session.disconnect();
 	}
 }
 

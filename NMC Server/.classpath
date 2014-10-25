@@ -5,11 +5,12 @@
 	<classpathentry kind="lib" path="lib/crypt/bcprov-jdk15on-151.jar"/>
 	<classpathentry kind="lib" path="lib/db/postgresql-9.3-1102.jdbc4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="lib/ftp/ftplet-api-1.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/ftp/ftpserver-core-1.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/ftp/mina-core-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/ftp/sshd-core-0.12.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/ftp/sshd-core-0.12.0.jar"/>
+	<classpathentry kind="lib" path="lib/ftp/commons-vfs2-2.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/ftp/commons-vfs2-2.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/ftp/commons-vfs2-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/ftp/slf4j-api-1.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/ftp/commons-net-3.3.jar"/>
 	<classpathentry kind="lib" path="lib/ftp/slf4j-simple-1.5.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

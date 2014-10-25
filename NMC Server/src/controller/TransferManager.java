@@ -1,20 +1,26 @@
 package controller;
 
+
+
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import model.Config;
 
-import org.apache.ftpserver.FtpServer;
-import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.ftplet.Authority;
-import org.apache.ftpserver.ftplet.FtpException;
-import org.apache.ftpserver.ftplet.UserManager;
-import org.apache.ftpserver.listener.ListenerFactory;
-import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
-import org.apache.ftpserver.usermanager.impl.BaseUser;
-import org.apache.ftpserver.usermanager.impl.WritePermission;
+import org.apache.sshd.SshServer;
+import org.apache.sshd.common.NamedFactory;
+import org.apache.sshd.common.Session;
+import org.apache.sshd.common.file.FileSystemView;
+import org.apache.sshd.common.file.nativefs.NativeFileSystemFactory;
+import org.apache.sshd.common.file.nativefs.NativeFileSystemView;
+import org.apache.sshd.server.Command;
+import org.apache.sshd.server.PasswordAuthenticator;
+import org.apache.sshd.server.command.ScpCommandFactory;
+import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.server.sftp.SftpSubsystem;
+
 
 
 /**
@@ -24,48 +30,46 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
  */
 public class TransferManager extends Thread {
 	private static TransferManager instance = null;
+	public static final File ROOTDIR = new File(Config.getInstance().getProp("root_dir"));
+	public static final String USERNAME = Config.getInstance().getProp("ftp_user");
+	public static final String PASSWORD = Config.getInstance().getProp("ftp_port");
 
 	@Override
 	public void run(){
-		FtpServerFactory srvFact = new FtpServerFactory();
-		ListenerFactory factory = new ListenerFactory();
-		
-		factory.setPort(Integer.valueOf(Config.getInstance().getProp("ftp_port")));
-		
-		srvFact.addListener("default", factory.createListener());
-		
-		PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
-		File usProp = new File("users.properties");
-		
+		SshServer sshd = SshServer.setUpDefaultServer();		
+		sshd.setFileSystemFactory(new NativeFileSystemFactory(){
+			@Override
+			public FileSystemView createFileSystemView(final Session session){
+				return new NativeFileSystemView(session.getUsername(), false){
+					@SuppressWarnings("unused")
+					public String getVirtualUserDir(){
+						return ROOTDIR.getAbsolutePath();
+					}
+				};
+			}
+		});
+		sshd.setPort(Integer.valueOf(Config.getInstance().getProp("ftp_port")));
+		sshd.setSubsystemFactories(Arrays.<NamedFactory<Command>>asList(new SftpSubsystem.Factory()));
+        sshd.setCommandFactory(new ScpCommandFactory());
+        File hostKey = new File("hostkey.ser");
+        try{
+        	if(!hostKey.exists()) hostKey.createNewFile();
+        } catch(IOException e){
+        	System.out.println("[Error] - Unable to create the hostkey.ser file");
+        }
+        sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(hostKey.getAbsolutePath()));
+        sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
+            @Override
+            public boolean authenticate(final String username, final String password, final ServerSession session) {
+                return (username.compareTo(USERNAME) == 0) && (password.compareTo(PASSWORD) == 0);
+            }
+        });
 		try {
-			if(!usProp.exists()) usProp.createNewFile();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		userManagerFactory.setFile(usProp);
-		UserManager userManager = userManagerFactory.createUserManager();
-		BaseUser bu = new BaseUser();
-		bu.setName(Config.getInstance().getProp("ftp_user"));
-		bu.setPassword(Config.getInstance().getProp("ftp_pass"));
-		java.util.List<Authority> auths = new ArrayList<Authority>();
-		Authority writeP = new WritePermission();
-		auths.add(writeP);
-		bu.setAuthorities(auths);
-		bu.setHomeDirectory(Config.getInstance().getProp("root_dir"));
-
-		
-		
-		try {
-			userManager.save(bu);
-			srvFact.setUserManager(userManager);
-			FtpServer server = srvFact.createServer();
-			
-			server.start();
-		} catch (FtpException e) {
+			sshd.start();
+		} catch (IOException e) {
+			System.out.println("[Erro] - Unable to launch the SFTP Server");
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public static TransferManager getInstance(){
