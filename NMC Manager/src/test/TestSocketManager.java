@@ -23,7 +23,7 @@ public class TestSocketManager {
 				"c'est de la merde ce film ne le reagardez surtout pas!!!!");
 		vidC.setRelPath("\\Test\\Test.avi");
 		try {
-			SocketManager sm = new SocketManager();
+			SocketManager sm = SocketManager.getInstance();
 			sm.sendMeta(vidC);
 			sm.close();
 		} catch (NumberFormatException | IOException e) {

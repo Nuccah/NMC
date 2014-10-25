@@ -1,12 +1,14 @@
 package controller;
 
 import java.awt.HeadlessException;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import model.AlbumCollector;
 import model.AudioCollector;
@@ -31,13 +33,23 @@ public class ServerListener implements Runnable {
 	
 	protected ServerListener(Socket cl) {
 		this.cl = cl;
+		try{
+			this.ois = new ObjectInputStream(cl.getInputStream());
+			this.oos = new ObjectOutputStream(cl.getOutputStream());
+		} catch(IOException e){
+			System.out.println("[Error] - Unable to create socket streams for: "+cl.getInetAddress());
+			e.printStackTrace();
+		}		
 	}
-	
+	/**
+	 * Permet de définir l'action à exécuter au niveau du socket
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	public void executeAction() throws IOException, ClassNotFoundException{
-		ois = new ObjectInputStream(cl.getInputStream());
-		oos = new ObjectOutputStream(cl.getOutputStream());
-		
-		switch(String.valueOf(ois.readObject())){
+		String action = String.valueOf(ois.readObject());
+		System.out.println(action+" recieved from: "+cl.getInetAddress());
+		switch(action){
 			case "init" : 
 				oos.writeObject("ACK");
 				sendAutoConfig();
@@ -58,20 +70,37 @@ public class ServerListener implements Runnable {
 				oos.writeObject("ACK");
 				sendList();
 				break;
+			case "logout":
+				oos.writeObject("ACK");
+				logout();
+				break;
 			default :
 				oos.writeObject("NACK");
 		}
 	}
-	
+	/**
+	 * Permet d'envoyer les configurations de bases au client
+	 */
 	private void sendAutoConfig(){
-		// TODO: Créer les méthodes nécessaires à l'envoi auto des configs
+		Config conf = Config.getInstance();
+		try{
+			ois.readObject();
+			Properties prop = new Properties();
+			prop.setProperty("ftp_port", conf.getProp("ftp_port"));
+			prop.setProperty("ftp_user", conf.getProp("ftp_user"));
+			prop.setProperty("ftp_pass", conf.getProp("ftp_pass"));
+			oos.writeObject(prop);
+		} catch(ClassNotFoundException | IOException e){
+			System.out.println("[Error] - Unable to send basic configurations to: "+cl.getInetAddress());
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * Permet de connecter un client avec les données reçues.
 	 * Le client récupère un objet Profil dans le cas d'une connexion réussie
 	 */
 	private void connectCl(){
-		String[] credentials = null;
+		String[] credentials = new String[2];
 		try{
 			credentials = (String[]) ois.readObject();
 			oos.writeObject("CRED ACK");
@@ -99,6 +128,7 @@ public class ServerListener implements Runnable {
 			if(password.compareTo(res.getString("password")) == 0){
 				Profil pf = Profil.getInstance();
 				pf.setUsername(username);
+				pf.setId(res.getInt("id"));
 				pf.setMail(res.getString("mail"));
 				pf.setFirstName(res.getString("first_name"));
 				pf.setLastName(res.getString("last_name"));
@@ -118,13 +148,13 @@ public class ServerListener implements Runnable {
 				}			
 			}
 		} catch (SQLException e) {
-			System.out.println("[Error] - Connection failed! Please check if server is up");
+			System.out.println("[Error] - Connection failed! Please check connection settings");
 			try {
 				oos.writeObject("[Error] - Connection failed! Please check if server is up");
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	/**
@@ -136,7 +166,7 @@ public class ServerListener implements Runnable {
 			mdc = (MetaDataCollector) ois.readObject();
 		} catch (ClassNotFoundException | IOException e1) {
 			System.out.println("[Error] - Couldn't retrieve meta type from: "+cl.getInetAddress());
-			e1.printStackTrace();
+			//e1.printStackTrace();
 		}
 		mdc.setAbsPath(Config.getInstance().getProp("root_dir")+mdc.getRelPath());
 		Injecter inj = Injecter.getInstance();
@@ -172,7 +202,7 @@ public class ServerListener implements Runnable {
 			else oos.writeObject("NACK");
 		} catch (IOException e){
 			System.out.println("[Error] - Meta Type ACK couldn't be sent to: "+cl.getInetAddress());
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
@@ -184,13 +214,23 @@ public class ServerListener implements Runnable {
 		
 	}
 	
+	private void logout() {
+		try{
+			ois.close();
+			oos.close();
+			if(!cl.isClosed()) cl.close();
+		} catch(IOException e){
+			System.out.println("[Warning] - Streams are already closed");
+		}		
+	}
+	
 	@Override
 	public void run() {
 		try {
-			executeAction();
+			while(!cl.isClosed()) executeAction();
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO: control exceptions
-			e.printStackTrace();
+			if(e instanceof EOFException) System.out.println("[Info] - Socket "+cl.getInetAddress()+" closed");
+			else System.out.println("[Error] - Couldn't define action to execute.");
 		}
 	}
 

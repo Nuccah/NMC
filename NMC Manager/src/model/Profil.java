@@ -44,6 +44,13 @@ public class Profil implements Serializable {
 		if(instance == null) instance = new Profil();
 		return instance;
 	}
+	/**
+	 * Permet de créer une instance statique profil à partir de celle passée en paramètre
+	 * @param pf : Profil distant à copier localement
+	 */
+	public static void setInstance(Profil pf){
+		instance = pf;
+	}
 	
 	public int getId() {
 		return id;
