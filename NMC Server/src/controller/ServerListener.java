@@ -88,7 +88,7 @@ public class ServerListener implements Runnable {
 			Properties prop = new Properties();
 			prop.setProperty("ftp_port", conf.getProp("ftp_port"));
 			prop.setProperty("ftp_user", conf.getProp("ftp_user"));
-			prop.setProperty("ftp_pass", conf.getProp("ftp_pass"));
+			prop.setProperty("root_dir", conf.getProp("root_dir"));
 			oos.writeObject(prop);
 		} catch(ClassNotFoundException | IOException e){
 			System.out.println("[Error] - Unable to send basic configurations to: "+cl.getInetAddress());

@@ -117,7 +117,7 @@ public class SocketManager extends Socket {
 			Config conf = Config.getInstance();
 			conf.setProp("ftp_port", prop.getProperty("ftp_port"));
 			conf.setProp("ftp_user", prop.getProperty("ftp_user"));
-			conf.setProp("ftp_pass", prop.getProperty("ftp_pass"));
+			conf.setProp("root_dir", prop.getProperty("root_dir"));
 			conf.setProp("init", "1");
 			conf.saveProp();
 		} catch(ClassNotFoundException | IOException e){

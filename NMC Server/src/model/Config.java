@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Properties;
 
 import controller.Parser;
@@ -71,8 +73,7 @@ public class Config {
 		setProp("user_db", "nmc_admin");
 		setProp("pass_db", "ephec2014");
 		setProp("ftp_port", "50001");
-		setProp("ftp_user", "ftpadmin");
-		setProp("ftp_pass", "ephec2014");
+		setProp("ftp_user", new BigInteger(130, new SecureRandom()).toString(32));
 		setProp("sock_port", "50002");
 		saveProp();
 	}

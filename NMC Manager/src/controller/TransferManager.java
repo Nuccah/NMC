@@ -3,29 +3,36 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Properties;
+
+import javax.swing.JOptionPane;
 
 import model.Config;
 import model.MetaDataCollector;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-
 import view.FTPException;
+
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 
 /**
  * Classe de gestion des téléversements et téléchargements de fichiers médias sur/depuis le serveur
  * @author Antoine
  *
  */
-//TODO: Passer en SFTP!!!!
-public class TransferManager extends Thread {
+public class TransferManager {
 	private static TransferManager instance = null;
-	private FTPClient client;
 	private Config conf;
+	private Session session;
+	private Channel channel;
+	private ChannelSftp sftpChannel;
 	private OutputStream os;
 
+
 	protected TransferManager(){
-		client = new FTPClient();
 		conf = Config.getInstance();
 	}
 
@@ -40,18 +47,38 @@ public class TransferManager extends Thread {
 		return instance;
 	}
 
-	/**Connects client to FTP Server in passive mode
-	 * @throws FTPException if login/pass is not correct
+	/**
+	 * Connects client to FTP Server in passive mode
+	 * 
 	 */
-	public void connect() throws FTPException{
+	public void connect(){
+		JSch jsch = new JSch();
+		Properties config = new Properties();
+		config.put("StrictHostKeyChecking", "no");
 		try {
-			client.connect(conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")));
-			if(!client.login(conf.getProp("ftp_user"), conf.getProp("ftp_pass")))
-				throw new FTPException("FTP serve refused connection.");
-			client.enterLocalPassiveMode();
-		} catch ( IOException e) {
-			throw new FTPException("I/O error: " + e.getMessage());
-		}		
+			jsch.addIdentity(new File(".config/security/private.pem").getAbsolutePath(), "4YnB8e4p");
+		} catch (JSchException e1) {
+			JOptionPane.showMessageDialog(null, "Unable to find the private key");
+			e1.printStackTrace();
+		}
+
+		try {
+			session = jsch.getSession(conf.getProp("ftp_user"), conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")));
+			//session.setPassword(conf.getProp("ftp_pass"));
+			session.setConfig(config);
+		} catch (NumberFormatException | JSchException e) {
+			JOptionPane.showMessageDialog(null, "Unable to create the SFTP Session");
+			e.printStackTrace();
+		}
+		try {
+			session.connect();
+			channel = session.openChannel("sftp");
+			channel.connect();
+			sftpChannel = (ChannelSftp) channel;
+		} catch (JSchException e) {
+			JOptionPane.showMessageDialog(null, "Unable to connect to the SFTP Server");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -65,9 +92,6 @@ public class TransferManager extends Thread {
 	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws FTPException{
 
 		try {
-			if(!client.setFileType(FTP.BINARY_FILE_TYPE))
-				throw new FTPException("Could not set binary file type.");;
-			client.setFileType(FTP.BINARY_FILE_TYPE);
 			String filename = null;
 			String relPath = null;
 			if(directory == null){
@@ -75,18 +99,36 @@ public class TransferManager extends Thread {
 				relPath = filename;
 			}
 			else {
-				filename = "/"+directory+"/"+fToSend.getName();
+				filename = directory+"/"+fToSend.getName();
 				String slash = Parser.getInstance().getSlash();
-				relPath = slash+directory+slash+fToSend.getName();
+				relPath = directory+slash+fToSend.getName();
 			}
 			if(mdc != null) mdc.setRelPath(relPath);
-			os = client.storeUniqueFileStream(filename);
-		} catch (IOException e) {
+			String root_path = null;
+			if(Parser.getInstance().isWindows()) {
+				root_path = "/";
+				int i = 0;
+				String tmp = conf.getProp("root_dir");
+				while((i = tmp.indexOf("\\")) != -1){
+					root_path = root_path.concat(tmp.substring(0, i)+"/");
+					System.out.println("root_path with i = "+i+": "+root_path);
+					tmp = tmp.substring(i + 1);
+				}
+				root_path = root_path.concat(tmp);
+				if((i = root_path.indexOf(':')) != -1) root_path = root_path.substring(0, i)+root_path.substring(i+1);
+				System.out.println("root_path generated: "+root_path);
+			} else {
+				root_path = conf.getProp("root_dir");
+			}
+			sftpChannel.cd(root_path);
+			os = sftpChannel.put(filename);
+		} catch (SftpException e) {
 			throw new FTPException("Error uploading file: " + e.getMessage());
 		}
 	}
 
-	/**Write of file onto outputstream
+	/**
+	 * Write of file onto outputstream
 	 * @param bytes bytes to read
 	 * @param offset from which location in file
 	 * @param length total length of file
@@ -97,29 +139,20 @@ public class TransferManager extends Thread {
 		os.write(bytes, offset, length);
 	}
 
-	/** Closes output stream
+	/**
+	 * Closes output stream
 	 * @throws IOException
 	 */
 	public void finish() throws IOException{
 		os.close();
 	}
 
-	/** Closes connection between client and server
-	 * @throws FTPException if unable to logout or error when attempting to disconnect
+	/** 
+	 * Closes connection between client and server
 	 */
-	public void close() throws FTPException{
-		if (client.isConnected()){
-			try {
-				if(!client.logout()){
-					throw new FTPException("Could not log out from the server");
-				}
-				client.disconnect();
-			} catch (IOException e) {
-				throw new FTPException("Error disconnect from the server: "
-						+ e.getMessage());
-			}
-		};
-
+	public void close() {
+		if (sftpChannel.isConnected()) sftpChannel.disconnect();
+		if (session.isConnected()) session.disconnect();
 	}
 }
 
