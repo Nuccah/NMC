@@ -175,7 +175,7 @@ public class Injecter {
 		if(series.getSynopsis() == null)
 			query3 = "INSERT INTO nmc_media_info(id, release_date) values ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1), '"+Integer.parseInt(series.getYear())+"';";
 		else
-			query3 = "INSERT INTO nmc_media_info VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1), '"+series.getSynopsis()+"', '"+Integer.parseInt(series.getYear())+"';";
+			query3 = "INSERT INTO nmc_media_info(id, synopsis, release_date) VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1), '"+series.getSynopsis()+"', '"+Integer.parseInt(series.getYear())+"';";
 		String query4 = "INSERT INTO nmc_categories(\"category\") SELECT '"+series.getGenre()+"' WHERE NOT EXISTS (SELECT id FROM nmc_categories WHERE category = '"+series.getGenre()+"');";
 		String query5 = "INSERT INTO nmc_series_categories VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_categories WHERE category = '"+series.getGenre()+"');";
 		try {
