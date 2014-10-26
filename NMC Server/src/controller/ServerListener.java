@@ -2,6 +2,8 @@ package controller;
 
 import java.awt.HeadlessException;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -90,6 +92,13 @@ public class ServerListener implements Runnable {
 			prop.setProperty("ftp_user", conf.getProp("ftp_user"));
 			prop.setProperty("root_dir", conf.getProp("root_dir"));
 			oos.writeObject(prop);
+			ois.readObject();
+			File privF = new File(".config/security/private.pem");
+			FileInputStream fis = new FileInputStream(privF);
+			byte[] privKey = new byte[(int)privF.length()];
+			fis.read(privKey);
+			fis.close();
+			oos.writeObject(privKey);
 		} catch(ClassNotFoundException | IOException e){
 			System.out.println("[Error] - Unable to send basic configurations to: "+cl.getInetAddress());
 			e.printStackTrace();

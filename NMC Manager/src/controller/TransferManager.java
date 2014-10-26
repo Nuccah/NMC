@@ -25,6 +25,7 @@ import com.jcraft.jsch.SftpException;
  */
 public class TransferManager {
 	private static TransferManager instance = null;
+	private static final String encryptoPass = "4YnB8e4p";
 	private Config conf;
 	private Session session;
 	private Channel channel;
@@ -56,7 +57,7 @@ public class TransferManager {
 		Properties config = new Properties();
 		config.put("StrictHostKeyChecking", "no");
 		try {
-			jsch.addIdentity(new File(".config/security/private.pem").getAbsolutePath(), "4YnB8e4p");
+			jsch.addIdentity(new File(".config/security/private.pem").getAbsolutePath(), encryptoPass);
 		} catch (JSchException e1) {
 			JOptionPane.showMessageDialog(null, "Unable to find the private key");
 			e1.printStackTrace();
@@ -64,7 +65,6 @@ public class TransferManager {
 
 		try {
 			session = jsch.getSession(conf.getProp("ftp_user"), conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")));
-			//session.setPassword(conf.getProp("ftp_pass"));
 			session.setConfig(config);
 		} catch (NumberFormatException | JSchException e) {
 			JOptionPane.showMessageDialog(null, "Unable to create the SFTP Session");

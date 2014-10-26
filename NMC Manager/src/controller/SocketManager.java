@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -120,6 +122,17 @@ public class SocketManager extends Socket {
 			conf.setProp("root_dir", prop.getProperty("root_dir"));
 			conf.setProp("init", "1");
 			conf.saveProp();
+			oos.writeObject("ACK CONF");
+				
+			File keyStore = new File(".config/security/");
+			keyStore.mkdirs();
+			File privF = new File(".config/security/private.pem");
+			privF.createNewFile();
+			byte[] privKey = (byte[]) ois.readObject();
+			FileOutputStream fos = new FileOutputStream(privF);
+			fos.write(privKey);
+			fos.close();
+			
 		} catch(ClassNotFoundException | IOException e){
 			e.printStackTrace();
 		}
