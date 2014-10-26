@@ -4,9 +4,9 @@ public class SeriesCollector extends MetaDataCollector{
 	private static final long serialVersionUID = -7536243590487815526L;
 	private String synopsis;
 	private String genre;
-	private int year;
+	private String year;
 
-	public SeriesCollector(String title, int year, int modId, int visId, String synopsis, String genre){
+	public SeriesCollector(String title, String year, int modId, int visId, String synopsis, String genre){
 		super(title, modId,visId);
 		this.synopsis = synopsis;
 		this.genre = genre;
@@ -21,7 +21,7 @@ public class SeriesCollector extends MetaDataCollector{
 		return genre;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 	

@@ -6,9 +6,9 @@ public class VideoCollector extends MetaDataCollector{
 	private String genre;
 	private String filename;
 	private String synopsis;
-	private int year;
+	private String year;
 
-	public VideoCollector(String title, int year, int modId, int visId, String filename, String director, String genre, String synopsis) {
+	public VideoCollector(String title, String year, int modId, int visId, String filename, String director, String genre, String synopsis) {
 		super(title, modId,visId);
 		this.director = director;
 		this.filename = filename;
@@ -39,7 +39,7 @@ public class VideoCollector extends MetaDataCollector{
 		return synopsis;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 }

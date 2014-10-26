@@ -4,11 +4,11 @@ public class EpisodeCollector extends MetaDataCollector{
 	private static final long serialVersionUID = 5898661708344764422L;
 	private String director;
 	private String series;
-	private int season;
-	private int chrono;
+	private String season;
+	private String chrono;
 	private String filename;
 	
-	public EpisodeCollector(String title, String filename, String series, String director, int season, int chrono){
+	public EpisodeCollector(String title, String filename, String series, String director, String season, String chrono){
 		super(title);
 		this.director = director;
 		this.series = series;
@@ -25,11 +25,11 @@ public class EpisodeCollector extends MetaDataCollector{
 		return series;
 	}
 
-	public int getSeason() {
+	public String getSeason() {
 		return season;
 	}
 
-	public int getChrono() {
+	public String getChrono() {
 		return chrono;
 	}
 

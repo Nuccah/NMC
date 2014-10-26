@@ -14,7 +14,7 @@ public class TestSocketManager {
 	public void testSendMeta() {
 		VideoCollector vidC = new VideoCollector(
 				"Title", 
-				1000, 
+				"1000", 
 				0, 
 				1, 
 				"Test.avi", 

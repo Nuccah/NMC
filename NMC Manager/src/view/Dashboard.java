@@ -506,7 +506,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					return false;
 				else return true;
 			case "Add New Albums":
-				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null)
 					return false;
 				else return true;
 			case "Movies":
@@ -514,7 +514,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					return false;
 				else return true;
 			case "Add New Series":
-				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null)
 					return false;
 				else return true;
 			case "Add New Episodes":
@@ -552,9 +552,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			}
 			else{
 				switch (node.toString()) {
-				case "Add New Albums": albumC = new AlbumCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+				case "Add New Albums": albumC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
 						(int)visibilityBox.getSelectedItem(), personField.getText(), synopsisField.getText(), genreField.getText());break;
-				case "Add New Series": seriesC = new SeriesCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+				case "Add New Series": seriesC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
 						(int)visibilityBox.getSelectedItem(), synopsisField.getText(), genreField.getText()); break;
 				default: break;
 				}
@@ -572,15 +572,15 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				//Instances of javax.swing.SwingWorker are not reusuable, so
 				//we create new instances as needed.
 				switch (node.toString()) {
-				case "Books": fileC = new BookCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+				case "Books": fileC = new BookCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
 						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
-				case "Images": fileC = new ImageCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+				case "Images": fileC = new ImageCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
 						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText()); break;
 				case "Add New Music": fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), (String) albumBox.getSelectedItem()); break;
-				case "Movies": fileC = new VideoCollector(titleField.getText(), Integer.parseInt(yearField.getText()), (int)modificationBox.getSelectedItem(), 
+				case "Movies": fileC = new VideoCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
 						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
 				case "Add New Episodes": fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), (String) seriesBox.getSelectedItem(), personField.getText(), 
-						Integer.parseInt(seasonField.getText()), Integer.parseInt(chronoField.getText())); break;
+						seasonField.getText(), chronoField.getText()); break;
 				default: break;
 				}
 				task = new Task(node.toString(), fc.getSelectedFile(), fileC);

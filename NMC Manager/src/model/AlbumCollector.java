@@ -5,9 +5,9 @@ public class AlbumCollector extends MetaDataCollector{
 	private String description;
 	private String artist;
 	private String genre;
-	private int year;
+	private String year;
 
-	public AlbumCollector(String title, int year, int modId, int visId, String artist, String description, String genre) {
+	public AlbumCollector(String title, String year, int modId, int visId, String artist, String description, String genre) {
 		super(title, modId,visId);
 		this.artist = artist;
 		this.year = year;
@@ -27,7 +27,7 @@ public class AlbumCollector extends MetaDataCollector{
 		return genre;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 	

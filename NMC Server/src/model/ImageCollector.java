@@ -4,9 +4,9 @@ public class ImageCollector extends MetaDataCollector{
 	private static final long serialVersionUID = -6557025443275058628L;
 	private String photographer;
 	private String filename;
-	private int year;
+	private String year;
 	
-	public ImageCollector(String title, int year, int modId, int visId, String filename, String photographer) {
+	public ImageCollector(String title, String year, int modId, int visId, String filename, String photographer) {
 		super(title, modId,visId);
 		this.photographer = photographer;
 		this.year = year;
@@ -26,7 +26,7 @@ public class ImageCollector extends MetaDataCollector{
 		return filename;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 	
