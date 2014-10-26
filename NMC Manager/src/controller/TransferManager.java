@@ -101,9 +101,11 @@ public class TransferManager {
 				filename = fToSend.getName();
 				relPath = filename;
 			}
-			else {
+			// [TODO] TEST
+			else { 
 				if (mdc instanceof AudioCollector){
 					AudioCollector cdc = (AudioCollector)mdc;
+					mdc.setRelPath(directory+"/"+cdc.getAlbum()+"/");
 					filename = directory+"/"+cdc.getAlbum()+"/"+fToSend.getName();
 					String slash = Parser.getInstance().getSlash();
 					relPath = directory+slash+cdc.getAlbum()+slash+fToSend.getName();
@@ -111,11 +113,13 @@ public class TransferManager {
 				}
 				else if (mdc instanceof EpisodeCollector){
 					EpisodeCollector edc = (EpisodeCollector)mdc;
+					mdc.setRelPath(directory+"/"+edc.getSeries()+"/");
 					filename = directory+"/"+edc.getSeries()+"/"+fToSend.getName();
 					String slash = Parser.getInstance().getSlash();
 					relPath = directory+slash+edc.getSeries()+slash+fToSend.getName();
 				}
 				else{
+					mdc.setRelPath(directory);
 					filename = directory+"/"+fToSend.getName();
 					String slash = Parser.getInstance().getSlash();
 					relPath = directory+slash+fToSend.getName();

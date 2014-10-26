@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import model.MetaDataCollector;
+import controller.SocketManager;
 import controller.TransferManager;
 
 /**
@@ -55,6 +56,7 @@ public class Task extends SwingWorker<Void, Void> {
 				setProgress(percentCompleted);
 			}
 			inputStream.close();
+//			SocketManager.getInstance().sendMeta(mdc); [TODO] TEST
 			TransferManager.getInstance().finish();
 		} catch (IOException | FTPException e){
 			JOptionPane.showMessageDialog(null,  "Error upload file: " + e.getMessage(),
