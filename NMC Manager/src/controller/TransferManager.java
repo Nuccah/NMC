@@ -7,7 +7,9 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import model.AudioCollector;
 import model.Config;
+import model.EpisodeCollector;
 import model.MetaDataCollector;
 import view.FTPException;
 
@@ -81,6 +83,8 @@ public class TransferManager {
 		}
 	}
 
+	
+	
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
 	 * @param directory : Dossier de placement du fichier sur le serveur <br />
@@ -90,7 +94,6 @@ public class TransferManager {
 	 * @throws FTPException if client-server communication error occurred
 	 */
 	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws FTPException{
-
 		try {
 			String filename = null;
 			String relPath = null;
@@ -99,9 +102,24 @@ public class TransferManager {
 				relPath = filename;
 			}
 			else {
-				filename = directory+"/"+fToSend.getName();
-				String slash = Parser.getInstance().getSlash();
-				relPath = directory+slash+fToSend.getName();
+				if (mdc instanceof AudioCollector){
+					AudioCollector cdc = (AudioCollector)mdc;
+					filename = directory+"/"+cdc.getAlbum()+"/"+fToSend.getName();
+					String slash = Parser.getInstance().getSlash();
+					relPath = directory+slash+cdc.getAlbum()+slash+fToSend.getName();
+					System.out.println(filename);
+				}
+				else if (mdc instanceof EpisodeCollector){
+					EpisodeCollector edc = (EpisodeCollector)mdc;
+					filename = directory+"/"+edc.getSeries()+"/"+fToSend.getName();
+					String slash = Parser.getInstance().getSlash();
+					relPath = directory+slash+edc.getSeries()+slash+fToSend.getName();
+				}
+				else{
+					filename = directory+"/"+fToSend.getName();
+					String slash = Parser.getInstance().getSlash();
+					relPath = directory+slash+fToSend.getName();
+				}	
 			}
 			if(mdc != null) mdc.setRelPath(relPath);
 			String root_path = null;
@@ -153,6 +171,19 @@ public class TransferManager {
 	public void close() {
 		if (sftpChannel.isConnected()) sftpChannel.disconnect();
 		if (session.isConnected()) session.disconnect();
+	}
+
+	public static String chooseDirectory(String node) {
+		switch(node){
+			case "Add New Albums": return "Music";
+			case "Add New Series": return "Series";
+			case "Add New Episodes": return "Series";
+			case "Add New Music": return "Music";
+			case "Books": return "Books";
+			case "Movies": return "Movies";
+			case "Images": return "Images";
+		}
+		return null;
 	}
 }
 

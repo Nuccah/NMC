@@ -42,7 +42,7 @@ public class Injecter {
 		String query5;
 		//TODO: [Derek] DANGER - NEAR CERTAINTY OF MULTIPLE RETURNS - NEEDS ADDITIONAL PARAMETERS
 		if (audio.getAlbum() != null)
-			query5 = "INSERT INTO nmc_tracks_albums VALUES ((SELECT id FROM nmc_tracks ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_media WHERE title = '"+audio.getAlbum()+"'));";
+			query5 = "INSERT INTO nmc_tracks_albums VALUES ((SELECT id FROM nmc_tracks ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_media WHERE title = '"+audio.getAlbum()+"' AND type = 'album'));";
 		else
 			query5 = "INSERT INTO nmc_tracks_albums VALUES ((SELECT id FROM nmc_tracks ORDER BY id DESC LIMIT 1),(SELECT nmc_media.id FROM nmc_media INNER JOIN nmc_media_info ON nmc_media.id = nmc_media_info.id INNER JOIN nmc_media_info_bands ON nmc_media.id = media_info_id INNER JOIN nmc_bands ON band_id = nmc_bands.id WHERE title = 'Singles' AND nmc_bands.name = 'Various'));";
 		try {

@@ -60,6 +60,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import controller.SocketManager;
+import controller.TransferManager;
 
 /**
  * Fenêtre principale du programme
@@ -583,7 +584,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 						seasonField.getText(), chronoField.getText()); break;
 				default: break;
 				}
-				task = new Task(node.toString(), fc.getSelectedFile(), fileC);
+				task = new Task(TransferManager.chooseDirectory(node.toString()), fc.getSelectedFile(), fileC);
 				task.addPropertyChangeListener(this);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				task.execute();
