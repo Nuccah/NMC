@@ -226,8 +226,15 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		fieldList.add(synopsisField);
 		fieldList.add(genreField);
 		fieldList.add(personField);
+		fieldList.add(chronoField);
+		fieldList.add(seasonField);
 		cbList.add(modificationBox);
 		cbList.add(visibilityBox);
+		cbList.add(seriesBox);
+		cbList.add(albumBox);
+		
+		modificationBox.addItem("Public");
+		visibilityBox.addItem("Public");
 
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
@@ -573,13 +580,13 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				//Instances of javax.swing.SwingWorker are not reusuable, so
 				//we create new instances as needed.
 				switch (node.toString()) {
-				case "Books": fileC = new BookCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
-						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
-				case "Images": fileC = new ImageCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
-						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText()); break;
+				case "Books": fileC = new BookCollector(titleField.getText(), yearField.getText(), levelToInt(modificationBox.getSelectedItem().toString()), 
+						levelToInt(visibilityBox.getSelectedItem().toString()), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
+				case "Images": fileC = new ImageCollector(titleField.getText(), yearField.getText(), levelToInt(modificationBox.getSelectedItem().toString()), 
+						levelToInt(visibilityBox.getSelectedItem().toString()), fc.getSelectedFile().getName(), personField.getText()); break;
 				case "Add New Music": fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), (String) albumBox.getSelectedItem()); break;
-				case "Movies": fileC = new VideoCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
-						(int)visibilityBox.getSelectedItem(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
+				case "Movies": fileC = new VideoCollector(titleField.getText(), yearField.getText(), levelToInt(modificationBox.getSelectedItem().toString()), 
+						levelToInt(visibilityBox.getSelectedItem().toString()), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
 				case "Add New Episodes": fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), (String) seriesBox.getSelectedItem(), personField.getText(), 
 						seasonField.getText(), chronoField.getText()); break;
 				default: break;
@@ -649,6 +656,13 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			case "User Administration": userAdmin(node); break;
 			default: parentPage(node); break;
 			}
+		}
+	}
+	
+	public int levelToInt(String level){
+		switch (level){
+		case "Public":return 1;
+		default: return 1;
 		}
 	}
 
