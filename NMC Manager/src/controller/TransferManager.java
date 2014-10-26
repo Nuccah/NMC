@@ -1,25 +1,22 @@
 package controller;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
 import model.Config;
 import model.MetaDataCollector;
-
-import org.vngx.jsch.ChannelSftp;
-import org.vngx.jsch.ChannelType;
-import org.vngx.jsch.JSch;
-import org.vngx.jsch.Session;
-import org.vngx.jsch.config.SessionConfig;
-import org.vngx.jsch.exception.JSchException;
-import org.vngx.jsch.exception.SftpException;
-
 import view.FTPException;
+
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 
 /**
  * Classe de gestion des téléversements et téléchargements de fichiers médias sur/depuis le serveur
@@ -30,6 +27,7 @@ public class TransferManager {
 	private static TransferManager instance = null;
 	private Config conf;
 	private Session session;
+	private Channel channel;
 	private ChannelSftp sftpChannel;
 	private OutputStream os;
 
@@ -54,34 +52,29 @@ public class TransferManager {
 	 * 
 	 */
 	public void connect(){
-		SessionConfig config = new SessionConfig();
-		//config.setProperty(SessionConfig.STRICT_HOST_KEY_CHECKING, "no");
-		File hostKey = new File("hostkey.ser");
-		FileInputStream in = null;
+		JSch jsch = new JSch();
+		Properties config = new Properties();
+		config.put("StrictHostKeyChecking", "no");
 		try {
-			in = new FileInputStream(hostKey);
-		} catch (FileNotFoundException e1) {
-			JOptionPane.showMessageDialog(null, "Host Key file couldn't be found");
+			jsch.addIdentity(new File(".config/security/private.pem").getAbsolutePath(), "4YnB8e4p");
+		} catch (JSchException e1) {
+			JOptionPane.showMessageDialog(null, "Unable to find the private key");
+			e1.printStackTrace();
 		}
-		byte[] buffer = new byte[4096];
-		String key = new String();
-		try{
-			while(in.read(buffer) != -1) key = key.concat(String.valueOf(buffer));
-		} catch(IOException e){
-			JOptionPane.showMessageDialog(null, "Error while reading host key");
-		}
-		config.setProperty(SessionConfig.KEX_SERVER_HOST_KEY, key);
-		config.setProperty(SessionConfig.KEX_ALGORITHMS, "1");
+
 		try {
-			session = JSch.getInstance().createSession(conf.getProp("ftp_user"), conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")), config);
+			session = jsch.getSession(conf.getProp("ftp_user"), conf.getProp("srv_url"), Integer.valueOf(conf.getProp("ftp_port")));
+			//session.setPassword(conf.getProp("ftp_pass"));
+			session.setConfig(config);
 		} catch (NumberFormatException | JSchException e) {
 			JOptionPane.showMessageDialog(null, "Unable to create the SFTP Session");
 			e.printStackTrace();
 		}
 		try {
-			session.connect(conf.getProp("ftp_pass").getBytes());
-			sftpChannel = session.openChannel(ChannelType.SFTP);
-			sftpChannel.connect();
+			session.connect();
+			channel = session.openChannel("sftp");
+			channel.connect();
+			sftpChannel = (ChannelSftp) channel;
 		} catch (JSchException e) {
 			JOptionPane.showMessageDialog(null, "Unable to connect to the SFTP Server");
 			e.printStackTrace();
@@ -106,11 +99,28 @@ public class TransferManager {
 				relPath = filename;
 			}
 			else {
-				filename = "/"+directory+"/"+fToSend.getName();
+				filename = directory+"/"+fToSend.getName();
 				String slash = Parser.getInstance().getSlash();
-				relPath = slash+directory+slash+fToSend.getName();
+				relPath = directory+slash+fToSend.getName();
 			}
 			if(mdc != null) mdc.setRelPath(relPath);
+			String root_path = null;
+			if(Parser.getInstance().isWindows()) {
+				root_path = "/";
+				int i = 0;
+				String tmp = conf.getProp("root_dir");
+				while((i = tmp.indexOf("\\")) != -1){
+					root_path = root_path.concat(tmp.substring(0, i)+"/");
+					System.out.println("root_path with i = "+i+": "+root_path);
+					tmp = tmp.substring(i + 1);
+				}
+				root_path = root_path.concat(tmp);
+				if((i = root_path.indexOf(':')) != -1) root_path = root_path.substring(0, i)+root_path.substring(i+1);
+				System.out.println("root_path generated: "+root_path);
+			} else {
+				root_path = conf.getProp("root_dir");
+			}
+			sftpChannel.cd(root_path);
 			os = sftpChannel.put(filename);
 		} catch (SftpException e) {
 			throw new FTPException("Error uploading file: " + e.getMessage());

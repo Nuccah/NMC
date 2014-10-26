@@ -17,6 +17,6 @@
 	<classpathentry kind="lib" path="lib/conversion/xuggle-xuggler-5.4.jar"/>
 	<classpathentry kind="lib" path="lib/ftp/slf4j-api-1.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/ftp/slf4j-simple-1.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/ftp/vngx-jsch-0.10.jar"/>
+	<classpathentry kind="lib" path="lib/ftp/jsch-0.1.51.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -74,7 +74,6 @@ public class Config {
 		setProp("pass_db", "ephec2014");
 		setProp("ftp_port", "50001");
 		setProp("ftp_user", new BigInteger(130, new SecureRandom()).toString(32));
-		setProp("ftp_pass", new BigInteger(130, new SecureRandom()).toString(32));
 		setProp("sock_port", "50002");
 		saveProp();
 	}
