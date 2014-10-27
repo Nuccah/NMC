@@ -56,7 +56,7 @@ public class Task extends SwingWorker<Void, Void> {
 				setProgress(percentCompleted);
 			}
 			inputStream.close();
-//			SocketManager.getInstance().sendMeta(mdc); [TODO] TEST
+			SocketManager.getInstance().sendMeta(mdc); 
 			TransferManager.getInstance().finish();
 		} catch (IOException | FTPException e){
 			JOptionPane.showMessageDialog(null,  "Error upload file: " + e.getMessage(),
