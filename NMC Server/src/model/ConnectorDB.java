@@ -96,7 +96,7 @@ public class ConnectorDB {
 	 */
 	public void modify(String query) throws SQLException{
 		PreparedStatement st = db.prepareStatement(query);
-		st.executeQuery();
+		st.executeUpdate();
 		st.close();
 	}
 }
