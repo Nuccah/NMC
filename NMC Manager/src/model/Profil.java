@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Classe comprenant toutes les infos de l'utilisateur connecté
@@ -17,7 +18,8 @@ public class Profil implements Serializable {
 	private String first_name;
 	private String last_name;
 	private Date birthdate;
-	private Date reg_date;
+	private Timestamp reg_date;
+	private int permissions_id;
 	
 	/**
 	 * Initialise toutes les variables du profil à null
@@ -30,6 +32,18 @@ public class Profil implements Serializable {
 		last_name = null;
 		birthdate = null;
 		reg_date  = null;
+		permissions_id = 0;
+	}
+	
+	public Profil(int users_id, String login, String email, String first_name, String last_name, Date birthdate, Timestamp reg_date, int permissions_id){
+		this.id = users_id;
+		this.username = login;
+		this.mail = email;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.birthdate = birthdate;
+		this.reg_date  = reg_date;
+		this.permissions_id = permissions_id;
 	}
 	
 	protected Profil(){
@@ -90,11 +104,17 @@ public class Profil implements Serializable {
 	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
 	}
-	public Date getRegDate() {
+	public Timestamp getRegDate() {
 		return reg_date;
 	}
-	public void setRegDate(Date reg_date) {
+	public void setRegDate(Timestamp reg_date) {
 		this.reg_date = reg_date;
 	}
+	public int getPermissions_id() {
+		return permissions_id;
+	}
 
+	public void setPermissions_id(int permissions_id) {
+		this.permissions_id = permissions_id;
+	}
 }

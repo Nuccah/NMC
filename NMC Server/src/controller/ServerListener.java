@@ -142,7 +142,7 @@ public class ServerListener implements Runnable {
 				pf.setFirstName(res.getString("first_name"));
 				pf.setLastName(res.getString("last_name"));
 				pf.setBirthdate(res.getDate("birthdate"));
-				pf.setRegDate(res.getDate("reg_date"));
+				pf.setRegDate(res.getTimestamp("reg_date"));
 				try{
 					oos.writeObject(pf);
 				} catch (IOException e){
