@@ -32,57 +32,57 @@ public class Retriever {
 		return instance;
 	}
 	
-	public ArrayList<AudioCollector> selectAudioList(){
+	public ResultSet selectAudioList(String query){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Select Audio
+		//TODO: [Derek] SQL Select Audio
 		ResultSet rs = db.select(query);
 		db.closeConnection();
-		return null;
+		return rs;
 	}
 	
-	public ArrayList<AlbumCollector> selectAlbumList(){
+	public ResultSet selectAlbumList(String query){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Select Album
+		//TODO: [Derek] SQL Select Album
 		ResultSet rs = db.select(query);
 		db.closeConnection();
-		return null;
+		return rs;
 	}
 	
-	public ArrayList<BookCollector> selectBookList(){
+	public ResultSet selectBookList(String query){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Select Book
+		//TODO: [Derek] SQL Select Book
 		ResultSet rs = db.select(query);
 		db.closeConnection();
-		return null;
+		return rs;
 	}
 	
-	public ArrayList<EpisodeCollector> selectEpisodeList(){
+	public ResultSet selectEpisodeList(String query){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Select Episode
+		//TODO: [Derek] SQL Select Episode
 		ResultSet rs = db.select(query);
 		db.closeConnection();
-		return null;
+		return rs;
 	}
 	
-	public ArrayList<ImageCollector> selectImageList(){
+	public ResultSet selectImageList(String query){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Select Image
+		//TODO: [Derek] SQL Select Image
 		ResultSet rs = db.select(query);
 		db.closeConnection();
-		return null;
+		return rs;
 	}
 	
-	public ArrayList<SeriesCollector> selectSeriesList(){
+	public ResultSet selectSeriesList(String query){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Select Series
+		//TODO: [Derek] SQL Select Series
 		ResultSet rs = db.select(query);
 		db.closeConnection();
-		return null;
+		return rs;
 	}
 	
-	public ArrayList<VideoCollector> selectVideoList(){
+	public ArrayList<VideoCollector> selectVideoList(String query){
 		db.openConnection();
-		String query = null; //TODO: [Derek] SQL Select Video
+		//TODO: [Derek] SQL Select Video
 		ResultSet rs = db.select(query);
 		db.closeConnection();
 		return null;

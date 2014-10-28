@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
+import model.FTPException;
 import model.MetaDataCollector;
 import controller.SocketManager;
 import controller.TransferManager;

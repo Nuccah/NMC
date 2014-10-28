@@ -10,8 +10,8 @@ import javax.swing.JOptionPane;
 import model.AudioCollector;
 import model.Config;
 import model.EpisodeCollector;
+import model.FTPException;
 import model.MetaDataCollector;
-import view.FTPException;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;

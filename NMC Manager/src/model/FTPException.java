@@ -1,4 +1,4 @@
-package view;
+package model;
 
 /**
  * Custom exception class FTPException inheriting from Exception

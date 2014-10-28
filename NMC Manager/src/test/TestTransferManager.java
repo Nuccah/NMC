@@ -2,9 +2,10 @@ package test;
 
 import java.io.File;
 
+import model.FTPException;
+
 import org.junit.Test;
 
-import view.FTPException;
 import controller.TransferManager;
 
 
