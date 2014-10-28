@@ -560,12 +560,13 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			}
 			else{
 				switch (node.toString()) {
-				case "Add New Albums": albumC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
+				case "Add New Albums": fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
 						(int)visibilityBox.getSelectedItem(), personField.getText(), synopsisField.getText(), genreField.getText());break;
-				case "Add New Series": seriesC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
+				case "Add New Series": fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
 						(int)visibilityBox.getSelectedItem(), synopsisField.getText(), genreField.getText()); break;
 				default: break;
 				}
+				SocketManager.getInstance().sendMeta(fileC);
 				clear();
 			}
 		}
