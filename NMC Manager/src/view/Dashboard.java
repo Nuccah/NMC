@@ -52,6 +52,7 @@ import model.Config;
 import model.EpisodeCollector;
 import model.ImageCollector;
 import model.MetaDataCollector;
+import model.Permissions;
 import model.Profil;
 import model.SeriesCollector;
 import model.VideoCollector;
@@ -121,10 +122,11 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	
 	private JComboBox<String> albumBox = new JComboBox<String>();
 	private JComboBox<String> seriesBox = new JComboBox<String>();
-	private JComboBox<String> visibilityBox = new JComboBox<String>();
-	private JComboBox<String> modificationBox = new JComboBox<String>();
+	private JComboBox<Permissions> visibilityBox = new JComboBox<Permissions>();
+	private JComboBox<Permissions> modificationBox = new JComboBox<Permissions>();
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
+	private List<JComboBox<Permissions>> cbPList = new ArrayList<JComboBox<Permissions>>();
 	
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
 	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav");
@@ -228,13 +230,13 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		fieldList.add(personField);
 		fieldList.add(chronoField);
 		fieldList.add(seasonField);
-		cbList.add(modificationBox);
-		cbList.add(visibilityBox);
+		cbPList.add(modificationBox);
+		cbPList.add(visibilityBox);
 		cbList.add(seriesBox);
 		cbList.add(albumBox);
 		
-		modificationBox.addItem("Public");
-		visibilityBox.addItem("Public");
+		modificationBox.addItem(new Permissions("Public", 1));
+		visibilityBox.addItem(new Permissions("Public", 1));
 
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
@@ -487,7 +489,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	public void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText("");
-		for (JComboBox<?> cbl : cbList)
+		for (JComboBox<String> cbl : cbList)
+			cbl.setSelectedItem(null);
+		for (JComboBox<Permissions> cbl : cbPList)
 			cbl.setSelectedItem(null);
 		uploadButton.setEnabled(false);
 	}
@@ -560,14 +564,18 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			}
 			else{
 				switch (node.toString()) {
-				case "Add New Albums": fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
-						(int)visibilityBox.getSelectedItem(), personField.getText(), synopsisField.getText(), genreField.getText());break;
-				case "Add New Series": fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)modificationBox.getSelectedItem(), 
-						(int)visibilityBox.getSelectedItem(), synopsisField.getText(), genreField.getText()); break;
+				case "Add New Albums": fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());break;
+				case "Add New Series": fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); break;
 				default: break;
 				}
 				SocketManager.getInstance().sendMeta(fileC);
 				clear();
+				JOptionPane.showMessageDialog(getContentPane(),
+					    "Your series/album has been successfully added!",
+					    "Success",
+					    JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		else if(e.getSource() == uploadButton){
@@ -581,13 +589,13 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				//Instances of javax.swing.SwingWorker are not reusuable, so
 				//we create new instances as needed.
 				switch (node.toString()) {
-				case "Books": fileC = new BookCollector(titleField.getText(), yearField.getText(), levelToInt(modificationBox.getSelectedItem().toString()), 
-						levelToInt(visibilityBox.getSelectedItem().toString()), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
-				case "Images": fileC = new ImageCollector(titleField.getText(), yearField.getText(), levelToInt(modificationBox.getSelectedItem().toString()), 
-						levelToInt(visibilityBox.getSelectedItem().toString()), fc.getSelectedFile().getName(), personField.getText()); break;
+				case "Books": fileC = new BookCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
+				case "Images": fileC = new ImageCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText()); break;
 				case "Add New Music": fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), (String) albumBox.getSelectedItem()); break;
-				case "Movies": fileC = new VideoCollector(titleField.getText(), yearField.getText(), levelToInt(modificationBox.getSelectedItem().toString()), 
-						levelToInt(visibilityBox.getSelectedItem().toString()), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
+				case "Movies": fileC = new VideoCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
 				case "Add New Episodes": fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), (String) seriesBox.getSelectedItem(), personField.getText(), 
 						seasonField.getText(), chronoField.getText()); break;
 				default: break;
@@ -660,13 +668,6 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 	}
 	
-	public int levelToInt(String level){
-		switch (level){
-		case "Public":return 1;
-		default: return 1;
-		}
-	}
-
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub

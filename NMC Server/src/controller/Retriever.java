@@ -203,7 +203,7 @@ public class Retriever {
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			permissionsList.add(new Permissions(rs.getInt("id"), rs.getString("label"), rs.getInt("level")));
+			permissionsList.add(new Permissions(rs.getString("label"), rs.getInt("level")));
 		}
 		db.closeConnection();
 		return null;

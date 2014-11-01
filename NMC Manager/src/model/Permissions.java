@@ -11,24 +11,14 @@ import java.io.Serializable;
  */
 public class Permissions implements Serializable{
 	private static final long serialVersionUID = -828799344015351136L;
-	private int id;
 	private String label;
 	private int level;
 	
 
-	public Permissions(int id, String label, int level) {
+	public Permissions(String label, int level) {
 		super();
-		this.id = id;
 		this.label = label;
 		this.level = level;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getLabel() {
@@ -46,4 +36,11 @@ public class Permissions implements Serializable{
 	public void setLevel(int level) {
 		this.level = level;
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.label;
+	}
+	
 }
