@@ -14,8 +14,8 @@ public class MetaDataCollector implements Serializable{
 	protected String title;
 	protected int modificiationID;
 	protected int visibilityID;
-	protected String relPath;
 	protected String absPath;
+	protected String relPath;
 
 	public MetaDataCollector(String title){
 		this.title = title;
@@ -51,20 +51,20 @@ public class MetaDataCollector implements Serializable{
 		return title;
 	}
 
-	public String getRelPath() {
-		return relPath;
-	}
-
-	public void setRelPath(String relPath) {
-		this.relPath = relPath;
-	}
-
 	public String getAbsPath() {
 		return absPath;
 	}
 
 	public void setAbsPath(String absPath) {
 		this.absPath = absPath;
+	}
+
+	public String getRelPath() {
+		return relPath;
+	}
+
+	public void setRelPath(String relPath) {
+		this.relPath = relPath;
 	}
 
 	public int getModificiationID() {
@@ -82,4 +82,8 @@ public class MetaDataCollector implements Serializable{
 	public void setVisibilityID(int visibilityID) {
 		this.visibilityID = visibilityID;
 	}
+
+	
+	
+	
 }

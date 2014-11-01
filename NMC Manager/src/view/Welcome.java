@@ -22,7 +22,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import model.Config;
-import controller.SessionManager;
+import controller.SocketManager;
 /**
  * Fenêtre de connexion
  * @author Antoine
@@ -121,9 +121,8 @@ public class Welcome extends JFrame implements ActionListener {
 		if(e.getSource() == btnQuitter){
 			System.exit(0);
 		} else if(e.getSource() == btnSeConnecter){
-			if(SessionManager.getInstance().login(txtLogin.getText(), 
-							String.valueOf(pwdMotDePasse.getPassword()))){
-				
+			if(SocketManager.getInstance().connect(txtLogin.getText(), 
+					String.valueOf(pwdMotDePasse.getPassword()))){				
 				this.dispose();
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {

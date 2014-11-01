@@ -1,10 +1,14 @@
 package test;
 
 import java.io.File;
+import java.io.IOException;
+
+import model.FTPException;
 
 import org.junit.Test;
 
-import view.FTPException;
+import com.jcraft.jsch.SftpException;
+
 import controller.TransferManager;
 
 
@@ -13,11 +17,13 @@ public class TestTransferManager {
 	@Test
 	public void testSendFile() {
 		// Launch Main NMCServer BEFORE launch this test
+		TransferManager.getInstance().connect();
 		try {
-			TransferManager.getInstance().sendFile("Movies", new File("C:\\Users\\Antoine Ceyssens\\Downloads\\from_sqli_to_shell.iso"));
-		} catch (FTPException e) {
+			TransferManager.getInstance().sendFile("Movies", new File("F:\\Téléchargement\\Daybreaker.avi"), null);
+		} catch (FTPException | SftpException | IOException e) {
 			e.printStackTrace();
 		}
+		TransferManager.getInstance().close();
 		
 	}
 

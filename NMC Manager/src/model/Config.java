@@ -36,8 +36,8 @@ public class Config {
 				cfg_file.createNewFile();
 				defaultConf();
 			} catch (IOException e) {
-				JOptionPane.showConfirmDialog(null, "Le fichier n'a pas pu être créé!\n"
-						+ "Veuillez essayer de lancer le programme en tant qu'Administrateur.");
+				JOptionPane.showConfirmDialog(null, "The config file couldn't be created\n"
+						+ "Please try to run the application with administrator privileges.");
 				e.printStackTrace();
 			}
 		}
@@ -57,14 +57,10 @@ public class Config {
 	public void defaultConf(){
 		setProp("program_title", "Nukama MediaCenter Manager");
 		setProp("base_title", "NMC - ");
-		setProp("url_db", "//localhost/nmc_db");
-		setProp("user_db", "nmc_admin");
-		setProp("pass_db", "ephec2014");
+		//TODO: Modifier gui pour demander IP et port serveur (si différent de port défaut: 50002") lors du premier lancement
 		setProp("srv_url", "localhost");
 		setProp("srv_port", "50002");
-		setProp("ftp_port", "50001");
-		setProp("ftp_user", "ftpadmin");
-		setProp("ftp_pass", "ephec2014");
+		setProp("init", "0");
 		saveProp();
 	}
 	
@@ -87,14 +83,14 @@ public class Config {
 		try {
 			cfg_out = new FileOutputStream(cfg_file);
 		} catch (FileNotFoundException e1) {
-			JOptionPane.showMessageDialog(null, "Le fichier de config n'a pas pu être trouvé!");
+			JOptionPane.showMessageDialog(null, "The config file was not found!");
 			e1.printStackTrace();
 		}
 		try {
 			prop.storeToXML(cfg_out, null);
 			cfg_out.close();
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erreur lors de l'écriture des configurations!");
+			JOptionPane.showMessageDialog(null, "Error while writing configurations!");
 			e.printStackTrace();
 		}
 	}
@@ -106,14 +102,14 @@ public class Config {
 		try {
 			cfg_in = new FileInputStream(cfg_file);
 		} catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Le fichier de config n'a pas pu être trouvé!");
+			JOptionPane.showMessageDialog(null, "The config file was not found!");
 			e.printStackTrace();
 		}
 		try {
 			prop.loadFromXML(cfg_in);
 			cfg_in.close();
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erreur lors du chargement du fichier de config!");
+			JOptionPane.showMessageDialog(null, "Error while reading configurations!");
 			e.printStackTrace();
 		}
 	}

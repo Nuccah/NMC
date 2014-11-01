@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.EventQueue;
 
+import controller.SocketManager;
 import model.Config;
 import model.Profil;
 import view.Welcome;
@@ -16,6 +17,11 @@ public class Main {
 	public static void main(String[] args) {
 		Config.getInstance();
 		Profil.getInstance().reset();
+		//---------- Zone de config auto temporaire ---------
+		while(Config.getInstance().getProp("init").compareTo("0") == 0){
+			SocketManager.getInstance().getConfig();
+		}
+		//---------- Zone de config auto temporaire ---------
 		
 		EventQueue.invokeLater(new Runnable() {
 			
@@ -24,7 +30,7 @@ public class Main {
 					Welcome wcScreen = new Welcome();
 					wcScreen.setVisible(true);								
 			}
-		});
+		});			
 	}
 
 }

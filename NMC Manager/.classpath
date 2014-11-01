@@ -15,7 +15,9 @@
 	<classpathentry kind="lib" path="lib/gui/jgoodies-forms-1.8.0/jgoodies-forms-1.8.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/gui/jgoodies-forms-1.8.0/jgoodies-forms-1.8.0.jar"/>
 	<classpathentry kind="lib" path="lib/conversion/xuggle-xuggler-5.4.jar"/>
-	<classpathentry kind="lib" path="lib/conversion/slf4j-api-1.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/conversion/slf4j-simple-1.5.2.jar"/>
+
+	<classpathentry kind="lib" path="lib/ftp/slf4j-api-1.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/ftp/slf4j-simple-1.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/ftp/jsch-0.1.51.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

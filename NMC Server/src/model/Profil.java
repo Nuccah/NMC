@@ -40,7 +40,6 @@ public class Profil implements Serializable {
 	public Profil(int users_id, String login, String email, String first_name, String last_name, Date birthdate, Timestamp reg_date, int permissions_id){
 		this.id = users_id;
 		this.username = login;
-		this.password = null;
 		this.mail = email;
 		this.first_name = first_name;
 		this.last_name = last_name;
@@ -72,13 +71,6 @@ public class Profil implements Serializable {
 	public static Profil getInstance(){
 		if(instance == null) instance = new Profil();
 		return instance;
-	}
-	/**
-	 * Permet de créer une instance statique profil à partir de celle passée en paramètre
-	 * @param pf : Profil distant à copier localement
-	 */
-	public static void setInstance(Profil pf){
-		instance = pf;
 	}
 	
 	public int getId() {

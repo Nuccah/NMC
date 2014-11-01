@@ -11,9 +11,13 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
+import model.FTPException;
+import model.MetaDataCollector;
+
 import com.xuggle.mediatool.IMediaReader;
 
 import controller.Converter;
+import controller.SocketManager;
 import controller.TransferManager;
 
 /**
@@ -27,14 +31,16 @@ public class UploadTask extends SwingWorker<Void, Void> {
 	 */
 	private File uploadFile;
 	private String directory;
+	private MetaDataCollector mdc;
 	private static final int BUFFER_SIZE = 4096;
 
 	/** Task Constructor
 	 * @param selectedFile file to be uploaded
 	 */
-	public UploadTask(String directory, File selectedFile) {
+	public UploadTask(String directory, File selectedFile, MetaDataCollector mdc) {
 		this.uploadFile = selectedFile;
 		this.directory = directory;
+		this.mdc = mdc;
 	}
 
 	@Override
@@ -51,7 +57,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				uploadFile = new File(filepath);
 			}
 			TransferManager.getInstance().connect();
-			TransferManager.getInstance().sendFile(directory, uploadFile);
+			TransferManager.getInstance().sendFile(directory, uploadFile,mdc);
 			FileInputStream inputStream = new FileInputStream(uploadFile);
 			byte[] buffer = new byte[BUFFER_SIZE]; 
 			int bytesRead = -1;
@@ -64,6 +70,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				setProgress(percentCompleted);
 			}
 			inputStream.close();
+			SocketManager.getInstance().sendMeta(mdc); 
 			TransferManager.getInstance().finish();
 		} catch (IOException | FTPException e){
 			JOptionPane.showMessageDialog(null,  "Error upload file: " + e.getMessage(),
