@@ -13,14 +13,12 @@ import javax.swing.SwingWorker;
 
 import model.FTPException;
 import model.MetaDataCollector;
-
-import com.xuggle.mediatool.IMediaReader;
-
 import controller.Converter;
 import controller.SocketManager;
 import controller.TransferManager;
 
 /**
+ * Classe de gestion de la vue lors d'un upload
  * @author Derek
  *
  */
