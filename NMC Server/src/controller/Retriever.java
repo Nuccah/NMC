@@ -48,9 +48,8 @@ public class Retriever {
 		db.openConnection();
 		audioList = new ArrayList<AudioCollector>();
 		//TODO: [Derek] SQL Select Audio
-		String query = "SELECT nmc_tracks.title as title, filename, name, nmc_media.title as album FROM nmc_media "
-				+ "INNER JOIN nmc_media_info as nmi ON nmc_media.id = nmi.id "
-				+ "INNER JOIN nmc_tracks_albums as nta ON nmi.id = nta.media_info_id "
+		String query = "SELECT nmc_tracks.title as title, filename, name, nmc_media.title as album FROM nmc_media as nmi "
+				+ "INNER JOIN nmc_tracks_albums as nta ON nmi.id = nta.media_id "
 				+ "INNER JOIN nmc_tracks as nt ON nta.tracks_id = nt.id "
 				+ "INNER JOIN nmc_tracks_bands as ntb ON nt.id = ntb.tracks_id "
 				+ "INNER JOIN nmc_bands as nb ON ntb.bands_id = nb.id ";
@@ -69,11 +68,10 @@ public class Retriever {
 		db.openConnection();
 		albumList = new ArrayList<AlbumCollector>();
 		//TODO: [Derek] SQL Select Album
-		String query = "SELECT title, release_date, modification, visibility, name, nmc_media_info.description as description, category FROM ... "
-				+ "INNER JOIN nmc_media_info as nmi ON nmc_media.id = nmi.id "
+		String query = "SELECT title, release_date, modification, visibility, name, nmc_media.description as description, category FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_albums_categories as nac ON nmi.id = nac.media_id "
 				+ "INNER JOIN nmc_categories as nc ON nac.categories_id = nc.id "
-				+ "INNER JOIN nmc_media_info_bands as nmib ON nmi.id = nmid.media_info_id "
+				+ "INNER JOIN nmc_media_bands as nmib ON nmi.id = nmid.media_id "
 				+ "INNER JOIN nmc_bands as nb ON nmid.bands_id = nb.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
@@ -90,9 +88,8 @@ public class Retriever {
 		db.openConnection();
 		bookList = new ArrayList<BookCollector>();
 		//TODO: [Derek] SQL Select Book
-		String query = "SELECT title, release_date, modification, visibility, path, name, category, description FROM ... "
-				+ "INNER JOIN nmc_media_info as nmi ON nmc_media.id = nmi.id "
-				+ "INNER JOIN nmc_media_info_authors as nmia ON nmi.id = nmia.media_info_id "
+		String query = "SELECT title, release_date, modification, visibility, path, name, category, description FROM nmc_media as nmi "
+				+ "INNER JOIN nmc_media_authors as nmia ON nmi.id = nmia.media_id "
 				+ "INNER JOIN nmc_persons as np ON nmia.persons_id = np.id "
 				+ "INNER JOIN nmc_books_categories as nbc ON nmi.id = nbc.media_id "
 				+ "INNER JOIN nmc_categories as nc ON nbc.categories_id = nc.id ";
@@ -111,9 +108,8 @@ public class Retriever {
 		db.openConnection();
 		episodeList = new ArrayList<EpisodeCollector>();
 		//TODO: [Derek] SQL Select Episode
-		String query = "SELECT nmc_media_info_series.title as title, filename, nmc_media.title as series, name, season, chrono FROM nmc_media "
-				+ "INNER JOIN nmc_media_info as nmi ON nmc_media.id = nmi.id "
-				+ "INNER JOIN nmc_media_info_series as nmis ON nmi.id = nmis.id "
+		String query = "SELECT nmc_media_series.title as title, filename, nmc_media.title as series, name, season, chrono FROM nmc_media as nmi "
+				+ "INNER JOIN nmc_media_series as nmis ON nmi.id = nmis.id "
 				+ "INNER JOIN nmc_videos as nv ON nmis.id = nv.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
@@ -129,8 +125,7 @@ public class Retriever {
 	public ArrayList<ImageCollector>  selectImageList(String queryAdd) throws SQLException{
 		db.openConnection();
 		imageList = new ArrayList<ImageCollector>();
-		String query = "SELECT title, release_date, modification, visibility, path, name FROM nmc_media "
-				+ "INNER JOIN nmc_media_info as nmi ON nmc_media.id = nmi.id "
+		String query = "SELECT title, release_date, modification, visibility, path, name FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_photographers as nmp ON nmi.id = nmp.media_id "
 				+ "INNER JOIN nmc_persons as np ON nmp.persons_id = np.id ";
 		if (queryAdd != null)
@@ -147,8 +142,7 @@ public class Retriever {
 	public ArrayList<SeriesCollector>  selectSeriesList(String queryAdd) throws SQLException{
 		db.openConnection();
 		seriesList = new ArrayList<SeriesCollector>();
-		String query = "SELECT title, release_date, modification, visibility, description, category FROM nmc_media "
-				+ "INNER JOIN nmc_media_info as nmi ON nmc_media.id = nmi.id "
+		String query = "SELECT title, release_date, modification, visibility, description, category FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_series_categories as nfc ON nmi.id = nfc.media_id "
 				+ "INNER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ";
 		if (queryAdd != null)
@@ -165,9 +159,8 @@ public class Retriever {
 	public ArrayList<VideoCollector> selectVideoList(String queryAdd) throws SQLException{
 		db.openConnection();
 		videoList = new ArrayList<VideoCollector>();
-		String query = "SELECT title, release_date, modification, visibility, filename, name, category, description FROM nmc_media "
-				+ "INNER JOIN nmc_media_info as nmi ON nmc_media.id = nmi.id "
-				+ "INNER JOIN nmc_media_info_films as nmif ON nmi.id = nmif.media_info_id "
+		String query = "SELECT title, release_date, modification, visibility, filename, name, category, description FROM nmc_media as nmi "
+				+ "INNER JOIN nmc_media_films as nmif ON nmi.id = nmif_media_id "
 				+ "INNER JOIN nmc_videos as nv ON nmif.videos_id = nv.id "
 				+ "INNER JOIN nmc_videos_directors as nvd ON nv.id = nvd.videos_id "
 				+ "INNER JOIN nmc_persons as np ON nvd.persons_id = np.id "

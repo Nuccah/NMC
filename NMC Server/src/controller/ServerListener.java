@@ -212,6 +212,9 @@ public class ServerListener implements Runnable {
 		} catch (IOException e){
 			System.out.println("[Error] - Meta Type ACK couldn't be sent to: "+cl.getInetAddress());
 			//e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	

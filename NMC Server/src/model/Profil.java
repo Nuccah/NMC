@@ -14,6 +14,7 @@ public class Profil implements Serializable {
 	private static Profil instance = null;
 	private int id;
 	private String username;
+	private String password;
 	private String mail;
 	private String first_name;
 	private String last_name;
@@ -27,6 +28,7 @@ public class Profil implements Serializable {
 	public void reset(){
 		id = 0;
 		username = null;
+		password = null;
 		mail = null;
 		first_name = null;
 		last_name = null;
@@ -38,6 +40,18 @@ public class Profil implements Serializable {
 	public Profil(int users_id, String login, String email, String first_name, String last_name, Date birthdate, Timestamp reg_date, int permissions_id){
 		this.id = users_id;
 		this.username = login;
+		this.mail = email;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.birthdate = birthdate;
+		this.reg_date  = reg_date;
+		this.permissions_id = permissions_id;
+	}
+	
+	public Profil(int users_id, String login, String password, String email, String first_name, String last_name, Date birthdate, Timestamp reg_date, int permissions_id){
+		this.id = users_id;
+		this.username = login;
+		this.password = password;
 		this.mail = email;
 		this.first_name = first_name;
 		this.last_name = last_name;
@@ -72,6 +86,13 @@ public class Profil implements Serializable {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public String getMail() {
 		return mail;
