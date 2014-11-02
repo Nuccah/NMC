@@ -39,7 +39,8 @@ public class Main {
 				System.exit(1);
 			}
 			if(!Initializer.getInstance().importDefaultConf(path)){
-				System.out.println("[Error] - Unable to create default configurations");
+				System.out.println("[Error] - Unable to create default configurations."
+						+ "\nPlease retry and make sure path to config file is correct.");
 				System.exit(1);
 			}
 		}
