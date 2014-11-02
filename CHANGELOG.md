@@ -1,6 +1,6 @@
 #Changelog NMC Java#
 ----------------
-###RC2 - 2.1###
+###RC2 - 2.2###
 
 Features added:
 
