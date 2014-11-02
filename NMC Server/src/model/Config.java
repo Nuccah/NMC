@@ -69,7 +69,7 @@ public class Config {
 	 */
 	public void defaultConf(){
 		setProp("root_dir", System.getProperty("user.home")+Parser.getInstance().getSlash()+"NMC_STOCK");
-		setProp("url_db", "//localhost/nmc_db");
+		setProp("url_db", "localhost/nmc_db");
 		setProp("user_db", "nmc_admin");
 		setProp("pass_db", "ephec2014");
 		setProp("ftp_port", "50001");
@@ -165,6 +165,29 @@ public class Config {
 			System.out.println("Error while writing configurations!");
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * Permet d'ajouter les propriétés passées en paramètres aux propriétés existantes
+	 * @param new_prop
+	 */
+	public void saveProp(Properties new_prop){
+		try {
+			cfg_out = new FileOutputStream(cfg_file);
+		} catch (FileNotFoundException e1) {
+			System.out.println("The config file was not found!");
+			e1.printStackTrace();
+		}
+		try {
+			Properties merged = new Properties();
+			merged.putAll(prop);
+			merged.putAll(new_prop);
+			merged.storeToXML(cfg_out, null);
+			cfg_out.close();
+		} catch (IOException e) {
+			System.out.println("Error while writing configurations!");
+			e.printStackTrace();
+		}
+		loadProp();
 	}
 	
 	/**

@@ -38,7 +38,7 @@ public class ConnectorDB {
 	 * Permet d'ouvrir la connexion à la DB 
 	 */
 	public void openConnection(){
-		String uri = "jdbc:postgresql:"+conf.getProp("url_db");
+		String uri = "jdbc:postgresql://"+conf.getProp("url_db");
 		Properties props = new Properties();
 		props.setProperty("user", conf.getProp("user_db"));
 		props.setProperty("password", conf.getProp("pass_db"));

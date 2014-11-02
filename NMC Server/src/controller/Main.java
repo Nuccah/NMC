@@ -16,6 +16,23 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Config.getInstance();
+		//------------- INIT ---------------
+		if(args[1].compareTo("--init") == 0){
+			if(args[2].isEmpty()){
+				System.out.println("[Error] - Path will be passed to server after --init");
+				System.exit(1);
+			}
+			if(!Initializer.getInstance().searchForDefaultConf(args[2])){
+				System.out.println("[Error] - Unable to create default configurations");
+				System.exit(1);
+			}
+		}
+		if(Config.getInstance().getProp("db_url") == null){
+			System.out.println("[Error] - Please launch the server with --init option before trying to use it");
+		}
+		//------------ INIT END ------------
+		
+		//---------- SOCKET ZONE -----------
 		Thread sockTh = new Thread(
 				new Runnable() {
 					
@@ -44,9 +61,16 @@ public class Main {
 						}
 					}
 		});
-		//sockTh.setDaemon(true);
+		sockTh.setDaemon(true);
+		for(int i = 0; i < args.length; i++){
+			if(args[i].compareTo("--debug") == 0) sockTh.setDaemon(false);
+		}
 		sockTh.start();
+		//-------- SOCKET ZONE END --------
+		
+		//-------- SFTP ZONE --------------
 		TransferManager.getInstance().start();
+		//-------- SFTP ZONE END ----------
 	}
 
 }
