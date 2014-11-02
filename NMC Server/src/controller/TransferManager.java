@@ -76,7 +76,7 @@ public class TransferManager extends Thread {
 			sshd.start();
 		} catch (IOException e) {
 			System.out.println("[Error] - Unable to launch the SFTP Server");
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
 	

@@ -26,7 +26,7 @@ public class Initializer {
 		return instance;
 	}
 	
-	public boolean searchForDefaultConf(String path){
+	public boolean importDefaultConf(String path){
 		File fConf = new File(path);
 		if(fConf.exists()){
 			Properties props = new Properties();
@@ -34,8 +34,10 @@ public class Initializer {
 				props.loadFromXML(new FileInputStream(fConf));
 			} catch (IOException e) {
 				System.out.println("[Error] - Unable to retrieve properties from "+fConf.getAbsolutePath());
+				if(Main.getDebug()) e.printStackTrace();
 			}
 			Config.getInstance().saveProp(props);
+			fConf.delete();
 			return true;
 		}
 		return false;		

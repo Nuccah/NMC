@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Properties;
 
+import controller.Main;
 import controller.Parser;
 
 /**
@@ -37,7 +38,7 @@ public class Config {
 			} catch (IOException e) {
 				System.out.println("The config file couldn't be created\n"
 						+ "Please try to run the application with administrator privileges.");
-				e.printStackTrace();
+				if(Main.getDebug()) e.printStackTrace();
 			}
 		}
 		loadProp();
@@ -69,9 +70,9 @@ public class Config {
 	 */
 	public void defaultConf(){
 		setProp("root_dir", System.getProperty("user.home")+Parser.getInstance().getSlash()+"NMC_STOCK");
-		setProp("url_db", "localhost/nmc_db");
-		setProp("user_db", "nmc_admin");
-		setProp("pass_db", "ephec2014");
+		if(Main.getDev()) setProp("url_db", "localhost/nmc_db");
+		if(Main.getDev()) setProp("user_db", "nmc_admin");
+		if(Main.getDev()) setProp("pass_db", "ephec2014");
 		setProp("ftp_port", "50001");
 		setProp("ftp_user", new BigInteger(130, new SecureRandom()).toString(32));
 		setProp("sock_port", "50002");
@@ -131,7 +132,8 @@ public class Config {
 				fos.write(pubKey.getBytes());
 				fos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("[Error] - Unable to open key files");
+				if(Main.getDebug()) e.printStackTrace();
 			}
 		}
 	}
@@ -156,14 +158,14 @@ public class Config {
 			cfg_out = new FileOutputStream(cfg_file);
 		} catch (FileNotFoundException e1) {
 			System.out.println("The config file was not found!");
-			e1.printStackTrace();
+			if(Main.getDebug()) e1.printStackTrace();
 		}
 		try {
 			prop.storeToXML(cfg_out, null);
 			cfg_out.close();
 		} catch (IOException e) {
 			System.out.println("Error while writing configurations!");
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
 	/**
@@ -175,7 +177,7 @@ public class Config {
 			cfg_out = new FileOutputStream(cfg_file);
 		} catch (FileNotFoundException e1) {
 			System.out.println("The config file was not found!");
-			e1.printStackTrace();
+			if(Main.getDebug()) e1.printStackTrace();
 		}
 		try {
 			Properties merged = new Properties();
@@ -185,7 +187,7 @@ public class Config {
 			cfg_out.close();
 		} catch (IOException e) {
 			System.out.println("Error while writing configurations!");
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 		loadProp();
 	}
@@ -198,14 +200,14 @@ public class Config {
 			cfg_in = new FileInputStream(cfg_file);
 		} catch (FileNotFoundException e) {
 			System.out.println("The config file was not found!");
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 		try {
 			prop.loadFromXML(cfg_in);
 			cfg_in.close();
 		} catch (IOException e) {
 			System.out.println("Error while reading configurations!");
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
 	

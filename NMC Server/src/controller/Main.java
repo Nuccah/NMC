@@ -9,20 +9,36 @@ import model.Config;
 
 /**
  * Classe principale du serveur
+ * <br /><br />
+ * Ce programme peut être lancé en mode DEBUG afin d'afficher plus de messages d'erreurs avec la commande: --debug 
  * @author Antoine Ceyssens
  *
  */
 public class Main {
+	private static boolean DEBUG = false; 
+	private static boolean INIT = false;
+	private static boolean DEV = false;
 	
 	public static void main(String[] args) {
+		int initInd = -1;
+		for(int i = 0; i < args.length; i++){
+			if(args[i].compareTo("--debug") == 0) DEBUG = true;
+			if(args[i].compareTo("--dev") == 0) DEV = true;
+			if(args[i].compareTo("--init") == 0){
+				initInd = i;
+				INIT = true;
+			}
+		}
 		Config.getInstance();
+		
 		//------------- INIT ---------------
-		if(args[1].compareTo("--init") == 0){
-			if(args[2].isEmpty()){
+		if(INIT){
+			String path = args[initInd+1];
+			if(path.isEmpty()){
 				System.out.println("[Error] - Path will be passed to server after --init");
 				System.exit(1);
 			}
-			if(!Initializer.getInstance().searchForDefaultConf(args[2])){
+			if(!Initializer.getInstance().importDefaultConf(path)){
 				System.out.println("[Error] - Unable to create default configurations");
 				System.exit(1);
 			}
@@ -31,7 +47,7 @@ public class Main {
 			System.out.println("[Error] - Please launch the server with --init option before trying to use it");
 		}
 		//------------ INIT END ------------
-		
+
 		//---------- SOCKET ZONE -----------
 		Thread sockTh = new Thread(
 				new Runnable() {
@@ -56,21 +72,33 @@ public class Main {
 								srv.close();
 							} catch (IOException e) {
 								System.out.println("[Warning] Server listener is closed!");
-								e.printStackTrace();
+								if(DEBUG) e.printStackTrace();
 							}
 						}
 					}
 		});
-		sockTh.setDaemon(true);
-		for(int i = 0; i < args.length; i++){
-			if(args[i].compareTo("--debug") == 0) sockTh.setDaemon(false);
-		}
+		if(!DEBUG) sockTh.setDaemon(true);
 		sockTh.start();
 		//-------- SOCKET ZONE END --------
 		
 		//-------- SFTP ZONE --------------
 		TransferManager.getInstance().start();
 		//-------- SFTP ZONE END ----------
+	}
+	/**
+	 * Permet de savoir si le programme tourne en mode DEBUG ou non
+	 * @return Vrai si le programme tourne en DEBUG
+	 */
+	public static boolean getDebug(){
+		return DEBUG;
+	}
+	
+	/**
+	 * Permet de savoir si le programme tourne en mode DEV ou non
+	 * @return Vrai si le programme tourne en DEV
+	 */
+	public static boolean getDev(){
+		return DEV;
 	}
 
 }

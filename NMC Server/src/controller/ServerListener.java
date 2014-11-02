@@ -40,7 +40,7 @@ public class ServerListener implements Runnable {
 			this.oos = new ObjectOutputStream(cl.getOutputStream());
 		} catch(IOException e){
 			System.out.println("[Error] - Unable to create socket streams for: "+cl.getInetAddress());
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}		
 	}
 	/**
@@ -101,7 +101,7 @@ public class ServerListener implements Runnable {
 			oos.writeObject(privKey);
 		} catch(ClassNotFoundException | IOException e){
 			System.out.println("[Error] - Unable to send basic configurations to: "+cl.getInetAddress());
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
 	/**
@@ -116,7 +116,7 @@ public class ServerListener implements Runnable {
 			ois.readObject();	
 		} catch (ClassNotFoundException | IOException e){
 			System.out.println("[Error] Couldn't retrieve credentials from: "+cl.getInetAddress());
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 		String username = credentials[0];
 		String password = credentials[1];
@@ -129,9 +129,9 @@ public class ServerListener implements Runnable {
 			try {
 				oos.writeObject("[Error] - Wrong login/password");
 			} catch (IOException e) {
-				e.printStackTrace();
+				if(Main.getDebug()) e.printStackTrace();
 			}
-			e1.printStackTrace();
+			if(Main.getDebug()) e1.printStackTrace();
 		}
 		try {
 			if(password.compareTo(res.getString("password")) == 0){
@@ -147,13 +147,13 @@ public class ServerListener implements Runnable {
 					oos.writeObject(pf);
 				} catch (IOException e){
 					System.out.println("[Error] - Profil couldn't be sent to: "+cl.getInetAddress());
-					e.printStackTrace();
+					if(Main.getDebug()) e.printStackTrace();
 				}
 			} else {
 				try {
 					oos.writeObject("[Error] - Wrong login/password");
 				} catch (IOException e) {
-					e.printStackTrace();
+					if(Main.getDebug()) e.printStackTrace();
 				}			
 			}
 		} catch (SQLException e) {
@@ -161,9 +161,9 @@ public class ServerListener implements Runnable {
 			try {
 				oos.writeObject("[Error] - Connection failed! Please check if server is up");
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				if(Main.getDebug()) e1.printStackTrace();
 			}
-			//e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
 	/**
@@ -175,7 +175,7 @@ public class ServerListener implements Runnable {
 			mdc = (MetaDataCollector) ois.readObject();
 		} catch (ClassNotFoundException | IOException e1) {
 			System.out.println("[Error] - Couldn't retrieve meta type from: "+cl.getInetAddress());
-			//e1.printStackTrace();
+			if(Main.getDebug()) e1.printStackTrace();
 		}
 		mdc.setAbsPath(Config.getInstance().getProp("root_dir")+mdc.getRelPath());
 		Injecter inj = Injecter.getInstance();
@@ -209,12 +209,9 @@ public class ServerListener implements Runnable {
 				inj.injector((VideoCollector) mdc);
 			}
 			else oos.writeObject("NACK");
-		} catch (IOException e){
+		} catch (IOException | SQLException e){
 			System.out.println("[Error] - Meta Type ACK couldn't be sent to: "+cl.getInetAddress());
-			//e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
 	
