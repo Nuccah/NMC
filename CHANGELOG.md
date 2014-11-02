@@ -1,5 +1,10 @@
 #Changelog NMC Java#
 ----------------
+###RC2 - 2.1###
+
+Features added:
+
+- Auto init through PHP Server
 
 ###RC2 - 2.1###
 
