@@ -531,7 +531,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					return false;
 				else return true;
 			case "Add New Albums":
-				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null)
+				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null || albumBox.getSelectedItem() == null)
 					return false;
 				else return true;
 			case "Movies":
@@ -588,8 +588,14 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					break;
 				default: break;
 				}
+				
 				SocketManager.getInstance().sendMeta(fileC);
+				
+				if(fileC instanceof AlbumCollector) SocketManager.getInstance().getList("albums");
+				else SocketManager.getInstance().getList("series");
+				
 				populateLists();
+				
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Your series/album has been successfully added!",
 						"Success",

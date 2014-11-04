@@ -13,6 +13,13 @@ public class AudioCollector extends MetaDataCollector{
 		this.album = album;
 	}
 	
+	public AudioCollector(int id, String title, String filename, String artist, String album) {
+		super(id, title);
+		this.artist = artist;
+		this.filename = filename;
+		this.album = album;
+	}
+	
 	@Override
 	public MetaDataCollector audioExtraction() {
 		return super.audioExtraction();

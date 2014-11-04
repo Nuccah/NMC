@@ -152,19 +152,85 @@ public class SocketManager extends Socket {
 		//TODO: Trouver comment envoyer la requête de suppression
 		throw new UnsupportedOperationException("Method not yet implemented!");
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public void getList(String type){
 		try {
+			Lists lists = Lists.getInstance();
+			if (type != "startup"){
+				String ack = null;
+				do{
+					oos.writeObject("list");
+					ack = (String) ois.readObject();
+				} while(ack.compareTo("ACK") != 0);
+				oos.writeObject(type);
+			}
+			else
+				oos.writeObject(type);
 			switch(type){
-			case "startup": 
+			case "startup":
+				
 				Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
 											(ArrayList<Permissions>)ois.readObject(),
 											(ArrayList<AlbumCollector>)ois.readObject(),
 											(ArrayList<SeriesCollector>)ois.readObject()));
+				break;
+			case "albums": 
+				lists.setAlbumList(null);
+				do{
+					lists.setAlbumList((ArrayList<AlbumCollector>)ois.readObject());
+				}while (lists.getAlbumList() == null);
+				break;
+			case "series":
+				lists.setSeriesList(null);
+				do{
+					lists.setSeriesList((ArrayList<SeriesCollector>)ois.readObject());
+				}while (lists.getSeriesList() == null);
+				break;
+			case "audio": 
+				lists.setAudioList(null);
+				do{
+					lists.setAudioList((ArrayList<AudioCollector>) ois.readObject());
+				}while (lists.getAudioList() == null);
+				break;
+			case "books": 
+				lists.setBookList(null);
+				do{
+					lists.setBookList((ArrayList<BookCollector>) ois.readObject());
+				}while (lists.getBookList() == null);
+				break;
+			case "episodes": 
+				lists.setEpisodeList(null);
+				do{
+					lists.setEpisodeList((ArrayList<EpisodeCollector>) ois.readObject());
+				}while (lists.getEpisodeList() == null);
+				break;
+			case "images": 
+				lists.setImageList(null);
+				do{
+					lists.setImageList((ArrayList<ImageCollector>) ois.readObject());
+				}while (lists.getImageList() == null);
+				break;
+			case "permissions": 
+				lists.setPermissionsList(null);
+				do{
+					lists.setPermissionsList((ArrayList<Permissions>)ois.readObject());
+				}while (lists.getPermissionsList() == null);
+				break;
+			case "users": 
+				lists.setUsersList(null);
+				do{
+					lists.setUsersList((ArrayList<Profil>)ois.readObject());
+				}while (lists.getUsersList() == null);
+				break;
+			case "videos": 
+				lists.setVideoList(null);
+				do{
+					lists.setVideoList((ArrayList<VideoCollector>) ois.readObject());
+				}while (lists.getVideoList() == null);
+				break;
 			}
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public class MetaDataCollector implements Serializable{
 	private static final long serialVersionUID = 349141030197537212L;
+	protected int id;
 	protected String title;
 	protected int modificiationID;
 	protected int visibilityID;
@@ -23,7 +24,23 @@ public class MetaDataCollector implements Serializable{
 		this.relPath = null;
 	}
 	
+	public MetaDataCollector(int id, String title){
+		this.id = id;
+		this.title = title;
+		this.absPath = null;
+		this.relPath = null;
+	}
+	
 	public MetaDataCollector(String title, int modId, int visId){
+		this.title = title;
+		this.modificiationID = modId;
+		this.visibilityID = visId;
+		this.absPath = null;
+		this.relPath = null;
+	}
+	
+	public MetaDataCollector(int id, String title, int modId, int visId){
+		this.id = id;
 		this.title = title;
 		this.modificiationID = modId;
 		this.visibilityID = visId;
@@ -45,6 +62,14 @@ public class MetaDataCollector implements Serializable{
 
 	public MetaDataCollector videoExtraction(){
 		return null;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public String getTitle(){

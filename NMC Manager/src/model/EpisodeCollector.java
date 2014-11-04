@@ -16,6 +16,15 @@ public class EpisodeCollector extends MetaDataCollector{
 		this.chrono = chrono;
 		this.filename = filename;
 	}
+	
+	public EpisodeCollector(int id, String title, String filename, String series, String director, String season, String chrono){
+		super(id, title);
+		this.director = director;
+		this.series = series;
+		this.season = season;
+		this.chrono = chrono;
+		this.filename = filename;
+	}
 
 	public String getDirector() {
 		return director;
