@@ -44,7 +44,7 @@ public class Main {
 				System.exit(1);
 			}
 		}
-		if(Config.getInstance().getProp("db_url") == null){
+		if(Config.getInstance().getProp("url_db") == null){
 			System.out.println("[Error] - Please launch the server with --init option before trying to use it");
 		}
 		//------------ INIT END ------------
