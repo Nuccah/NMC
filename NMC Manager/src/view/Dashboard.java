@@ -51,6 +51,7 @@ import model.BookCollector;
 import model.Config;
 import model.EpisodeCollector;
 import model.ImageCollector;
+import model.Lists;
 import model.MetaDataCollector;
 import model.Permissions;
 import model.Profil;
@@ -120,12 +121,11 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JTextField chronoField = new JTextField();
 	private JTextField seasonField = new JTextField();
 
-	private JComboBox<String> albumBox = new JComboBox<String>();
-	private JComboBox<String> seriesBox = new JComboBox<String>();
+	private JComboBox<AlbumCollector> albumBox = new JComboBox<AlbumCollector>();
+	private JComboBox<SeriesCollector> seriesBox = new JComboBox<SeriesCollector>();
 	private JComboBox<Permissions> visibilityBox = new JComboBox<Permissions>();
 	private JComboBox<Permissions> modificationBox = new JComboBox<Permissions>();
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
-	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
 	private List<JComboBox<Permissions>> cbPList = new ArrayList<JComboBox<Permissions>>();
 
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
@@ -141,11 +141,11 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JProgressBar progressBar;
 	private UploadTask uTask;
 	private static Dashboard instance = null;
-	
+
 	AlbumCollector albumC;
 	SeriesCollector seriesC;
 	MetaDataCollector fileC;
-	
+
 	/**
 	 * Creates instance of Dashboard
 	 * @return
@@ -232,17 +232,13 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		fieldList.add(seasonField);
 		cbPList.add(modificationBox);
 		cbPList.add(visibilityBox);
-		cbList.add(seriesBox);
-		cbList.add(albumBox);
-		
-		modificationBox.addItem(new Permissions("Public", 1));
-		visibilityBox.addItem(new Permissions("Public", 1));
+
+		populateLists();		
 
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
 		addButton.addActionListener(this);
 	}
-
 
 	/**
 	 * Barre de menu titulaire
@@ -276,7 +272,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		mediaNode.add(new DefaultMutableTreeNode("Music"));
 		mediaNode.add(new DefaultMutableTreeNode("Movies"));
 		mediaNode.add(new DefaultMutableTreeNode("Series"));
-		
+
 		uploadNode.add(new DefaultMutableTreeNode("Books"));
 		uploadNode.add(new DefaultMutableTreeNode("Images"));
 		uploadNode.add(musicNode);
@@ -287,7 +283,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		seriesNode.add(new DefaultMutableTreeNode("Add New Series"));
 		musicNode.add(new DefaultMutableTreeNode("Add New Music"));
 		musicNode.add(new DefaultMutableTreeNode("Add New Albums"));
-		
+
 		usersNode.add(new DefaultMutableTreeNode("Create User"));
 		usersNode.add(new DefaultMutableTreeNode("Administration"));
 		usersNode.add(new DefaultMutableTreeNode("Permissions"));        
@@ -490,11 +486,27 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	public void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText("");
-		for (JComboBox<String> cbl : cbList)
-			cbl.setSelectedItem(null);
+		seriesBox.setSelectedItem(null);
+		albumBox.setSelectedItem(null);
 		for (JComboBox<Permissions> cbl : cbPList)
 			cbl.setSelectedItem(null);
 		uploadButton.setEnabled(false);
+	}
+
+	private void populateLists() {
+		clear();
+		seriesBox.removeAllItems();
+		albumBox.removeAllItems();
+		for(Permissions perms : Lists.getInstance().getPermissionsList()){
+			modificationBox.addItem(perms);
+			visibilityBox.addItem(perms);
+		}
+		for(SeriesCollector series : Lists.getInstance().getSeriesList()){
+			seriesBox.addItem(series);
+		}
+		for(AlbumCollector albums : Lists.getInstance().getAlbumList()){
+			albumBox.addItem(albums);
+		}
 	}
 
 	/** Determines whether or not metadata fields are empty or not
@@ -560,24 +572,28 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		else if(e.getSource() == addButton){
 			if (!verify(node.toString())){
 				JOptionPane.showMessageDialog(getContentPane(),
-					    "Not all data fields have been set",
-					    "Insufficient Data",
-					    JOptionPane.ERROR_MESSAGE);
+						"Not all data fields have been set",
+						"Insufficient Data",
+						JOptionPane.ERROR_MESSAGE);
 			}
 			else{
 				switch (node.toString()) {
 				case "Add New Albums": fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());break;
+						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());
+					Lists.getInstance().getAlbumList().add((AlbumCollector) fileC);	
+					break;
 				case "Add New Series": fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); break;
+						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); 
+					Lists.getInstance().getSeriesList().add((SeriesCollector) fileC);
+					break;
 				default: break;
 				}
 				SocketManager.getInstance().sendMeta(fileC);
-				clear();
+				populateLists();
 				JOptionPane.showMessageDialog(getContentPane(),
-					    "Your series/album has been successfully added!",
-					    "Success",
-					    JOptionPane.INFORMATION_MESSAGE);
+						"Your series/album has been successfully added!",
+						"Success",
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		else if(e.getSource() == uploadButton){
@@ -669,7 +685,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			}
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub

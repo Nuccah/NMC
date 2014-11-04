@@ -82,4 +82,9 @@ public class MetaDataCollector implements Serializable{
 	public void setVisibilityID(int visibilityID) {
 		this.visibilityID = visibilityID;
 	}
+	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.title;
+	}
 }

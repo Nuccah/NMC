@@ -32,7 +32,7 @@ public class ServerListener implements Runnable {
 	private Socket cl;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
-	
+
 	protected ServerListener(Socket cl) {
 		this.cl = cl;
 		try{
@@ -52,32 +52,32 @@ public class ServerListener implements Runnable {
 		String action = String.valueOf(ois.readObject());
 		System.out.println(action+" recieved from: "+cl.getInetAddress());
 		switch(action){
-			case "init" : 
-				oos.writeObject("ACK");
-				sendAutoConfig();
-				break;
-			case "connec":
-				oos.writeObject("ACK");
-				connectCl();
-				break;
-			case "meta" :
-				oos.writeObject("ACK");
-				recieveMeta();
-				break;
-			case "del" :
-				oos.writeObject("ACK");
-				delObject();
-				break;
-			case "list":
-				oos.writeObject("ACK");
-				sendList();
-				break;
-			case "logout":
-				oos.writeObject("ACK");
-				logout();
-				break;
-			default :
-				oos.writeObject("NACK");
+		case "init" : 
+			oos.writeObject("ACK");
+			sendAutoConfig();
+			break;
+		case "connec":
+			oos.writeObject("ACK");
+			connectCl(action);
+			break;
+		case "meta" :
+			oos.writeObject("ACK");
+			recieveMeta();
+			break;
+		case "del" :
+			oos.writeObject("ACK");
+			delObject();
+			break;
+		case "list":
+			oos.writeObject("ACK");
+			//				sendList(action);
+			break;
+		case "logout":
+			oos.writeObject("ACK");
+			logout();
+			break;
+		default :
+			oos.writeObject("NACK");
 		}
 	}
 	/**
@@ -107,8 +107,9 @@ public class ServerListener implements Runnable {
 	/**
 	 * Permet de connecter un client avec les données reçues.
 	 * Le client récupère un objet Profil dans le cas d'une connexion réussie
+	 * @param action 
 	 */
-	private void connectCl(){
+	private void connectCl(String action){
 		String[] credentials = new String[2];
 		try{
 			credentials = (String[]) ois.readObject();
@@ -145,6 +146,7 @@ public class ServerListener implements Runnable {
 				pf.setRegDate(res.getTimestamp("reg_date"));
 				try{
 					oos.writeObject(pf);
+					sendList(action);
 				} catch (IOException e){
 					System.out.println("[Error] - Profil couldn't be sent to: "+cl.getInetAddress());
 					if(Main.getDebug()) e.printStackTrace();
@@ -152,6 +154,7 @@ public class ServerListener implements Runnable {
 			} else {
 				try {
 					oos.writeObject("[Error] - Wrong login/password");
+					sendList("startup");
 				} catch (IOException e) {
 					if(Main.getDebug()) e.printStackTrace();
 				}			
@@ -214,15 +217,29 @@ public class ServerListener implements Runnable {
 			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
-	
-	private void delObject(){
-		
+
+	private void sendList(String param){
+		try {
+			switch (param){
+			case "connec":
+				oos.writeObject(Retriever.getInstance().selectUsers(null));
+				oos.writeObject(Retriever.getInstance().selectPermissions(null));
+				oos.writeObject(Retriever.getInstance().selectAlbumList(null));
+				oos.writeObject(Retriever.getInstance().selectSeriesList(null));
+			}
+		} catch (IOException e) {
+			System.out.println("[Error] - List could not be sent to: "+cl.getInetAddress());
+			if(Main.getDebug()) e.printStackTrace();
+		} catch (SQLException s){
+			System.out.println("[Error] - SQL Exception");
+			if(Main.getDebug()) s.printStackTrace();
+		}
 	}
 
-	private void sendList(){
-		
+	private void delObject(){
+
 	}
-	
+
 	private void logout() {
 		try{
 			ois.close();
@@ -232,7 +249,7 @@ public class ServerListener implements Runnable {
 			System.out.println("[Warning] - Streams are already closed");
 		}		
 	}
-	
+
 	@Override
 	public void run() {
 		try {

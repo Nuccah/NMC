@@ -12,9 +12,18 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import model.AlbumCollector;
+import model.AudioCollector;
+import model.BookCollector;
 import model.Config;
+import model.EpisodeCollector;
+import model.ImageCollector;
+import model.Lists;
 import model.MetaDataCollector;
+import model.Permissions;
 import model.Profil;
+import model.SeriesCollector;
+import model.VideoCollector;
 /**
  * Gère les actions sockets nécessaires
  * @author Antoine Ceyssens
@@ -24,13 +33,13 @@ public class SocketManager extends Socket {
 	private static SocketManager instance = null;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
-	
+
 	protected SocketManager() throws NumberFormatException, UnknownHostException, IOException{
 		super(Config.getInstance().getProp("srv_url"), Integer.valueOf(Config.getInstance().getProp("srv_port")));
 		oos = new ObjectOutputStream(this.getOutputStream());
 		ois = new ObjectInputStream(this.getInputStream());
 	}
-	
+
 	public static SocketManager getInstance(){
 		if(instance == null){
 			try {
@@ -42,7 +51,7 @@ public class SocketManager extends Socket {
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Permet d'envoyer les méta données liées à un fichier uploadé
 	 * @param mdc : MetaDataCollector à envoyer
@@ -97,6 +106,7 @@ public class SocketManager extends Socket {
 				return false;
 			} else {
 				Profil.setInstance((Profil)tmp);
+				getList("startup");
 				return true;
 			}
 		} catch(ClassNotFoundException | IOException e){
@@ -123,7 +133,7 @@ public class SocketManager extends Socket {
 			conf.setProp("init", "1");
 			conf.saveProp();
 			oos.writeObject("ACK CONF");
-				
+
 			File keyStore = new File(".config/security/");
 			keyStore.mkdirs();
 			File privF = new File(".config/security/private.pem");
@@ -132,23 +142,34 @@ public class SocketManager extends Socket {
 			FileOutputStream fos = new FileOutputStream(privF);
 			fos.write(privKey);
 			fos.close();
-			
+
 		} catch(ClassNotFoundException | IOException e){
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void delObject(Object o){
 		//TODO: Trouver comment envoyer la requête de suppression
 		throw new UnsupportedOperationException("Method not yet implemented!");
 	}
-	
-	public ArrayList<MetaDataCollector> getList(String type){
-		//TODO: Implémenter cette méthode
-		return null;
-		
+
+	@SuppressWarnings("unchecked")
+	public void getList(String type){
+		try {
+			switch(type){
+			case "startup": 
+				Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
+											(ArrayList<Permissions>)ois.readObject(),
+											(ArrayList<AlbumCollector>)ois.readObject(),
+											(ArrayList<SeriesCollector>)ois.readObject()));
+			}
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
-	
+
 	public void logout(){
 		Profil.getInstance().reset();
 		try {
@@ -160,5 +181,5 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

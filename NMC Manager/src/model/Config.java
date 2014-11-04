@@ -36,7 +36,7 @@ public class Config {
 				cfg_file.createNewFile();
 				defaultConf();
 			} catch (IOException e) {
-				JOptionPane.showConfirmDialog(null, "The config file couldn't be created\n"
+				JOptionPane.showMessageDialog(null, "The config file couldn't be created\n"
 						+ "Please try to run the application with administrator privileges.");
 				e.printStackTrace();
 			}
