@@ -588,8 +588,12 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					break;
 				default: break;
 				}
+				
 				SocketManager.getInstance().sendMeta(fileC);
-				populateLists();
+				
+				if(fileC instanceof AlbumCollector) SocketManager.getInstance().getList("albums");
+				else SocketManager.getInstance().getList("series");
+				
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Your series/album has been successfully added!",
 						"Success",

@@ -156,12 +156,33 @@ public class SocketManager extends Socket {
 	@SuppressWarnings("unchecked")
 	public void getList(String type){
 		try {
+			if (type != "startup"){
+				String ack = null;
+				do{
+					oos.writeObject("list");
+					ack = (String) ois.readObject();
+				} while(ack.compareTo("ACK") != 0);
+				oos.writeObject(type);
+			}
+			else
+				oos.writeObject(type);
 			switch(type){
-			case "startup": 
+			case "startup":
+				
 				Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
 											(ArrayList<Permissions>)ois.readObject(),
 											(ArrayList<AlbumCollector>)ois.readObject(),
 											(ArrayList<SeriesCollector>)ois.readObject()));
+				break;
+			case "albums": Lists.getInstance().setAlbumList((ArrayList<AlbumCollector>)ois.readObject());break;
+			case "series": Lists.getInstance().setSeriesList((ArrayList<SeriesCollector>)ois.readObject()); break;
+			case "audio": Lists.getInstance().setAudioList((ArrayList<AudioCollector>) ois.readObject()); break;
+			case "books": Lists.getInstance().setBookList((ArrayList<BookCollector>) ois.readObject()); break;
+			case "episodes": Lists.getInstance().setEpisodeList((ArrayList<EpisodeCollector>) ois.readObject()); break;
+			case "images": Lists.getInstance().setImageList((ArrayList<ImageCollector>) ois.readObject()); break;
+			case "permissions": Lists.getInstance().setPermissionsList((ArrayList<Permissions>)ois.readObject()); break;
+			case "users": Lists.getInstance().setUsersList((ArrayList<Profil>)ois.readObject()); break;
+			case "videos": Lists.getInstance().setVideoList((ArrayList<VideoCollector>) ois.readObject()); break;
 			}
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block

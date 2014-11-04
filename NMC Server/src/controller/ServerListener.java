@@ -58,7 +58,7 @@ public class ServerListener implements Runnable {
 			break;
 		case "connec":
 			oos.writeObject("ACK");
-			connectCl(action);
+			connectCl();
 			break;
 		case "meta" :
 			oos.writeObject("ACK");
@@ -70,7 +70,7 @@ public class ServerListener implements Runnable {
 			break;
 		case "list":
 			oos.writeObject("ACK");
-			//				sendList(action);
+			sendList();
 			break;
 		case "logout":
 			oos.writeObject("ACK");
@@ -109,7 +109,7 @@ public class ServerListener implements Runnable {
 	 * Le client récupère un objet Profil dans le cas d'une connexion réussie
 	 * @param action 
 	 */
-	private void connectCl(String action){
+	private void connectCl(){
 		String[] credentials = new String[2];
 		try{
 			credentials = (String[]) ois.readObject();
@@ -146,7 +146,7 @@ public class ServerListener implements Runnable {
 				pf.setRegDate(res.getTimestamp("reg_date"));
 				try{
 					oos.writeObject(pf);
-					sendList(action);
+					sendList();
 				} catch (IOException e){
 					System.out.println("[Error] - Profil couldn't be sent to: "+cl.getInetAddress());
 					if(Main.getDebug()) e.printStackTrace();
@@ -154,7 +154,6 @@ public class ServerListener implements Runnable {
 			} else {
 				try {
 					oos.writeObject("[Error] - Wrong login/password");
-					sendList("startup");
 				} catch (IOException e) {
 					if(Main.getDebug()) e.printStackTrace();
 				}			
@@ -218,14 +217,26 @@ public class ServerListener implements Runnable {
 		}
 	}
 
-	private void sendList(String param){
+	private void sendList(){
 		try {
-			switch (param){
-			case "connec":
+			String action = String.valueOf(ois.readObject());
+			System.out.println(action+" recieved from: "+cl.getInetAddress());
+			switch (action){
+			case "startup":
 				oos.writeObject(Retriever.getInstance().selectUsers(null));
 				oos.writeObject(Retriever.getInstance().selectPermissions(null));
 				oos.writeObject(Retriever.getInstance().selectAlbumList(null));
 				oos.writeObject(Retriever.getInstance().selectSeriesList(null));
+				break;
+			case "albums": oos.writeObject(Retriever.getInstance().selectAlbumList(null)); break;
+			case "series": oos.writeObject(Retriever.getInstance().selectSeriesList(null)); break;
+			case "audio": break;
+			case "books": break;
+			case "episodes": break;
+			case "images": break;
+			case "permissions": break;
+			case "users": break;
+			case "videos": break;
 			}
 		} catch (IOException e) {
 			System.out.println("[Error] - List could not be sent to: "+cl.getInetAddress());
@@ -233,6 +244,9 @@ public class ServerListener implements Runnable {
 		} catch (SQLException s){
 			System.out.println("[Error] - SQL Exception");
 			if(Main.getDebug()) s.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("[Error] Couldn't retrieve case from: "+cl.getInetAddress());
+			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
 
