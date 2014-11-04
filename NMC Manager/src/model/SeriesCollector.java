@@ -12,6 +12,13 @@ public class SeriesCollector extends MetaDataCollector{
 		this.genre = genre;
 		this.year = year;
 	}
+	
+	public SeriesCollector(int id, String title, String year, int modId, int visId, String synopsis, String genre){
+		super(id, title, modId,visId);
+		this.synopsis = synopsis;
+		this.genre = genre;
+		this.year = year;
+	}
 
 	public String getSynopsis() {
 		return synopsis;
