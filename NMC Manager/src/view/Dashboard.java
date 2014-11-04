@@ -51,6 +51,7 @@ import model.BookCollector;
 import model.Config;
 import model.EpisodeCollector;
 import model.ImageCollector;
+import model.Lists;
 import model.MetaDataCollector;
 import model.Permissions;
 import model.Profil;
@@ -120,12 +121,11 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JTextField chronoField = new JTextField();
 	private JTextField seasonField = new JTextField();
 
-	private JComboBox<String> albumBox = new JComboBox<String>();
-	private JComboBox<String> seriesBox = new JComboBox<String>();
+	private JComboBox<AlbumCollector> albumBox = new JComboBox<AlbumCollector>();
+	private JComboBox<SeriesCollector> seriesBox = new JComboBox<SeriesCollector>();
 	private JComboBox<Permissions> visibilityBox = new JComboBox<Permissions>();
 	private JComboBox<Permissions> modificationBox = new JComboBox<Permissions>();
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
-	private List<JComboBox<String>> cbList = new ArrayList<JComboBox<String>>();
 	private List<JComboBox<Permissions>> cbPList = new ArrayList<JComboBox<Permissions>>();
 
 	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
@@ -232,17 +232,13 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		fieldList.add(seasonField);
 		cbPList.add(modificationBox);
 		cbPList.add(visibilityBox);
-		cbList.add(seriesBox);
-		cbList.add(albumBox);
 		
-		modificationBox.addItem(new Permissions("Public", 1));
-		visibilityBox.addItem(new Permissions("Public", 1));
+		populateLists();		
 
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
 		addButton.addActionListener(this);
 	}
-
 
 	/**
 	 * Barre de menu titulaire
@@ -490,13 +486,27 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	public void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText("");
-		for (JComboBox<String> cbl : cbList)
-			cbl.setSelectedItem(null);
+		seriesBox.setSelectedItem(null);
+		albumBox.setSelectedItem(null);
 		for (JComboBox<Permissions> cbl : cbPList)
 			cbl.setSelectedItem(null);
 		uploadButton.setEnabled(false);
 	}
-
+	
+	private void populateLists() {
+		clear();
+		for(Permissions perms : Lists.getInstance().getPermissionsList()){
+			modificationBox.addItem(perms);
+			visibilityBox.addItem(perms);
+		}
+		for(SeriesCollector series : Lists.getInstance().getSeriesList()){
+			seriesBox.addItem(series);
+		}
+		for(AlbumCollector albums : Lists.getInstance().getAlbumList()){
+			albumBox.addItem(albums);
+		}
+	}
+	
 	/** Determines whether or not metadata fields are empty or not
 	 * @param node the String of the node selected
 	 * @return boolean whether metadata fields are empty or not
