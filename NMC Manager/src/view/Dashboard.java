@@ -594,6 +594,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				if(fileC instanceof AlbumCollector) SocketManager.getInstance().getList("albums");
 				else SocketManager.getInstance().getList("series");
 				
+				populateLists();
+				
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Your series/album has been successfully added!",
 						"Success",
