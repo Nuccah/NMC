@@ -508,11 +508,11 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					return false;
 				else return true;
 			case "Add New Music":
-				if (personField == null)
+				if (personField == null || albumBox.getSelectedItem() == null || genreField == null)
 					return false;
 				else return true;
 			case "Add New Albums":
-				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null || albumBox.getSelectedItem() == null)
+				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null )
 					return false;
 				else return true;
 			case "Movies":
