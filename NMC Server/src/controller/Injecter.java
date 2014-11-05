@@ -156,7 +156,7 @@ public class Injecter {
 		db.modify(query5);
 		db.modify(query6);
 		db.modify(query7);
-		if(video.getDirector() != null){
+		if(!video.getDirector().isEmpty()){
 			db.modify(query8);
 			db.modify(query9);
 		}
