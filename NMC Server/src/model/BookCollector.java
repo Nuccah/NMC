@@ -27,11 +27,6 @@ public class BookCollector extends MetaDataCollector{
 		this.synopsis = synopsis;
 	}
 
-	@Override
-	public MetaDataCollector bookExtraction() {
-		return super.bookExtraction();
-	}
-
 	public String getAuthor() {
 		return author;
 	}

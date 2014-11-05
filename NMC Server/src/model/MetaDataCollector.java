@@ -47,22 +47,6 @@ public class MetaDataCollector implements Serializable{
 		this.absPath = null;
 		this.relPath = null;
 	}
-
-	public MetaDataCollector audioExtraction(){
-		return null;
-	}
-
-	public MetaDataCollector bookExtraction(){
-		return null;
-	}
-
-	public MetaDataCollector imageExtraction(){
-		return null;
-	}
-
-	public MetaDataCollector videoExtraction(){
-		return null;
-	}
 	
 	public int getId() {
 		return id;

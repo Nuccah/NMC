@@ -48,7 +48,7 @@ public class Retriever {
 		db.openConnection();
 		audioList = new ArrayList<AudioCollector>();
 		//TODO: [Derek] SQL Select Audio
-		String query = "SELECT nt.id, nt.title as title, filename, name, nmi.title as album FROM nmc_media as nmi "
+		String query = "SELECT nt.id as id, nt.title as title, filename, name, nmi.id as album, nmi.title as albumName FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_tracks_albums as nta ON nmi.id = nta.media_id "
 				+ "INNER JOIN nmc_tracks as nt ON nta.tracks_id = nt.id "
 				+ "INNER JOIN nmc_tracks_bands as ntb ON nt.id = ntb.tracks_id "
@@ -58,7 +58,7 @@ public class Retriever {
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			audioList.add(new AudioCollector(rs.getString("title"), rs.getString("filename"), rs.getString("name"), rs.getString("album")));
+			audioList.add(new AudioCollector(rs.getInt("id"), rs.getString("title"), rs.getString("filename"), rs.getString("name"), rs.getInt("album"), rs.getString("albumName")));
 		}
 		db.closeConnection();
 		return audioList;
@@ -68,7 +68,7 @@ public class Retriever {
 		db.openConnection();
 		albumList = new ArrayList<AlbumCollector>();
 		//TODO: [Derek] SQL Select Album
-		String query = "SELECT nmi.id, title, release_date, modification, visibility, name, nmi.description as description, category FROM nmc_media as nmi "
+		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, name, nmi.description as description, category FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_albums_categories as nac ON nmi.id = nac.media_id "
 				+ "INNER JOIN nmc_categories as nc ON nac.categories_id = nc.id "
 				+ "INNER JOIN nmc_media_bands as nmib ON nmi.id = nmib.media_id "
@@ -78,7 +78,7 @@ public class Retriever {
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			albumList.add(new AlbumCollector(rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("name"), rs.getString("description"), rs.getString("category")));
+			albumList.add(new AlbumCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("name"), rs.getString("description"), rs.getString("category")));
 		}
 		db.closeConnection();
 		return albumList;
@@ -88,7 +88,7 @@ public class Retriever {
 		db.openConnection();
 		bookList = new ArrayList<BookCollector>();
 		//TODO: [Derek] SQL Select Book
-		String query = "SELECT nmi.id, title, release_date, modification, visibility, path, name, category, description FROM nmc_media as nmi "
+		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name, category, description FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_authors as nmia ON nmi.id = nmia.media_id "
 				+ "INNER JOIN nmc_persons as np ON nmia.persons_id = np.id "
 				+ "INNER JOIN nmc_books_categories as nbc ON nmi.id = nbc.media_id "
@@ -98,7 +98,7 @@ public class Retriever {
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			bookList.add(new BookCollector(rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("path"), rs.getString("name"), rs.getString("category"), rs.getString("description")));
+			bookList.add(new BookCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("path"), rs.getString("name"), rs.getString("category"), rs.getString("description")));
 		}
 		db.closeConnection();
 		return bookList;
@@ -108,7 +108,7 @@ public class Retriever {
 		db.openConnection();
 		episodeList = new ArrayList<EpisodeCollector>();
 		//TODO: [Derek] SQL Select Episode
-		String query = "SELECT nmis.id, nmis.title as title, filename, nmi.title as series, season, chrono FROM nmc_media as nmi "
+		String query = "SELECT nmis.id as id, nmis.title as title, filename, nmi.id as series, nmi.title as seriesName, season, chrono FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_series as nmis ON nmi.id = nmis.media_id "
 				+ "INNER JOIN nmc_videos as nv ON nmis.media_id = nv.id ;";
 		if (queryAdd != null)
@@ -116,7 +116,7 @@ public class Retriever {
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			episodeList.add(new EpisodeCollector(rs.getString("title"), rs.getString("filename"), rs.getString("series"), rs.getString("name"), String.valueOf(rs.getInt("season")), String.valueOf(rs.getInt("chrono"))));
+			episodeList.add(new EpisodeCollector(rs.getInt("id"), rs.getString("title"), rs.getString("filename"), rs.getInt("series"), rs.getString("seriesName"), rs.getString("name"), String.valueOf(rs.getInt("season")), String.valueOf(rs.getInt("chrono"))));
 		}
 		db.closeConnection();
 		return episodeList;
@@ -125,7 +125,7 @@ public class Retriever {
 	public ArrayList<ImageCollector>  selectImageList(String queryAdd) throws SQLException{
 		db.openConnection();
 		imageList = new ArrayList<ImageCollector>();
-		String query = "SELECT nmi.id, title, release_date, modification, visibility, path, name FROM nmc_media as nmi "
+		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_photographers as nmp ON nmi.id = nmp.media_id "
 				+ "INNER JOIN nmc_persons as np ON nmp.persons_id = np.id ;";
 		if (queryAdd != null)
@@ -133,7 +133,7 @@ public class Retriever {
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			imageList.add(new ImageCollector(rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("path"), rs.getString("name")));
+			imageList.add(new ImageCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("path"), rs.getString("name")));
 		}
 		db.closeConnection();
 		return imageList;
@@ -142,7 +142,7 @@ public class Retriever {
 	public ArrayList<SeriesCollector>  selectSeriesList(String queryAdd) throws SQLException{
 		db.openConnection();
 		seriesList = new ArrayList<SeriesCollector>();
-		String query = "SELECT nmi.id, title, release_date, modification, visibility, description, category FROM nmc_media as nmi "
+		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, description, category FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_series_categories as nfc ON nmi.id = nfc.media_id "
 				+ "INNER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ;";
 		if (queryAdd != null)
@@ -150,7 +150,7 @@ public class Retriever {
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			seriesList.add(new SeriesCollector(rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("description"), rs.getString("category")));
+			seriesList.add(new SeriesCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("description"), rs.getString("category")));
 		}
 		db.closeConnection();
 		return seriesList;
@@ -159,7 +159,7 @@ public class Retriever {
 	public ArrayList<VideoCollector> selectVideoList(String queryAdd) throws SQLException{
 		db.openConnection();
 		videoList = new ArrayList<VideoCollector>();
-		String query = "SELECT nmi.id, title, release_date, modification, visibility, filename, name, category, description FROM nmc_media as nmi "
+		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, filename, name, category, description FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_films as nmif ON nmi.id = nmif.media_id "
 				+ "INNER JOIN nmc_videos as nv ON nmif.videos_id = nv.id "
 				+ "INNER JOIN nmc_videos_directors as nvd ON nv.id = nvd.videos_id "
@@ -171,7 +171,7 @@ public class Retriever {
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			videoList.add(new VideoCollector(rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("filename"), rs.getString("name"), rs.getString("category"), rs.getString("description")));
+			videoList.add(new VideoCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("filename"), rs.getString("name"), rs.getString("category"), rs.getString("description")));
 		}
 		db.closeConnection();
 		return videoList;

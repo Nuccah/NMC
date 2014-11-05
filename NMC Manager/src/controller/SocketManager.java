@@ -71,7 +71,10 @@ public class SocketManager extends Socket {
 		} catch (IOException | ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
 			e.printStackTrace();
+		} finally{
+			System.out.println("Metadata Successfully Sent");
 		}
+		
 	}
 	/**
 	 * Permet de créer une session avec le serveur

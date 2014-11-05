@@ -105,18 +105,18 @@ public class TransferManager {
 		else { 
 			if (mdc instanceof AudioCollector){
 				AudioCollector cdc = (AudioCollector)mdc;
-				mdc.setRelPath(directory+"/"+cdc.getAlbum()+"/");
-				filename = directory+"/"+cdc.getAlbum()+"/"+fToSend.getName();
+				mdc.setRelPath(directory+"/"+cdc.getAlbumName()+"/");
+				filename = directory+"/"+cdc.getAlbumName()+"/"+fToSend.getName();
 				String slash = Parser.getInstance().getSlash();
-				relPath = directory+slash+cdc.getAlbum()+slash+fToSend.getName();
+				relPath = directory+slash+cdc.getAlbumName()+slash+fToSend.getName();
 				System.out.println(filename);
 			}
 			else if (mdc instanceof EpisodeCollector){
 				EpisodeCollector edc = (EpisodeCollector)mdc;
-				mdc.setRelPath(directory+"/"+edc.getSeries()+"/");
-				filename = directory+"/"+edc.getSeries()+"/"+fToSend.getName();
+				mdc.setRelPath(directory+"/"+edc.getSeriesName()+"/");
+				filename = directory+"/"+edc.getSeriesName()+"/"+fToSend.getName();
 				String slash = Parser.getInstance().getSlash();
-				relPath = directory+slash+edc.getSeries()+slash+fToSend.getName();
+				relPath = directory+slash+edc.getSeriesName()+slash+fToSend.getName();
 			}
 			else{
 				mdc.setRelPath(directory);

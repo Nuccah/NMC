@@ -25,13 +25,7 @@ public class VideoCollector extends MetaDataCollector{
 		this.genre = genre;
 		this.synopsis = synopsis;
 	}
-
-	@Override
-	public MetaDataCollector videoExtraction() {
-		// TODO Auto-generated method stub
-		return super.videoExtraction();
-	}
-
+	
 	public String getDirector() {
 		return director;
 	}

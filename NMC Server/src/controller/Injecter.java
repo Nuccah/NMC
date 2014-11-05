@@ -58,7 +58,7 @@ public class Injecter {
 		String query2 = "INSERT INTO nmc_tracks values (DEFAULT, '"+audio.getTitle()+"', '"+audio.getFilename()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		String query3 =	"INSERT INTO nmc_bands(\"name\") SELECT '"+audio.getArtist()+"' WHERE NOT EXISTS (SELECT id FROM nmc_bands WHERE name = '"+audio.getArtist()+"');";
 		String query4 = "INSERT INTO nmc_tracks_bands VALUES ((SELECT id FROM nmc_tracks ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_bands WHERE name = '"+audio.getArtist()+"'));";
-		String query5 = "INSERT INTO nmc_tracks_albums VALUES ((SELECT id FROM nmc_tracks ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_media WHERE id = '"+audio.getId()+"'));";
+		String query5 = "INSERT INTO nmc_tracks_albums VALUES ((SELECT id FROM nmc_tracks ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_media WHERE id = '"+audio.getAlbum()+"'));";
 		
 		db.modify(query1);
 		db.modify(query2);
@@ -189,16 +189,15 @@ public class Injecter {
 		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
 		String query2 = "INSERT INTO nmc_videos(id, filename) VALUES (DEFAULT, '"+episode.getFilename()+"');";
 		String query3 = "INSERT INTO nmc_users_watched_videos VALUES ('"+Profil.getInstance().getId()+"', (SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1),  'false');";
-		//TODO: [Derek] DANGER - NEAR CERTAINTY OF MULTIPLE RETURNS - NEEDS ADDITIONAL PARAMETERS
 		String query4;
 		if (episode.getSeason() == null && episode.getChrono() == null)
-			query4 = "INSERT INTO nmc_media_series(nmc_media_id, nmc_episodes_id, title, nmc_addition_id) VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE id = '"+episode.getId()+"'), '"+episode.getTitle()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
+			query4 = "INSERT INTO nmc_media_series(nmc_media_id, nmc_episodes_id, title, nmc_addition_id) VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE id = '"+episode.getSeries()+"'), '"+episode.getTitle()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		else if (episode.getSeason() == null)
-			query4 = "INSERT INTO nmc_media_series(nmc_media_id, nmc_episodes_id, title, chrono, nmc_addition_id) VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE id = '"+episode.getId()+"'), '"+episode.getTitle()+"', '"+episode.getChrono()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
+			query4 = "INSERT INTO nmc_media_series(nmc_media_id, nmc_episodes_id, title, chrono, nmc_addition_id) VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE id = '"+episode.getSeries()+"'), '"+episode.getTitle()+"', '"+episode.getChrono()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		else if(episode.getChrono() == null)
-			query4 = "INSERT INTO nmc_media_series(nmc_media_id, nmc_episodes_id, title, season, nmc_addition_id) VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE id = '"+episode.getId()+"'), '"+episode.getTitle()+"', '"+episode.getSeason()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
+			query4 = "INSERT INTO nmc_media_series(nmc_media_id, nmc_episodes_id, title, season, nmc_addition_id) VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE id = '"+episode.getSeries()+"'), '"+episode.getTitle()+"', '"+episode.getSeason()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		else
-			query4 = "INSERT INTO nmc_media_series(nmc_media_id, nmc_episodes_id, title, season, chrono, nmc_addition_id) VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE id = '"+episode.getId()+"'), '"+episode.getTitle()+"', '"+episode.getSeason()+"', '"+episode.getChrono()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
+			query4 = "INSERT INTO nmc_media_series(nmc_media_id, nmc_episodes_id, title, season, chrono, nmc_addition_id) VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), (SELECT id FROM nmc_media WHERE id = '"+episode.getSeries()+"'), '"+episode.getTitle()+"', '"+episode.getSeason()+"', '"+episode.getChrono()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		String query5 = null;
 		String query6 = null;
 		if (episode.getDirector() != null){

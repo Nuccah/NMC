@@ -20,11 +20,6 @@ public class ImageCollector extends MetaDataCollector{
 		this.filename = filename;
 	}
 
-	@Override
-	public MetaDataCollector imageExtraction() {
-		return super.imageExtraction();
-	}
-
 	public String getPhotographer() {
 		return photographer;
 	}
