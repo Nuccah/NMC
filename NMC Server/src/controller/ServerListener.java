@@ -184,30 +184,37 @@ public class ServerListener implements Runnable {
 		try {
 			if(mdc instanceof AudioCollector){
 				oos.writeObject("ACK");
+				System.out.println("Received: "+((AudioCollector)mdc).toString());
 				inj.injector((AudioCollector) mdc);
 			}
 			else if(mdc instanceof AlbumCollector){
 				oos.writeObject("ACK");
+				System.out.println("Received: "+((AlbumCollector)mdc).toString());
 				inj.injector((AlbumCollector)mdc);
 			}
 			else if(mdc instanceof BookCollector){
 				oos.writeObject("ACK");
+				System.out.println("Received: "+((BookCollector)mdc).toString());
 				inj.injector((BookCollector) mdc);
 			}
 			else if(mdc instanceof EpisodeCollector){
 				oos.writeObject("ACK");
+				System.out.println("Received: "+((EpisodeCollector)mdc).toString());
 				inj.injector((EpisodeCollector) mdc);
 			}
 			else if(mdc instanceof ImageCollector){
 				oos.writeObject("ACK");
+				System.out.println("Received: "+((ImageCollector)mdc).toString());
 				inj.injector((ImageCollector) mdc);
 			}
 			else if(mdc instanceof SeriesCollector){
 				oos.writeObject("ACK");
+				System.out.println("Received: "+((SeriesCollector)mdc).toString());
 				inj.injector((SeriesCollector) mdc);
 			}
 			else if(mdc instanceof VideoCollector){
 				oos.writeObject("ACK");
+				System.out.println("Received: "+((VideoCollector)mdc).toString());
 				inj.injector((VideoCollector) mdc);
 			}
 			else oos.writeObject("NACK");

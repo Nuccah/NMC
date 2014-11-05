@@ -46,4 +46,9 @@ public class AudioCollector extends MetaDataCollector{
 	public void setAlbumName(String albumName) {
 		this.albumName = albumName;
 	}
+	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.artist + " - " + this.albumName);
+	}
 }

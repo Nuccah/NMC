@@ -53,30 +53,6 @@ public class SocketManager extends Socket {
 	}
 
 	/**
-	 * Permet d'envoyer les méta données liées à un fichier uploadé
-	 * @param mdc : MetaDataCollector à envoyer
-	 */
-	public void sendMeta(MetaDataCollector mdc){
-		try {
-			String ack = null;
-			do {
-				oos.writeObject("meta");
-				ack = String.valueOf(ois.readObject());
-			} while(ack.compareTo("ACK") != 0);
-			ack = null;
-			do {
-				oos.writeObject(mdc);
-				ack = String.valueOf(ois.readObject());
-			} while(ack.compareTo("ACK") != 0);			
-		} catch (IOException | ClassNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
-			e.printStackTrace();
-		} finally{
-			System.out.println("Metadata Successfully Sent");
-		}
-		
-	}
-	/**
 	 * Permet de créer une session avec le serveur
 	 * @param login : nom d'utilisateur
 	 * @param password : mot de passe
@@ -150,11 +126,6 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 		}
 	}
-
-	public void delObject(Object o){
-		//TODO: Trouver comment envoyer la requête de suppression
-		throw new UnsupportedOperationException("Method not yet implemented!");
-	}
 	
 	@SuppressWarnings("unchecked")
 	public void getList(String type){
@@ -172,7 +143,6 @@ public class SocketManager extends Socket {
 				oos.writeObject(type);
 			switch(type){
 			case "startup":
-				
 				Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
 											(ArrayList<Permissions>)ois.readObject(),
 											(ArrayList<AlbumCollector>)ois.readObject(),
@@ -237,6 +207,35 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 		}
 
+	}
+	
+	/**
+	 * Permet d'envoyer les méta données liées à un fichier uploadé
+	 * @param mdc : MetaDataCollector à envoyer
+	 */
+	public void sendMeta(MetaDataCollector mdc){
+		System.out.println("Sending :" +mdc.toString());
+		try {
+			String ack = null;
+			do {
+				oos.writeObject("meta");
+				ack = String.valueOf(ois.readObject());
+			} while(ack.compareTo("ACK") != 0);
+			ack = null;
+			do {
+				oos.writeObject(mdc);
+				ack = String.valueOf(ois.readObject());
+			} while(ack.compareTo("ACK") != 0);			
+		} catch (IOException | ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
+			e.printStackTrace();
+		}
+		System.out.println("Metadata Successfully Sent");
+	}
+	
+	public void delObject(Object o){
+		//TODO: Trouver comment envoyer la requête de suppression
+		throw new UnsupportedOperationException("Method not yet implemented!");
 	}
 
 	public void logout(){

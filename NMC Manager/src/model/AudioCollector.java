@@ -52,6 +52,9 @@ public class AudioCollector extends MetaDataCollector{
 		this.albumName = albumName;
 	}
 	
-	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.artist + " - " + this.albumName);
+	}
 	
 }

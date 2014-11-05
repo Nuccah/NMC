@@ -33,7 +33,7 @@ public class Converter {
 	 */
 	public String convertToMP4(File fToConvert){
 		String newFileName = fToConvert.getName().substring(0, fToConvert.getName().lastIndexOf("."))+".mp4";
-		if(fToConvert.getName() == newFileName)
+		if(fToConvert.getName().equals(newFileName))
 			return fToConvert.getName();
 		System.out.println("New File: "+newFileName);
 		IMediaReader reader = ToolFactory.makeReader(fToConvert.getAbsolutePath());
@@ -52,7 +52,7 @@ public class Converter {
 	 */
 	public String convertToMP3(File fToConvert){
 		String newFileName = fToConvert.getName().substring(0, fToConvert.getName().lastIndexOf("."))+".mp3";
-		if(fToConvert.getName() == newFileName)
+		if(fToConvert.getName().equals(newFileName))
 			return fToConvert.getName();
 		IMediaReader reader = ToolFactory.makeReader(fToConvert.getAbsolutePath());
 		reader.addListener(ToolFactory.makeWriter(fToConvert.getParent()+Parser.getInstance().getSlash()+newFileName, reader));

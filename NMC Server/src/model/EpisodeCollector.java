@@ -57,4 +57,9 @@ public class EpisodeCollector extends MetaDataCollector{
 	public String getFilename() {
 		return filename;
 	}
+	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.seriesName);
+	}
 }

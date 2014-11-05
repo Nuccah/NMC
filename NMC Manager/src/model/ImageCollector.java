@@ -37,5 +37,8 @@ public class ImageCollector extends MetaDataCollector{
 		return year;
 	}
 	
-	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.year);
+	}
 }

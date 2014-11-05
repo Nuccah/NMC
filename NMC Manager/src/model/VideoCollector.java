@@ -51,4 +51,9 @@ public class VideoCollector extends MetaDataCollector{
 	public String getYear() {
 		return year;
 	}
+	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.year);
+	}
 }

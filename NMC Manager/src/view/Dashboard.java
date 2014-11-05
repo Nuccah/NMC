@@ -478,6 +478,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		clear();
 		seriesBox.removeAllItems();
 		albumBox.removeAllItems();
+		modificationBox.removeAllItems();
+		visibilityBox.removeAllItems();
 		for(Permissions perms : Lists.getInstance().getPermissionsList()){
 			modificationBox.addItem(perms);
 			visibilityBox.addItem(perms);
@@ -623,6 +625,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 						((SeriesCollector)seriesBox.getSelectedItem()).getTitle(), personField.getText(), seasonField.getText(), chronoField.getText()); break;
 				default: break;
 				}
+				
 				uTask = new UploadTask(TransferManager.chooseDirectory(node.toString()), fc.getSelectedFile(), fileC);
 				uTask.addPropertyChangeListener(this);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

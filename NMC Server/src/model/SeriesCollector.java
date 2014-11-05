@@ -32,5 +32,8 @@ public class SeriesCollector extends MetaDataCollector{
 		return year;
 	}
 	
-	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.year);
+	}
 }

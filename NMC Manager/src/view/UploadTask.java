@@ -70,6 +70,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 			inputStream.close();
 			SocketManager.getInstance().sendMeta(mdc); 
 			TransferManager.getInstance().finish();
+			System.out.println(mdc.toString() + "has been uploaded");
 		} catch (IOException | FTPException e){
 			JOptionPane.showMessageDialog(null,  "Error upload file: " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
