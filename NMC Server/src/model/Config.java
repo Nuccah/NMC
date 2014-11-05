@@ -23,6 +23,7 @@ public class Config {
 	private FileInputStream cfg_in;
 	private FileOutputStream cfg_out;
 	private Properties prop;
+	private String slash = Parser.getInstance().getSlash();
 	
 	
 	/**
@@ -44,7 +45,6 @@ public class Config {
 		loadProp();
 		File fl = new File(getProp("root_dir"));
 		if(!fl.exists()) fl.mkdirs();
-		String slash = Parser.getInstance().getSlash();
 		File vid = new File(getProp("root_dir")+slash+"Movies");
 		if(!vid.exists()) vid.mkdir();
 		File music = new File(getProp("root_dir")+slash+"Music");
@@ -55,7 +55,6 @@ public class Config {
 		if(!series.exists()) series.mkdir();
 		File ebooks = new File(getProp("root_dir")+slash+"Books");
 		if(!ebooks.exists()) ebooks.mkdir();
-		
 	}
 	
 	public static Config getInstance(){
@@ -136,6 +135,16 @@ public class Config {
 				if(Main.getDebug()) e.printStackTrace();
 			}
 		}
+	}
+	
+	public void createSeriesFolders(SeriesCollector sc){
+		File series = new File(getProp("root_dir")+slash+"Series"+slash+sc.toString());
+		if(!series.exists()) series.mkdir();
+	}
+	
+	public void createAlbumFolders(AlbumCollector ac){
+		File album = new File(getProp("root_dir")+slash+"Music"+slash+ac.toString());
+		if(!album.exists()) album.mkdir();
 	}
 	
 	public void setProp(String key, String value){

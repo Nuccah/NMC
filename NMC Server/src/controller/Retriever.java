@@ -52,7 +52,7 @@ public class Retriever {
 				+ "INNER JOIN nmc_tracks_albums as nta ON nmi.id = nta.media_id "
 				+ "INNER JOIN nmc_tracks as nt ON nta.tracks_id = nt.id "
 				+ "INNER JOIN nmc_tracks_bands as ntb ON nt.id = ntb.tracks_id "
-				+ "INNER JOIN nmc_bands as nb ON ntb.bands_id = nb.id ;";
+				+ "INNER JOIN nmc_bands as nb ON ntb.bands_id = nb.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -72,7 +72,7 @@ public class Retriever {
 				+ "INNER JOIN nmc_albums_categories as nac ON nmi.id = nac.media_id "
 				+ "INNER JOIN nmc_categories as nc ON nac.categories_id = nc.id "
 				+ "INNER JOIN nmc_media_bands as nmib ON nmi.id = nmib.media_id "
-				+ "INNER JOIN nmc_bands as nb ON nmib.bands_id = nb.id ;";
+				+ "INNER JOIN nmc_bands as nb ON nmib.bands_id = nb.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -92,7 +92,7 @@ public class Retriever {
 				+ "INNER JOIN nmc_media_authors as nmia ON nmi.id = nmia.media_id "
 				+ "INNER JOIN nmc_persons as np ON nmia.persons_id = np.id "
 				+ "INNER JOIN nmc_books_categories as nbc ON nmi.id = nbc.media_id "
-				+ "INNER JOIN nmc_categories as nc ON nbc.categories_id = nc.id;";
+				+ "INNER JOIN nmc_categories as nc ON nbc.categories_id = nc.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -110,7 +110,7 @@ public class Retriever {
 		//TODO: [Derek] SQL Select Episode
 		String query = "SELECT nmis.id as id, nmis.title as title, filename, nmi.id as series, nmi.title as seriesName, season, chrono FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_series as nmis ON nmi.id = nmis.media_id "
-				+ "INNER JOIN nmc_videos as nv ON nmis.media_id = nv.id ;";
+				+ "INNER JOIN nmc_videos as nv ON nmis.media_id = nv.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -127,7 +127,7 @@ public class Retriever {
 		imageList = new ArrayList<ImageCollector>();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_photographers as nmp ON nmi.id = nmp.media_id "
-				+ "INNER JOIN nmc_persons as np ON nmp.persons_id = np.id ;";
+				+ "INNER JOIN nmc_persons as np ON nmp.persons_id = np.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -144,7 +144,7 @@ public class Retriever {
 		seriesList = new ArrayList<SeriesCollector>();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, description, category FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_series_categories as nfc ON nmi.id = nfc.media_id "
-				+ "INNER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ;";
+				+ "INNER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -165,7 +165,7 @@ public class Retriever {
 				+ "INNER JOIN nmc_videos_directors as nvd ON nv.id = nvd.videos_id "
 				+ "INNER JOIN nmc_persons as np ON nvd.persons_id = np.id "
 				+ "INNER JOIN nmc_films_categories as nfc ON nmi.id = nfc.media_id "
-				+ "INNER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ;";
+				+ "INNER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -181,7 +181,7 @@ public class Retriever {
 		db.openConnection();
 		usersList = new ArrayList<Profil>();
 		//TODO: [Derek] SQL Select Users
-		String query = "SELECT * FROM nmc_users ;";
+		String query = "SELECT * FROM nmc_users ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -197,7 +197,7 @@ public class Retriever {
 		db.openConnection();
 		permissionsList = new ArrayList<Permissions>();
 		//TODO: [Derek] SQL Select Permissions
-		String query = "SELECT * FROM nmc_permissions ;";
+		String query = "SELECT * FROM nmc_permissions ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -207,5 +207,14 @@ public class Retriever {
 		}
 		db.closeConnection();
 		return permissionsList;
+	}
+
+	public int selectLastEntry() throws SQLException{
+		db.openConnection();
+		String query = "SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1;";
+		ResultSet rs = db.select(query);
+		db.closeConnection();
+		rs.last();
+		return rs.getInt("id");
 	}
 }

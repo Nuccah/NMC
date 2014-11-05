@@ -15,7 +15,7 @@ import model.Config;
  *
  */
 public class Main {
-	private static boolean DEBUG = false; 
+	private static boolean DEBUG = true; 
 	private static boolean INIT = false;
 	private static boolean DEV = false;
 	

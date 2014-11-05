@@ -44,6 +44,8 @@ public class UploadTask extends SwingWorker<Void, Void> {
 	@Override
 	public Void doInBackground() throws Exception {
 		try {
+			if (SocketManager.getInstance().sendMeta(mdc) == false)
+				cancel(true);
 			int percentCompleted = 0;
 			setProgress(percentCompleted);
 			if(directory == "Movies" || directory == "Series"){
@@ -67,8 +69,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				percentCompleted = (int) (totalBytesRead * 100 / fileSize);
 				setProgress(percentCompleted);
 			}
-			inputStream.close();
-			SocketManager.getInstance().sendMeta(mdc); 
+			inputStream.close(); 
 			TransferManager.getInstance().finish();
 			System.out.println(mdc.toString() + "has been uploaded");
 		} catch (IOException | FTPException e){

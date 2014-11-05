@@ -233,6 +233,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		cbPList.add(modificationBox);
 		cbPList.add(visibilityBox);
 
+		clear();
 		populateLists();		
 
 		uploadButton.addActionListener(this);
@@ -466,7 +467,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 
 	public void clear(){
 		for (JTextField fl : fieldList) 
-			fl.setText("");
+			fl.setText(null);
 		seriesBox.setSelectedItem(null);
 		albumBox.setSelectedItem(null);
 		for (JComboBox<Permissions> cbl : cbPList)

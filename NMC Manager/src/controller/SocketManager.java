@@ -213,7 +213,7 @@ public class SocketManager extends Socket {
 	 * Permet d'envoyer les méta données liées à un fichier uploadé
 	 * @param mdc : MetaDataCollector à envoyer
 	 */
-	public void sendMeta(MetaDataCollector mdc){
+	public boolean sendMeta(MetaDataCollector mdc){
 		System.out.println("Sending :" +mdc.toString());
 		try {
 			String ack = null;
@@ -225,12 +225,18 @@ public class SocketManager extends Socket {
 			do {
 				oos.writeObject(mdc);
 				ack = String.valueOf(ois.readObject());
+				if(ack.compareTo("NACK") == 0){
+					JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
+					return false;
+				}
 			} while(ack.compareTo("ACK") != 0);			
 		} catch (IOException | ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
 			e.printStackTrace();
+			return false;
 		}
 		System.out.println("Metadata Successfully Sent");
+		return true;
 	}
 	
 	public void delObject(Object o){

@@ -34,6 +34,6 @@ public class SeriesCollector extends MetaDataCollector{
 	
 	public String toString() {
 		// TODO Auto-generated method stub
-		return (this.title + " - " + this.year);
+		return (this.id+this.title);
 	}
 }

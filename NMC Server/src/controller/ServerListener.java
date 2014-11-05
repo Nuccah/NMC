@@ -176,6 +176,12 @@ public class ServerListener implements Runnable {
 		try {
 			mdc = (MetaDataCollector) ois.readObject();
 		} catch (ClassNotFoundException | IOException e1) {
+			try {
+				oos.writeObject("NACK");
+			} catch (IOException e) {
+				System.out.println("[Error] - Couldn't send NACK to: "+cl.getInetAddress());
+				if(Main.getDebug()) e1.printStackTrace();
+			}
 			System.out.println("[Error] - Couldn't retrieve meta type from: "+cl.getInetAddress());
 			if(Main.getDebug()) e1.printStackTrace();
 		}
@@ -183,43 +189,50 @@ public class ServerListener implements Runnable {
 		Injecter inj = Injecter.getInstance();
 		try {
 			if(mdc instanceof AudioCollector){
-				oos.writeObject("ACK");
 				System.out.println("Received: "+((AudioCollector)mdc).toString());
 				inj.injector((AudioCollector) mdc);
+				oos.writeObject("ACK");
 			}
 			else if(mdc instanceof AlbumCollector){
-				oos.writeObject("ACK");
 				System.out.println("Received: "+((AlbumCollector)mdc).toString());
 				inj.injector((AlbumCollector)mdc);
+				mdc.setId(Retriever.getInstance().selectLastEntry());
+				Config.getInstance().createAlbumFolders((AlbumCollector)mdc);
+				oos.writeObject("ACK");
 			}
 			else if(mdc instanceof BookCollector){
-				oos.writeObject("ACK");
 				System.out.println("Received: "+((BookCollector)mdc).toString());
 				inj.injector((BookCollector) mdc);
+				oos.writeObject("ACK");
 			}
 			else if(mdc instanceof EpisodeCollector){
-				oos.writeObject("ACK");
 				System.out.println("Received: "+((EpisodeCollector)mdc).toString());
 				inj.injector((EpisodeCollector) mdc);
+				oos.writeObject("ACK");
 			}
 			else if(mdc instanceof ImageCollector){
-				oos.writeObject("ACK");
 				System.out.println("Received: "+((ImageCollector)mdc).toString());
 				inj.injector((ImageCollector) mdc);
+				oos.writeObject("ACK");
 			}
 			else if(mdc instanceof SeriesCollector){
-				oos.writeObject("ACK");
 				System.out.println("Received: "+((SeriesCollector)mdc).toString());
 				inj.injector((SeriesCollector) mdc);
+				mdc.setId(Retriever.getInstance().selectLastEntry());
+				Config.getInstance().createSeriesFolders((SeriesCollector)mdc);
+				oos.writeObject("ACK");
 			}
 			else if(mdc instanceof VideoCollector){
-				oos.writeObject("ACK");
 				System.out.println("Received: "+((VideoCollector)mdc).toString());
 				inj.injector((VideoCollector) mdc);
+				oos.writeObject("ACK");
 			}
 			else oos.writeObject("NACK");
-		} catch (IOException | SQLException e){
-			System.out.println("[Error] - Meta Type ACK couldn't be sent to: "+cl.getInetAddress());
+		} catch (IOException e){
+			System.out.println("[Error] - ACK couldn't be sent to: "+cl.getInetAddress());
+			if(Main.getDebug()) e.printStackTrace();
+		} catch (SQLException e){
+			System.out.println("[Error] - SQL ERROR");
 			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
