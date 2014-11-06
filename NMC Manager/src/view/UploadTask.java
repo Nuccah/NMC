@@ -78,7 +78,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				e.printStackTrace();
 				setProgress(0);
 				cancel(true);
-			}	
+			}
 			byte[] buffer = new byte[BUFFER_SIZE]; 
 			int bytesRead = -1;
 			long totalBytesRead = 0;
@@ -106,7 +106,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 					e.printStackTrace();
 					setProgress(0);
 					cancel(true);
-			} 
+			}
 			System.out.println(mdc.toString() + "has been uploaded");
 		} catch (SftpException e){
 			JOptionPane.showMessageDialog(null,  "SFTP Error: " + e.getMessage(),
