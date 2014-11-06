@@ -9,8 +9,8 @@ public class BookCollector extends MetaDataCollector{
 	private String synopsis;
 	private String year;
 	
-	public BookCollector(String title, String year, int modId, int visId, String filename, String author, String genre, String synopsis) {
-		super(title, modId,visId);
+	public BookCollector(String title, String year, int modId, int visId, String filename, String author, String genre, String synopsis, String relPath) {
+		super(title, modId,visId, relPath);
 		this.author = author;
 		this.filename = filename;
 		this.year = year;
@@ -19,7 +19,7 @@ public class BookCollector extends MetaDataCollector{
 	}
 	
 	public BookCollector(int id, String title, String year, int modId, int visId, String filename, String author, String genre, String synopsis) {
-		super(id, title, modId,visId);
+		super(id, title, modId, visId);
 		this.author = author;
 		this.filename = filename;
 		this.year = year;

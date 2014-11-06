@@ -70,6 +70,7 @@ public class Injecter {
 	}
 
 	public void injector(AlbumCollector album) throws SQLException{
+		album.setRelPath("Music"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+album.getTitle()+Parser.getInstance().getSlash());
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
 		String query2;
@@ -93,6 +94,7 @@ public class Injecter {
 	}
 
 	public void injector(BookCollector book) throws SQLException{
+		book.setRelPath("Books"+Parser.getInstance().getSlash());
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
 		String query2;
@@ -116,6 +118,7 @@ public class Injecter {
 	}
 
 	public void injector(ImageCollector image) throws SQLException{
+		image.setRelPath("Images"+Parser.getInstance().getSlash());
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
 		String query2 = "INSERT INTO nmc_media values (DEFAULT, '"+image.getTitle()+"', '"+image.getRelPath()+"', 'image', null, '"+Integer.parseInt(image.getYear())+"', 0, (SELECT id FROM nmc_permissions WHERE level = '"+image.getVisibilityID()+"'), (SELECT id FROM nmc_permissions WHERE level = '"+image.getModificiationID()+"'), (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
@@ -131,6 +134,7 @@ public class Injecter {
 	}
 
 	public void injector(VideoCollector video) throws SQLException{
+		video.setRelPath("Movies"+Parser.getInstance().getSlash());
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
 		String query2;
@@ -166,6 +170,7 @@ public class Injecter {
 	}
 
 	public void injector(SeriesCollector series) throws SQLException{
+		series.setRelPath("Series"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+series.getTitle()+Parser.getInstance().getSlash());
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
 		String query2;

@@ -214,7 +214,9 @@ public class Retriever {
 		String query = "SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1;";
 		ResultSet rs = db.select(query);
 		db.closeConnection();
-		rs.last();
-		return rs.getInt("id");
+		if(!rs.next())
+			return 0;
+		else
+			return rs.getInt("id");
 	}
 }

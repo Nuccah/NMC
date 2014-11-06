@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import model.AudioCollector;
+import model.EpisodeCollector;
 import model.MetaDataCollector;
 
 import com.jcraft.jsch.SftpException;
@@ -58,15 +59,18 @@ public class UploadTask extends SwingWorker<Void, Void> {
 			}
 			if (!SocketManager.getInstance().sendMeta(mdc))
 				cancel(true);
-			if (!SocketManager.getInstance().lastID(mdc))
-				cancel(true);
+			if(!(mdc instanceof AudioCollector) || !(mdc instanceof EpisodeCollector)){
+				if (!SocketManager.getInstance().lastID(mdc))
+					cancel(true);
+				try {
+					uploadFile = TransferManager.getInstance().setFilename(mdc, uploadFile);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
 			int percentCompleted = 0;
 			setProgress(percentCompleted);
-			try {
-				uploadFile = TransferManager.getInstance().setFilename(mdc, uploadFile);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			
 			TransferManager.getInstance().connect();
 			try {
 				TransferManager.getInstance().sendFile(directory, uploadFile, mdc);

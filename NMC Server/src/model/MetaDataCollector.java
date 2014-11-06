@@ -39,6 +39,14 @@ public class MetaDataCollector implements Serializable{
 		this.relPath = null;
 	}
 	
+	public MetaDataCollector(String title, int modId, int visId, String relPath){
+		this.title = title;
+		this.modificiationID = modId;
+		this.visibilityID = visId;
+		this.absPath = null;
+		this.relPath = relPath;
+	}
+	
 	public MetaDataCollector(int id, String title, int modId, int visId){
 		this.id = id;
 		this.title = title;

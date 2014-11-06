@@ -143,14 +143,12 @@ public class TransferManager {
 			String slash = Parser.getInstance().getSlash();
 			if (mdc instanceof AudioCollector){
 				AudioCollector cdc = (AudioCollector)mdc;
-				mdc.setRelPath(directory+"/"+cdc.getAlbum()+cdc.getAlbumName()+"/");
 				filename = directory+"/"+cdc.getAlbum()+cdc.getAlbumName()+"/"+fToSend.getName();
 				relPath = directory+slash+cdc.getAlbum()+cdc.getAlbumName()+slash+fToSend.getName();
 				System.out.println(filename);
 			}
 			else if (mdc instanceof EpisodeCollector){
 				EpisodeCollector edc = (EpisodeCollector)mdc;
-				mdc.setRelPath(directory+"/"+edc.getSeries()+edc.getSeriesName()+"/");
 				filename = directory+"/"+edc.getSeries()+edc.getSeriesName()+"/"+fToSend.getName();
 				relPath = directory+slash+edc.getSeries()+edc.getSeriesName()+slash+fToSend.getName();
 			}

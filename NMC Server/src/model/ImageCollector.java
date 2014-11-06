@@ -6,8 +6,8 @@ public class ImageCollector extends MetaDataCollector{
 	private String filename;
 	private String year;
 	
-	public ImageCollector(String title, String year, int modId, int visId, String filename, String photographer) {
-		super(title, modId,visId);
+	public ImageCollector(String title, String year, int modId, int visId, String filename, String photographer, String relPath) {
+		super(title, modId,visId, relPath);
 		this.photographer = photographer;
 		this.year = year;
 		this.filename = filename;
