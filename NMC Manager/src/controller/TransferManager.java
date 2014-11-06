@@ -83,6 +83,31 @@ public class TransferManager {
 	}
 
 	
+	public static String chooseDirectory(String node) {
+		switch(node){
+			case "Add New Albums": return "Music";
+			case "Add New Series": return "Series";
+			case "Add New Episodes": return "Series";
+			case "Add New Music": return "Music";
+			case "Books": return "Books";
+			case "Movies": return "Movies";
+			case "Images": return "Images";
+		}
+		return null;
+	}
+
+	public void setFilename(MetaDataCollector mdc, File uploadFile) throws IOException {
+
+	    // File (or directory) with new name
+	    File file2 = new File(mdc.getId()+uploadFile.getName());
+	    if(file2.exists()) throw new java.io.IOException("file exists");
+
+	    // Rename file (or directory)
+	    boolean success = uploadFile.renameTo(file2);
+	    if (!success) {
+	        // File was not successfully renamed
+	    }		
+	}
 	
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
@@ -173,17 +198,5 @@ public class TransferManager {
 		if (session.isConnected()) session.disconnect();
 	}
 
-	public static String chooseDirectory(String node) {
-		switch(node){
-			case "Add New Albums": return "Music";
-			case "Add New Series": return "Series";
-			case "Add New Episodes": return "Series";
-			case "Add New Music": return "Music";
-			case "Books": return "Books";
-			case "Movies": return "Movies";
-			case "Images": return "Images";
-		}
-		return null;
-	}
 }
 

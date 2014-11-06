@@ -126,7 +126,7 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void getList(String type){
 		try {
@@ -144,9 +144,9 @@ public class SocketManager extends Socket {
 			switch(type){
 			case "startup":
 				Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
-											(ArrayList<Permissions>)ois.readObject(),
-											(ArrayList<AlbumCollector>)ois.readObject(),
-											(ArrayList<SeriesCollector>)ois.readObject()));
+						(ArrayList<Permissions>)ois.readObject(),
+						(ArrayList<AlbumCollector>)ois.readObject(),
+						(ArrayList<SeriesCollector>)ois.readObject()));
 				break;
 			case "albums": 
 				lists.setAlbumList(null);
@@ -208,7 +208,7 @@ public class SocketManager extends Socket {
 		}
 
 	}
-	
+
 	/**
 	 * Permet d'envoyer les méta données liées à un fichier uploadé
 	 * @param mdc : MetaDataCollector à envoyer
@@ -238,7 +238,27 @@ public class SocketManager extends Socket {
 		System.out.println("Metadata Successfully Sent");
 		return true;
 	}
-	
+
+	public boolean lastID(MetaDataCollector mdc){
+		int id = 0;
+		String ack = null;
+		try {
+			do {
+				oos.writeObject("last");
+				ack = String.valueOf(ois.readObject());
+			} while(ack.compareTo("ACK") != 0);
+			do{
+				id = (int) ois.readObject();
+			}while(id == -1) ;
+			mdc.setId(id);
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		System.out.println("Return ID: "+id);
+		return true;
+	}
+
 	public void delObject(Object o){
 		//TODO: Trouver comment envoyer la requête de suppression
 		throw new UnsupportedOperationException("Method not yet implemented!");

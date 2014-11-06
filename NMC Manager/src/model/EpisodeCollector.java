@@ -8,7 +8,7 @@ public class EpisodeCollector extends MetaDataCollector{
 	private String season;
 	private String chrono;
 	private String filename;
-	
+
 	public EpisodeCollector(String title, String filename, int series, String seriesName, String director, String season, String chrono){
 		super(title);
 		this.director = director;
@@ -56,6 +56,10 @@ public class EpisodeCollector extends MetaDataCollector{
 
 	public String getFilename() {
 		return filename;
+	}
+	
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 	
 	public String toString() {

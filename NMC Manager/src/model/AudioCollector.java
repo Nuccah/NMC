@@ -6,7 +6,7 @@ public class AudioCollector extends MetaDataCollector{
 	private int album;
 	private String albumName;
 	private String filename;
-	
+
 	public AudioCollector(String title, String filename, String artist, int album, String albumName) {
 		super(title);
 		this.artist = artist;
@@ -42,6 +42,10 @@ public class AudioCollector extends MetaDataCollector{
 
 	public String getFilename() {
 		return filename;
+	}
+	
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 	
 	public String getAlbumName() {

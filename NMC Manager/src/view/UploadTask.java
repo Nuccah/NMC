@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
+import model.AudioCollector;
 import model.MetaDataCollector;
 
 import com.jcraft.jsch.SftpException;
@@ -47,18 +48,25 @@ public class UploadTask extends SwingWorker<Void, Void> {
 	@Override
 	public Void doInBackground(){
 		try {
-			if (SocketManager.getInstance().sendMeta(mdc) == false)
-				cancel(true);
-			int percentCompleted = 0;
-			setProgress(percentCompleted);
 			if(directory == "Movies" || directory == "Series"){
-				String filepath = Converter.getInstance().convertToMP4(uploadFile);
+				String filepath = Converter.getInstance().convertToMP4(mdc, uploadFile);
 				uploadFile = new File(filepath);
 			}
 			else if(directory == "Music"){
-				String filepath = Converter.getInstance().convertToMP3(uploadFile);
+				String filepath = Converter.getInstance().convertToMP3((AudioCollector) mdc, uploadFile);
 				uploadFile = new File(filepath);
 			}
+			if (!SocketManager.getInstance().sendMeta(mdc))
+				cancel(true);
+			if (!SocketManager.getInstance().lastID(mdc))
+				cancel(true);
+			int percentCompleted = 0;
+			setProgress(percentCompleted);
+//			try {
+//				TransferManager.getInstance().setFilename(mdc, uploadFile);
+//			} catch (IOException e1) {
+//				e1.printStackTrace();
+//			}
 			TransferManager.getInstance().connect();
 			try {
 				TransferManager.getInstance().sendFile(directory, uploadFile,mdc);

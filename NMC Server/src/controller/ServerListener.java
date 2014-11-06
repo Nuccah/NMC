@@ -72,6 +72,10 @@ public class ServerListener implements Runnable {
 			oos.writeObject("ACK");
 			sendList();
 			break;
+		case "last":
+			oos.writeObject("ACK");
+			lastID();
+			break;
 		case "logout":
 			oos.writeObject("ACK");
 			logout();
@@ -80,6 +84,7 @@ public class ServerListener implements Runnable {
 			oos.writeObject("NACK");
 		}
 	}
+
 	/**
 	 * Permet d'envoyer les configurations de bases au client
 	 */
@@ -267,6 +272,18 @@ public class ServerListener implements Runnable {
 		} catch (ClassNotFoundException e) {
 			System.out.println("[Error] Couldn't retrieve case from: "+cl.getInetAddress());
 			if(Main.getDebug()) e.printStackTrace();
+		}
+	}
+	
+	private void lastID() {
+		try {
+			oos.writeObject(Retriever.getInstance().selectLastEntry());
+		} catch (IOException e) {
+			System.out.println("[Error] Couldn't write ID to: "+cl.getInetAddress());
+			if(Main.getDebug()) e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("[Error] SQL Error");
+			e.printStackTrace();
 		}
 	}
 
