@@ -39,6 +39,14 @@ public class MetaDataCollector implements Serializable{
 		this.relPath = null;
 	}
 	
+	public MetaDataCollector(String title, int modId, int visId, String relPath){
+		this.title = title;
+		this.modificiationID = modId;
+		this.visibilityID = visId;
+		this.absPath = null;
+		this.relPath = relPath;
+	}
+	
 	public MetaDataCollector(int id, String title, int modId, int visId){
 		this.id = id;
 		this.title = title;
@@ -46,22 +54,6 @@ public class MetaDataCollector implements Serializable{
 		this.visibilityID = visId;
 		this.absPath = null;
 		this.relPath = null;
-	}
-
-	public MetaDataCollector audioExtraction(){
-		return null;
-	}
-
-	public MetaDataCollector bookExtraction(){
-		return null;
-	}
-
-	public MetaDataCollector imageExtraction(){
-		return null;
-	}
-
-	public MetaDataCollector videoExtraction(){
-		return null;
 	}
 	
 	public int getId() {
@@ -108,7 +100,8 @@ public class MetaDataCollector implements Serializable{
 		this.visibilityID = visibilityID;
 	}
 
-	
-	
-	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.title;
+	}
 }

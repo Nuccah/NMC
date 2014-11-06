@@ -43,6 +43,10 @@ public class VideoCollector extends MetaDataCollector{
 	public String getFilename() {
 		return filename;
 	}
+	
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 
 	public String getSynopsis() {
 		return synopsis;
@@ -50,5 +54,10 @@ public class VideoCollector extends MetaDataCollector{
 
 	public String getYear() {
 		return year;
+	}
+	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.year);
 	}
 }

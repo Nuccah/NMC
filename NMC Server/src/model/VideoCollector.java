@@ -8,8 +8,8 @@ public class VideoCollector extends MetaDataCollector{
 	private String synopsis;
 	private String year;
 
-	public VideoCollector(String title, String year, int modId, int visId, String filename, String director, String genre, String synopsis) {
-		super(title, modId,visId);
+	public VideoCollector(String title, String year, int modId, int visId, String filename, String director, String genre, String synopsis, String relPath) {
+		super(title, modId,visId, relPath);
 		this.director = director;
 		this.filename = filename;
 		this.year = year;
@@ -25,13 +25,7 @@ public class VideoCollector extends MetaDataCollector{
 		this.genre = genre;
 		this.synopsis = synopsis;
 	}
-
-	@Override
-	public MetaDataCollector videoExtraction() {
-		// TODO Auto-generated method stub
-		return super.videoExtraction();
-	}
-
+	
 	public String getDirector() {
 		return director;
 	}
@@ -50,5 +44,10 @@ public class VideoCollector extends MetaDataCollector{
 
 	public String getYear() {
 		return year;
+	}
+	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.year);
 	}
 }

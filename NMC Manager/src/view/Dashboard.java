@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -99,7 +100,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 	private JLabel modificationLabel = new JLabel("Modification Level");
 	private JLabel albumLabel = new JLabel("Album");
 	private JLabel seasonLabel = new JLabel("Season");
-	private JLabel chronoLabel = new JLabel("Episode Chronology");
+	private JLabel chronoLabel = new JLabel("Chronology");
 	private JLabel seriesLabel = new JLabel("Series");
 
 	private JTree menuBar;
@@ -176,6 +177,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		ImageIcon icon = new ImageIcon(iconURL);
 		setIconImage(icon.getImage());
 		getContentPane().setLayout(main);
+		setSize(new Dimension(1024,768));
+		setMinimumSize(new Dimension(1024,768));
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int width = gd.getDisplayMode().getWidth();
 		int height = gd.getDisplayMode().getHeight();
@@ -193,6 +196,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		uploadDataPane = new JPanel();
 		fc = new JFileChooser();
 
+
 		topPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		centerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		leftPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -204,7 +208,7 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		centerPane.setLayout(new GridBagLayout());
 
 		System.out.println(getSize().toString());
-		leftPane.setMinimumSize(new Dimension(getSize().width/5, getSize().height));
+
 		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
 		rc.gridx = 1; rc.gridy = 0; rc.weightx = 0.75; rc.weighty = 1; rc.fill = GridBagConstraints.BOTH;
 
@@ -214,14 +218,16 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		getContentPane().add(centerPane, cc);
 		getContentPane().add(bottomPane, bc);
 
+		leftPane.setMinimumSize(new Dimension(225, 600));
+		centerPane.setMinimumSize(new Dimension(900, 700));
+		rightPane.setMinimumSize(new Dimension(675, 600));
+		pack();
+
 		titleBar();
 		menuBar();
 		bottomBar();
 
-		fc.setAcceptAllFileFilterUsed(false);
-		fc.setControlButtonsAreShown(false);
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fc.addActionListener(this);
+		modifyFileChooser(fc.getComponents());
 
 		fieldList.add(titleField);
 		fieldList.add(yearField);
@@ -233,11 +239,19 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		cbPList.add(modificationBox);
 		cbPList.add(visibilityBox);
 
+		clear();
 		populateLists();		
 
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
 		addButton.addActionListener(this);
+	}
+
+	private void modifyFileChooser(Component[] components) {
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setControlButtonsAreShown(false);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.addActionListener(this);
 	}
 
 	/**
@@ -464,28 +478,9 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		}
 	}
 
-	/**
-	 * Creation of new progress bar, dialog for each upload
-	 */
-	public void progressBar() {
-		//Create the demo's UI.
-		dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
-
-		progressBar = new JProgressBar(0, 100);
-		progressBar.setValue(0);
-		progressBar.setStringPainted(true);
-		progressBar.setString("Converting... (this could take some time)");
-		dlg.add(BorderLayout.CENTER, progressBar);
-		dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
-		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		dlg.setSize(300, 75);
-		dlg.setLocationRelativeTo((Frame) getOwner());
-		dlg.setVisible(true);
-	}
-
 	public void clear(){
 		for (JTextField fl : fieldList) 
-			fl.setText("");
+			fl.setText(null);
 		seriesBox.setSelectedItem(null);
 		albumBox.setSelectedItem(null);
 		for (JComboBox<Permissions> cbl : cbPList)
@@ -497,6 +492,8 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 		clear();
 		seriesBox.removeAllItems();
 		albumBox.removeAllItems();
+		modificationBox.removeAllItems();
+		visibilityBox.removeAllItems();
 		for(Permissions perms : Lists.getInstance().getPermissionsList()){
 			modificationBox.addItem(perms);
 			visibilityBox.addItem(perms);
@@ -527,11 +524,11 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 					return false;
 				else return true;
 			case "Add New Music":
-				if (personField == null)
+				if (personField == null || albumBox.getSelectedItem() == null || genreField == null)
 					return false;
 				else return true;
 			case "Add New Albums":
-				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null || albumBox.getSelectedItem() == null)
+				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null )
 					return false;
 				else return true;
 			case "Movies":
@@ -549,6 +546,25 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			default: return true;
 			}
 		}
+	}
+
+	/**
+	 * Creation of new progress bar, dialog for each upload
+	 */
+	public void progressBar() {
+		//Create the demo's UI.
+		dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
+
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		progressBar.setString("Converting... (this could take some time)");
+		dlg.add(BorderLayout.CENTER, progressBar);
+		dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
+		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dlg.setSize(300, 75);
+		dlg.setLocationRelativeTo((Frame) getOwner());
+		dlg.setVisible(true);
 	}
 
 	/**
@@ -580,22 +596,20 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 				switch (node.toString()) {
 				case "Add New Albums": fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());
-					Lists.getInstance().getAlbumList().add((AlbumCollector) fileC);	
-					break;
+				break;
 				case "Add New Series": fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); 
-					Lists.getInstance().getSeriesList().add((SeriesCollector) fileC);
-					break;
+				break;
 				default: break;
 				}
-				
+
 				SocketManager.getInstance().sendMeta(fileC);
-				
+
 				if(fileC instanceof AlbumCollector) SocketManager.getInstance().getList("albums");
 				else SocketManager.getInstance().getList("series");
-				
+
 				populateLists();
-				
+
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Your series/album has been successfully added!",
 						"Success",
@@ -617,13 +631,15 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
 				case "Images": fileC = new ImageCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText()); break;
-				case "Add New Music": fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), (String) albumBox.getSelectedItem()); break;
+				case "Add New Music": fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), 
+						((AlbumCollector) albumBox.getSelectedItem()).getId(), ((AlbumCollector) albumBox.getSelectedItem()).getTitle()); break;
 				case "Movies": fileC = new VideoCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
-				case "Add New Episodes": fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), (String) seriesBox.getSelectedItem(), personField.getText(), 
-						seasonField.getText(), chronoField.getText()); break;
+				case "Add New Episodes": fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), ((SeriesCollector)seriesBox.getSelectedItem()).getId(), 
+						((SeriesCollector)seriesBox.getSelectedItem()).getTitle(), personField.getText(), seasonField.getText(), chronoField.getText()); break;
 				default: break;
 				}
+
 				uTask = new UploadTask(TransferManager.chooseDirectory(node.toString()), fc.getSelectedFile(), fileC);
 				uTask.addPropertyChangeListener(this);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

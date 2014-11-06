@@ -53,27 +53,6 @@ public class SocketManager extends Socket {
 	}
 
 	/**
-	 * Permet d'envoyer les méta données liées à un fichier uploadé
-	 * @param mdc : MetaDataCollector à envoyer
-	 */
-	public void sendMeta(MetaDataCollector mdc){
-		try {
-			String ack = null;
-			do {
-				oos.writeObject("meta");
-				ack = String.valueOf(ois.readObject());
-			} while(ack.compareTo("ACK") != 0);
-			ack = null;
-			do {
-				oos.writeObject(mdc);
-				ack = String.valueOf(ois.readObject());
-			} while(ack.compareTo("ACK") != 0);			
-		} catch (IOException | ClassNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
-			e.printStackTrace();
-		}
-	}
-	/**
 	 * Permet de créer une session avec le serveur
 	 * @param login : nom d'utilisateur
 	 * @param password : mot de passe
@@ -148,11 +127,6 @@ public class SocketManager extends Socket {
 		}
 	}
 
-	public void delObject(Object o){
-		//TODO: Trouver comment envoyer la requête de suppression
-		throw new UnsupportedOperationException("Method not yet implemented!");
-	}
-	
 	@SuppressWarnings("unchecked")
 	public void getList(String type){
 		try {
@@ -169,11 +143,10 @@ public class SocketManager extends Socket {
 				oos.writeObject(type);
 			switch(type){
 			case "startup":
-				
 				Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
-											(ArrayList<Permissions>)ois.readObject(),
-											(ArrayList<AlbumCollector>)ois.readObject(),
-											(ArrayList<SeriesCollector>)ois.readObject()));
+						(ArrayList<Permissions>)ois.readObject(),
+						(ArrayList<AlbumCollector>)ois.readObject(),
+						(ArrayList<SeriesCollector>)ois.readObject()));
 				break;
 			case "albums": 
 				lists.setAlbumList(null);
@@ -234,6 +207,61 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Permet d'envoyer les méta données liées à un fichier uploadé
+	 * @param mdc : MetaDataCollector à envoyer
+	 */
+	public boolean sendMeta(MetaDataCollector mdc){
+		System.out.println("Sending :" +mdc.toString());
+		try {
+			String ack = null;
+			do {
+				oos.writeObject("meta");
+				ack = String.valueOf(ois.readObject());
+			} while(ack.compareTo("ACK") != 0);
+			ack = null;
+			do {
+				oos.writeObject(mdc);
+				ack = String.valueOf(ois.readObject());
+				if(ack.compareTo("NACK") == 0){
+					JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
+					return false;
+				}
+			} while(ack.compareTo("ACK") != 0);			
+		} catch (IOException | ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
+			e.printStackTrace();
+			return false;
+		}
+		System.out.println("Metadata Successfully Sent");
+		return true;
+	}
+
+	public boolean lastID(MetaDataCollector mdc){
+		int id = 0;
+		String ack = null;
+		try {
+			do {
+				oos.writeObject("last");
+				ack = String.valueOf(ois.readObject());
+			} while(ack.compareTo("ACK") != 0);
+			do{
+				id = (int) ois.readObject();
+			}while(id == -1) ;
+			mdc.setId(id);
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		System.out.println("Return ID: "+id);
+		return true;
+	}
+
+	public void delObject(Object o){
+		//TODO: Trouver comment envoyer la requête de suppression
+		throw new UnsupportedOperationException("Method not yet implemented!");
 	}
 
 	public void logout(){

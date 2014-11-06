@@ -47,6 +47,10 @@ public class BookCollector extends MetaDataCollector{
 	public String getFilename() {
 		return filename;
 	}
+	
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 
 	public String getSynopsis() {
 		return synopsis;
@@ -56,6 +60,9 @@ public class BookCollector extends MetaDataCollector{
 		return year;
 	}
 	
-	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.title + " - " + this.year);
+	}
 
 }

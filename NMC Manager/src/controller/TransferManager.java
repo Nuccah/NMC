@@ -8,10 +8,12 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import model.AudioCollector;
+import model.BookCollector;
 import model.Config;
 import model.EpisodeCollector;
-import model.FTPException;
+import model.ImageCollector;
 import model.MetaDataCollector;
+import model.VideoCollector;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -84,6 +86,41 @@ public class TransferManager {
 	}
 
 	
+	public static String chooseDirectory(String node) {
+		switch(node){
+			case "Add New Albums": return "Music";
+			case "Add New Series": return "Series";
+			case "Add New Episodes": return "Series";
+			case "Add New Music": return "Music";
+			case "Books": return "Books";
+			case "Movies": return "Movies";
+			case "Images": return "Images";
+		}
+		return null;
+	}
+
+	public File setFilename(MetaDataCollector mdc, File uploadFile) throws IOException {
+
+	    // File (or directory) with new name
+	    File file2 = new File(uploadFile.getParent()+Parser.getInstance().getSlash()+mdc.getId()+uploadFile.getName());
+	    if(file2.exists()) throw new java.io.IOException("file exists");
+
+	    // Rename file (or directory)
+	    boolean success = uploadFile.renameTo(file2);
+	    if (!success) {
+	    	throw new java.io.IOException("file could not be renamed");
+	    }
+	    else{
+	    	uploadFile = new File(file2.getParent()+Parser.getInstance().getSlash()+file2.getName());
+	    	if (mdc instanceof BookCollector)
+	    		((BookCollector) mdc).setFilename(uploadFile.getName());
+	    	else if (mdc instanceof ImageCollector)
+	    		((ImageCollector) mdc).setFilename(uploadFile.getName());
+	    	else if (mdc instanceof VideoCollector)
+	    		((VideoCollector) mdc).setFilename(uploadFile.getName());
+	    }
+	    return uploadFile;
+	}
 	
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
@@ -91,10 +128,10 @@ public class TransferManager {
 	 * 			Ce paramètre est facultatif <br />
 	 * 			Attention : Le dossier doit avoir été créé au préalable sur le serveur
 	 * @param fToSend : Fichier à téléverser sur le serveur 
-	 * @throws FTPException if client-server communication error occurred
-	 * @throws SftpException 
+	 * @throws SftpException if client-server communication error occurred
 	 */
-	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws FTPException, SftpException, IOException{
+	@SuppressWarnings("unused")
+	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws SftpException, IOException{
 		String filename = null;
 		String relPath = null;
 		if(directory == null){
@@ -103,29 +140,24 @@ public class TransferManager {
 		}
 		// [TODO] TEST
 		else { 
+			String slash = Parser.getInstance().getSlash();
 			if (mdc instanceof AudioCollector){
 				AudioCollector cdc = (AudioCollector)mdc;
-				mdc.setRelPath(directory+"/"+cdc.getAlbum()+"/");
-				filename = directory+"/"+cdc.getAlbum()+"/"+fToSend.getName();
-				String slash = Parser.getInstance().getSlash();
-				relPath = directory+slash+cdc.getAlbum()+slash+fToSend.getName();
+				filename = directory+"/"+cdc.getAlbum()+cdc.getAlbumName()+"/"+fToSend.getName();
+				relPath = directory+slash+cdc.getAlbum()+cdc.getAlbumName()+slash+fToSend.getName();
 				System.out.println(filename);
 			}
 			else if (mdc instanceof EpisodeCollector){
 				EpisodeCollector edc = (EpisodeCollector)mdc;
-				mdc.setRelPath(directory+"/"+edc.getSeries()+"/");
-				filename = directory+"/"+edc.getSeries()+"/"+fToSend.getName();
-				String slash = Parser.getInstance().getSlash();
-				relPath = directory+slash+edc.getSeries()+slash+fToSend.getName();
+				filename = directory+"/"+edc.getSeries()+edc.getSeriesName()+"/"+fToSend.getName();
+				relPath = directory+slash+edc.getSeries()+edc.getSeriesName()+slash+fToSend.getName();
 			}
 			else{
-				mdc.setRelPath(directory);
+				mdc.setRelPath(directory+slash);
 				filename = directory+"/"+fToSend.getName();
-				String slash = Parser.getInstance().getSlash();
 				relPath = directory+slash+fToSend.getName();
 			}	
 		}
-		if(mdc != null) mdc.setRelPath(relPath);
 		String root_path = null;
 		if(Parser.getInstance().isWindows()) {
 			root_path = "/";
@@ -174,17 +206,5 @@ public class TransferManager {
 		if (session.isConnected()) session.disconnect();
 	}
 
-	public static String chooseDirectory(String node) {
-		switch(node){
-			case "Add New Albums": return "Music";
-			case "Add New Series": return "Series";
-			case "Add New Episodes": return "Series";
-			case "Add New Music": return "Music";
-			case "Books": return "Books";
-			case "Movies": return "Movies";
-			case "Images": return "Images";
-		}
-		return null;
-	}
 }
 

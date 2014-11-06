@@ -38,6 +38,9 @@ public class AlbumCollector extends MetaDataCollector{
 	public String getYear() {
 		return year;
 	}
-	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return (this.id+this.title);
+	}
 	
 }
