@@ -62,14 +62,16 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				cancel(true);
 			int percentCompleted = 0;
 			setProgress(percentCompleted);
-//			try {
-//				TransferManager.getInstance().setFilename(mdc, uploadFile);
-//			} catch (IOException e1) {
-//				e1.printStackTrace();
-//			}
+			try {
+				System.out.println(uploadFile.getName());
+				uploadFile = TransferManager.getInstance().setFilename(mdc, uploadFile);
+				System.out.println(uploadFile.getName());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			TransferManager.getInstance().connect();
 			try {
-				TransferManager.getInstance().sendFile(directory, uploadFile,mdc);
+				TransferManager.getInstance().sendFile(directory, uploadFile, mdc);
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null,  "[ERROR] sendFile: " + e.getMessage(),
 						"Error", JOptionPane.ERROR_MESSAGE);

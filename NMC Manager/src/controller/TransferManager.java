@@ -8,9 +8,12 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import model.AudioCollector;
+import model.BookCollector;
 import model.Config;
 import model.EpisodeCollector;
+import model.ImageCollector;
 import model.MetaDataCollector;
+import model.VideoCollector;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -96,17 +99,28 @@ public class TransferManager {
 		return null;
 	}
 
-	public void setFilename(MetaDataCollector mdc, File uploadFile) throws IOException {
+	public File setFilename(MetaDataCollector mdc, File uploadFile) throws IOException {
 
 	    // File (or directory) with new name
-	    File file2 = new File(mdc.getId()+uploadFile.getName());
+	    File file2 = new File(uploadFile.getParent()+Parser.getInstance().getSlash()+mdc.getId()+uploadFile.getName());
 	    if(file2.exists()) throw new java.io.IOException("file exists");
 
 	    // Rename file (or directory)
 	    boolean success = uploadFile.renameTo(file2);
 	    if (!success) {
-	        // File was not successfully renamed
-	    }		
+	    	throw new java.io.IOException("file could not be renamed");
+	    }
+	    else{
+	    	uploadFile = new File(file2.getParent()+Parser.getInstance().getSlash()+file2.getName());
+	    	if (mdc instanceof BookCollector)
+	    		((BookCollector) mdc).setFilename(uploadFile.getName());
+	    	else if (mdc instanceof ImageCollector)
+	    		((ImageCollector) mdc).setFilename(uploadFile.getName());
+	    	else if (mdc instanceof VideoCollector)
+	    		((VideoCollector) mdc).setFilename(uploadFile.getName());
+	    }
+	    System.out.println(uploadFile.getName());
+	    return uploadFile;
 	}
 	
 	/**
@@ -127,11 +141,11 @@ public class TransferManager {
 		}
 		// [TODO] TEST
 		else { 
+			String slash = Parser.getInstance().getSlash();
 			if (mdc instanceof AudioCollector){
 				AudioCollector cdc = (AudioCollector)mdc;
 				mdc.setRelPath(directory+"/"+cdc.getAlbum()+cdc.getAlbumName()+"/");
 				filename = directory+"/"+cdc.getAlbum()+cdc.getAlbumName()+"/"+fToSend.getName();
-				String slash = Parser.getInstance().getSlash();
 				relPath = directory+slash+cdc.getAlbum()+cdc.getAlbumName()+slash+fToSend.getName();
 				System.out.println(filename);
 			}
@@ -139,13 +153,11 @@ public class TransferManager {
 				EpisodeCollector edc = (EpisodeCollector)mdc;
 				mdc.setRelPath(directory+"/"+edc.getSeries()+edc.getSeriesName()+"/");
 				filename = directory+"/"+edc.getSeries()+edc.getSeriesName()+"/"+fToSend.getName();
-				String slash = Parser.getInstance().getSlash();
 				relPath = directory+slash+edc.getSeries()+edc.getSeriesName()+slash+fToSend.getName();
 			}
 			else{
 				mdc.setRelPath(directory);
 				filename = directory+"/"+fToSend.getName();
-				String slash = Parser.getInstance().getSlash();
 				relPath = directory+slash+fToSend.getName();
 			}	
 		}

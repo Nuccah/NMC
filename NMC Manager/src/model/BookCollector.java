@@ -47,6 +47,10 @@ public class BookCollector extends MetaDataCollector{
 	public String getFilename() {
 		return filename;
 	}
+	
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 
 	public String getSynopsis() {
 		return synopsis;

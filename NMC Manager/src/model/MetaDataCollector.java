@@ -109,7 +109,6 @@ public class MetaDataCollector implements Serializable{
 	}
 	
 	public String toString() {
-		// TODO Auto-generated method stub
 		return this.title;
 	}
 }
