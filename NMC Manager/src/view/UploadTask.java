@@ -63,9 +63,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 			int percentCompleted = 0;
 			setProgress(percentCompleted);
 			try {
-				System.out.println(uploadFile.getName());
 				uploadFile = TransferManager.getInstance().setFilename(mdc, uploadFile);
-				System.out.println(uploadFile.getName());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

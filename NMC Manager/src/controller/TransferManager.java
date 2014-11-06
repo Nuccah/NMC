@@ -119,7 +119,6 @@ public class TransferManager {
 	    	else if (mdc instanceof VideoCollector)
 	    		((VideoCollector) mdc).setFilename(uploadFile.getName());
 	    }
-	    System.out.println(uploadFile.getName());
 	    return uploadFile;
 	}
 	
@@ -129,9 +128,9 @@ public class TransferManager {
 	 * 			Ce paramètre est facultatif <br />
 	 * 			Attention : Le dossier doit avoir été créé au préalable sur le serveur
 	 * @param fToSend : Fichier à téléverser sur le serveur 
-	 * @throws FTPException if client-server communication error occurred
-	 * @throws SftpException 
+	 * @throws SftpException if client-server communication error occurred
 	 */
+	@SuppressWarnings("unused")
 	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws SftpException, IOException{
 		String filename = null;
 		String relPath = null;
@@ -156,12 +155,11 @@ public class TransferManager {
 				relPath = directory+slash+edc.getSeries()+edc.getSeriesName()+slash+fToSend.getName();
 			}
 			else{
-				mdc.setRelPath(directory);
+				mdc.setRelPath(directory+slash);
 				filename = directory+"/"+fToSend.getName();
 				relPath = directory+slash+fToSend.getName();
 			}	
 		}
-		if(mdc != null) mdc.setRelPath(relPath);
 		String root_path = null;
 		if(Parser.getInstance().isWindows()) {
 			root_path = "/";
