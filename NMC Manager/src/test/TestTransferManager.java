@@ -3,8 +3,6 @@ package test;
 import java.io.File;
 import java.io.IOException;
 
-import model.FTPException;
-
 import org.junit.Test;
 
 import com.jcraft.jsch.SftpException;
@@ -20,7 +18,7 @@ public class TestTransferManager {
 		TransferManager.getInstance().connect();
 		try {
 			TransferManager.getInstance().sendFile("Movies", new File("F:\\Téléchargement\\Daybreaker.avi"), null);
-		} catch (FTPException | SftpException | IOException e) {
+		} catch (SftpException | IOException e) {
 			e.printStackTrace();
 		}
 		TransferManager.getInstance().close();

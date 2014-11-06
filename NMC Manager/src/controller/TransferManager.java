@@ -10,7 +10,6 @@ import javax.swing.JOptionPane;
 import model.AudioCollector;
 import model.Config;
 import model.EpisodeCollector;
-import model.FTPException;
 import model.MetaDataCollector;
 
 import com.jcraft.jsch.Channel;
@@ -94,7 +93,7 @@ public class TransferManager {
 	 * @throws FTPException if client-server communication error occurred
 	 * @throws SftpException 
 	 */
-	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws FTPException, SftpException, IOException{
+	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws SftpException, IOException{
 		String filename = null;
 		String relPath = null;
 		if(directory == null){

@@ -6,13 +6,16 @@ package view;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
-import model.FTPException;
 import model.MetaDataCollector;
+
+import com.jcraft.jsch.SftpException;
+
 import controller.Converter;
 import controller.SocketManager;
 import controller.TransferManager;
@@ -42,7 +45,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 	}
 
 	@Override
-	public Void doInBackground() throws Exception {
+	public Void doInBackground(){
 		try {
 			if (SocketManager.getInstance().sendMeta(mdc) == false)
 				cancel(true);
@@ -57,23 +60,56 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				uploadFile = new File(filepath);
 			}
 			TransferManager.getInstance().connect();
-			TransferManager.getInstance().sendFile(directory, uploadFile,mdc);
-			FileInputStream inputStream = new FileInputStream(uploadFile);
+			try {
+				TransferManager.getInstance().sendFile(directory, uploadFile,mdc);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null,  "[ERROR] sendFile: " + e.getMessage(),
+						"Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+				setProgress(0);
+				cancel(true);
+			}
+			FileInputStream inputStream = null;
+			try {
+				inputStream = new FileInputStream(uploadFile);
+			} catch (IOException e){
+				JOptionPane.showMessageDialog(null,  "[ERROR] creating inputstream: " + e.getMessage(),
+						"Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+				setProgress(0);
+				cancel(true);
+			}	
 			byte[] buffer = new byte[BUFFER_SIZE]; 
 			int bytesRead = -1;
 			long totalBytesRead = 0;
 			long fileSize = uploadFile.length();
-			while ((bytesRead = inputStream.read(buffer)) != -1) {
-				TransferManager.getInstance().writeFile(buffer, 0, bytesRead);
-				totalBytesRead += bytesRead;
-				percentCompleted = (int) (totalBytesRead * 100 / fileSize);
-				setProgress(percentCompleted);
+			try{
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					TransferManager.getInstance().writeFile(buffer, 0, bytesRead);
+					totalBytesRead += bytesRead;
+					percentCompleted = (int) (totalBytesRead * 100 / fileSize);
+					setProgress(percentCompleted);
+				}
+			}catch (IOException e){
+				JOptionPane.showMessageDialog(null,  "[ERROR] while read/write to FTP: " + e.getMessage(),
+						"Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+				setProgress(0);
+				cancel(true);
 			}
-			inputStream.close(); 
-			TransferManager.getInstance().finish();
+			try {
+				inputStream.close();
+				TransferManager.getInstance().finish();
+			} catch (IOException e) {
+					JOptionPane.showMessageDialog(null,  "[ERROR] while closing FTP: " + e.getMessage(),
+							"Error", JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
+					setProgress(0);
+					cancel(true);
+			} 
 			System.out.println(mdc.toString() + "has been uploaded");
-		} catch (IOException | FTPException e){
-			JOptionPane.showMessageDialog(null,  "Error upload file: " + e.getMessage(),
+		} catch (SftpException e){
+			JOptionPane.showMessageDialog(null,  "SFTP Error: " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 			setProgress(0);
