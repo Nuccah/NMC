@@ -58,7 +58,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 			}
 			if (!SocketManager.getInstance().sendMeta(mdc))
 				cancel(true);
-			if(!(mdc instanceof AudioCollector) || !(mdc instanceof EpisodeCollector)){
+			if(!(mdc instanceof AudioCollector) && !(mdc instanceof EpisodeCollector)){
 				if (!SocketManager.getInstance().lastID(mdc))
 					cancel(true);
 				try {
