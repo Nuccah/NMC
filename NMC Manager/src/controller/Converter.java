@@ -45,7 +45,8 @@ public class Converter {
 		IMediaReader reader = ToolFactory.makeReader(fToConvert.getAbsolutePath());
 		System.out.println("New Path: "+fToConvert.getParent()+Parser.getInstance().getSlash()+newFileName);
 		reader.addListener(ToolFactory.makeWriter(fToConvert.getParent()+Parser.getInstance().getSlash()+newFileName, reader));
-		while(reader.readPacket() == null);
+		while(reader.readPacket() == null)
+			
 		if (mdc instanceof EpisodeCollector)
 			((EpisodeCollector)mdc).setFilename(newFileName);
 		else

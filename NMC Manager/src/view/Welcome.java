@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -45,6 +46,7 @@ public class Welcome extends JFrame implements ActionListener {
 		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		        if ("Nimbus".equals(info.getName())) {
 		            UIManager.setLookAndFeel(info.getClassName());
+		            UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
 		            break;
 		        }
 		    }
