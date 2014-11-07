@@ -1,10 +1,6 @@
 package test;
 
-import java.io.File;
-
 import org.junit.Test;
-
-import controller.Converter;
 
 public class TestConverter {
 	@Test

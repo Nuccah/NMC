@@ -33,16 +33,19 @@ public class Main {
 		
 		//------------- INIT ---------------
 		if(INIT){
-			String path = args[initInd+1];
-			if(path.isEmpty()){
-				System.out.println("[Error] - Path will be passed to server after --init");
+			if(args[initInd+3] == null){
+				System.out.println("[Error] - Missing arguments required");
 				System.exit(1);
 			}
-			if(!Initializer.getInstance().importDefaultConf(path)){
-				System.out.println("[Error] - Unable to create default configurations."
-						+ "\nPlease retry and make sure path to config file is correct.");
-				System.exit(1);
+			Initializer.getInstance().importDefaultConf(args, initInd);
+			try {
+				final ProcessBuilder pb = new ProcessBuilder("nmc-server.exe");
+				pb.start();
+			} catch (IOException e) {
+				System.out.println("[Error] - Unable to restart the nmc-server");
+				if(DEBUG) e.printStackTrace();
 			}
+			System.exit(0);
 		}
 		if(Config.getInstance().getProp("url_db") == null){
 			System.out.println("[Error] - Please launch the server with --init option before trying to use it");
@@ -101,5 +104,4 @@ public class Main {
 	public static boolean getDev(){
 		return DEV;
 	}
-
 }
