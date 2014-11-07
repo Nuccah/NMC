@@ -61,7 +61,7 @@ public class TransferManager {
 		Properties config = new Properties();
 		config.put("StrictHostKeyChecking", "no");
 		try {
-			jsch.addIdentity(new File(".config/security/private.pem").getAbsolutePath(), encryptoPass);
+			jsch.addIdentity(new File(Config.getInstance().getDefaultDir()+Parser.getInstance().getSlash()+"security/private.pem").getAbsolutePath(), encryptoPass);
 		} catch (JSchException e1) {
 			JOptionPane.showMessageDialog(null, "Unable to find the private key");
 			e1.printStackTrace();

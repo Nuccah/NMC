@@ -12,6 +12,8 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import controller.Parser;
+
 /**
  * Classe de gestion du fichier de config (.properties) de l'application
  * @author Antoine Ceyssens
@@ -19,6 +21,7 @@ import javax.swing.JOptionPane;
  */
 public class Config {
 	private static Config instance = null; 
+	private File defaultDir;
 	private File cfg_file;
 	private FileInputStream cfg_in;
 	private FileOutputStream cfg_out;
@@ -29,7 +32,13 @@ public class Config {
 	 * Initialise le fichier de config
 	 */
 	protected Config(){
-		cfg_file = new File(".properties");
+		if(Parser.getInstance().isWindows()){
+			defaultDir = new File(System.getProperty("user.home")+"\\AppData\\Local\\NMC");
+		} else {
+			defaultDir = new File(System.getProperty("user.home")+"/.config/NMC");
+		}
+		defaultDir.mkdirs();
+		cfg_file = new File(defaultDir.getAbsolutePath()+Parser.getInstance().getSlash()+".properties");
 		prop = new Properties();
 		if(!cfg_file.exists()){
 			try {
@@ -114,6 +123,8 @@ public class Config {
 		}
 	}
 	
-	
+	public String getDefaultDir(){
+		return defaultDir.getAbsolutePath();
+	}
 
 }

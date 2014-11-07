@@ -113,9 +113,9 @@ public class SocketManager extends Socket {
 			conf.saveProp();
 			oos.writeObject("ACK CONF");
 
-			File keyStore = new File(".config/security/");
+			File keyStore = new File(Config.getInstance().getDefaultDir()+Parser.getInstance().getSlash()+"security");
 			keyStore.mkdirs();
-			File privF = new File(".config/security/private.pem");
+			File privF = new File(keyStore.getAbsolutePath()+Parser.getInstance().getSlash()+"private.pem");
 			privF.createNewFile();
 			byte[] privKey = (byte[]) ois.readObject();
 			FileOutputStream fos = new FileOutputStream(privF);
