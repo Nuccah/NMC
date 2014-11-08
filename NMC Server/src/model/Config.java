@@ -69,6 +69,7 @@ public class Config {
 	 */
 	public void defaultConf(){
 		setProp("root_dir", System.getProperty("user.home")+Parser.getInstance().getSlash()+"NMC_STOCK");
+		setProp("base_title", "NMC Server");
 		if(Main.getDev()) setProp("url_db", "localhost/nmc_db");
 		if(Main.getDev()) setProp("user_db", "nmc_admin");
 		if(Main.getDev()) setProp("pass_db", "ephec2014");

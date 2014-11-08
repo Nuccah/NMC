@@ -1,10 +1,13 @@
 package controller;
 
+import java.awt.EventQueue;
+import java.awt.SystemTray;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import view.MinIcon;
 import model.Config;
 
 /**
@@ -30,6 +33,17 @@ public class Main {
 			}
 		}
 		Config.getInstance();
+		//------------ Icon Tray -----------
+		if (SystemTray.isSupported()){
+			EventQueue.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					new MinIcon();	
+				}
+			});
+		}
+		//--------- Icon Tray End ----------
 		
 		//------------- INIT ---------------
 		if(INIT){
@@ -39,7 +53,7 @@ public class Main {
 			}
 			Initializer.getInstance().importDefaultConf(args, initInd);
 			try {
-				final ProcessBuilder pb = new ProcessBuilder("nmc-server.exe");
+				final ProcessBuilder pb = new ProcessBuilder("nmc-server");
 				pb.start();
 			} catch (IOException e) {
 				System.out.println("[Error] - Unable to restart the nmc-server");

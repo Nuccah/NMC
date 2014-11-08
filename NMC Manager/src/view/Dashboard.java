@@ -71,7 +71,7 @@ import controller.TransferManager;
  *
  */
 
-public class Dashboard extends JFrame implements Runnable, ActionListener, TreeSelectionListener, PropertyChangeListener{
+public class Dashboard extends JFrame implements ActionListener, TreeSelectionListener, PropertyChangeListener{
 	private static final long serialVersionUID = -5998048938167814342L;
 	private JPanel topPane;
 	private JPanel leftPane;
@@ -706,11 +706,5 @@ public class Dashboard extends JFrame implements Runnable, ActionListener, TreeS
 			default: parentPage(node); break;
 			}
 		}
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-
 	}
 }
