@@ -2,7 +2,14 @@ package controller;
 
 import java.awt.EventQueue;
 import java.awt.SystemTray;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -13,14 +20,19 @@ import model.Config;
 /**
  * Classe principale du serveur
  * <br /><br />
- * Ce programme peut être lancé en mode DEBUG afin d'afficher plus de messages d'erreurs avec la commande: --debug 
- * @author Antoine Ceyssens
+ * Ce programme peut être lancé en mode DEBUG afin d'afficher plus de messages d'erreurs avec la commande: --debug<br />
+ * Utilisation en ligne de commande:<br />
+ * &nbsp;- restart : crée une nouvelle instance du serveur et tue celle existante. <br />
+ * &nbsp;- stop : tue l'instance existante.
+ * @author Antoine Ceyssens & Derek Van Hove
+ * @version RC2-2.5.2
  *
  */
 public class Main {
 	private static boolean DEBUG = false; 
 	private static boolean INIT = false;
 	private static boolean DEV = false;
+	private static final String pidFileLocation = "server.pid";
 	
 	public static void main(String[] args) {
 		int initInd = -1;
@@ -31,8 +43,79 @@ public class Main {
 				initInd = i;
 				INIT = true;
 			}
+			if(args[i].compareTo("restart") == 0){
+				File pidFile = new File(pidFileLocation);
+				if(pidFile.exists()){
+					FileReader fr = null;
+					BufferedReader br = null;
+					try {
+						fr = new FileReader(pidFile);
+						br = new BufferedReader(fr);
+						String line = br.readLine();
+						System.out.println("Pid = "+line);
+						if(Parser.getInstance().isWindows()) Runtime.getRuntime().exec("taskkill /f /pid "+line);
+					} catch (FileNotFoundException e) {
+					} catch (IOException e) {
+						System.out.println("[Error] - Couldn't read pid file");
+						e.printStackTrace();
+					} finally{
+						try {
+							br.close();
+							fr.close();							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					pidFile.delete();
+				}
+				try {
+					final ProcessBuilder pb = new ProcessBuilder("nmc-server");
+					pb.start();
+				} catch (IOException e) {
+					System.out.println("[Error] - Unable to restart the nmc-server");
+					if(DEBUG) e.printStackTrace();
+				}
+				System.out.println("[NMC Server] Restarted");
+				System.exit(0);
+			} 
+			if(args[i].compareTo("stop") == 0){
+				System.out.println("[NMC Server] Stopping");
+				File pidFile = new File(pidFileLocation);
+				if(pidFile.exists()){
+					FileReader fr = null;
+					BufferedReader br = null;
+					try {
+						fr = new FileReader(pidFile);
+						br = new BufferedReader(fr);
+						String line = br.readLine();
+						System.out.println("Pid = "+line);
+						if(Parser.getInstance().isWindows()) Runtime.getRuntime().exec("taskkill /f /pid "+line);
+					} catch (FileNotFoundException e) {
+					} catch (IOException e) {
+						System.out.println("[Error] - Couldn't read pid file");
+						e.printStackTrace();
+					} finally{
+						try {
+							br.close();
+							fr.close();							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					pidFile.delete();
+				}
+				System.out.println("[NMC Server] Properly stopped");
+				System.exit(0);
+			}
 		}
 		Config.getInstance();
+		try {
+			writePID(pidFileLocation);
+		} catch (IOException e1) {
+			System.out.println("[Error] - Couldn't create the PID file");
+			if(DEBUG) e1.printStackTrace();
+		}
+		
 		//------------ Icon Tray -----------
 		if (SystemTray.isSupported()){
 			EventQueue.invokeLater(new Runnable() {
@@ -63,6 +146,7 @@ public class Main {
 		}
 		if(Config.getInstance().getProp("url_db") == null){
 			System.out.println("[Error] - Please launch the server with --init option before trying to use it");
+			System.exit(1);
 		}
 		//------------ INIT END ------------
 
@@ -117,5 +201,29 @@ public class Main {
 	 */
 	public static boolean getDev(){
 		return DEV;
+	}
+	/**
+	 * Permet d'écrire le pid du serveur dans un fichier
+	 * @param fileLocation : Le path du fichier où le pid doit être écrit
+	 * @throws IOException : Lancée si erreur d'écriture ou si manque de droits
+	 */
+	public static void writePID(String fileLocation) throws IOException
+	{       
+		File fPid = new File(fileLocation);
+		if(!fPid.exists()) fPid.createNewFile();
+		else {
+			fPid.delete();
+			fPid.createNewFile();
+		}
+	    String pid = ManagementFactory.getRuntimeMXBean().getName();
+	    if (pid.indexOf("@") != -1) 
+	    {
+	        pid = pid.substring(0, pid.indexOf("@"));
+	    }                                               
+	    BufferedWriter writer = new BufferedWriter(new FileWriter(fileLocation));
+	    writer.write(pid);
+	    writer.newLine();
+	    writer.flush();
+	    writer.close();                     
 	}
 }
