@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.EventQueue;
 import java.awt.SystemTray;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,16 +46,25 @@ public class Main {
 			if(args[i].compareTo("restart") == 0){
 				File pidFile = new File(pidFileLocation);
 				if(pidFile.exists()){
+					FileReader fr = null;
+					BufferedReader br = null;
 					try {
-						FileReader fr = new FileReader(pidFile);
-						char[] buf = new char[10];
-						while(fr.read(buf) != -1);
-						fr.close();
-						if(Parser.getInstance().isWindows()) Runtime.getRuntime().exec("taskkill /pid "+buf.toString());
+						fr = new FileReader(pidFile);
+						br = new BufferedReader(fr);
+						String line = br.readLine();
+						System.out.println("Pid = "+line);
+						if(Parser.getInstance().isWindows()) Runtime.getRuntime().exec("taskkill /f /pid "+line);
 					} catch (FileNotFoundException e) {
 					} catch (IOException e) {
 						System.out.println("[Error] - Couldn't read pid file");
 						e.printStackTrace();
+					} finally{
+						try {
+							br.close();
+							fr.close();							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 					pidFile.delete();
 				}
@@ -72,16 +82,25 @@ public class Main {
 				System.out.println("[NMC Server] Stopping");
 				File pidFile = new File(pidFileLocation);
 				if(pidFile.exists()){
+					FileReader fr = null;
+					BufferedReader br = null;
 					try {
-						FileReader fr = new FileReader(pidFile);
-						char[] buf = new char[10];
-						while(fr.read(buf) != -1);
-						fr.close();
-						if(Parser.getInstance().isWindows()) Runtime.getRuntime().exec("taskkill /pid "+buf.toString());
+						fr = new FileReader(pidFile);
+						br = new BufferedReader(fr);
+						String line = br.readLine();
+						System.out.println("Pid = "+line);
+						if(Parser.getInstance().isWindows()) Runtime.getRuntime().exec("taskkill /f /pid "+line);
 					} catch (FileNotFoundException e) {
 					} catch (IOException e) {
 						System.out.println("[Error] - Couldn't read pid file");
 						e.printStackTrace();
+					} finally{
+						try {
+							br.close();
+							fr.close();							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 					pidFile.delete();
 				}
@@ -127,6 +146,7 @@ public class Main {
 		}
 		if(Config.getInstance().getProp("url_db") == null){
 			System.out.println("[Error] - Please launch the server with --init option before trying to use it");
+			System.exit(1);
 		}
 		//------------ INIT END ------------
 
