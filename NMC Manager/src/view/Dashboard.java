@@ -1,8 +1,11 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -16,6 +19,9 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +142,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 	private GridBagConstraints lc = new GridBagConstraints();
 	private GridBagConstraints rc = new GridBagConstraints();
+	private GridBagConstraints rcc = new GridBagConstraints();
 
 	private CellConstraints cc;
 	private JDialog dlg;
@@ -166,6 +173,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
 					UIManager.setLookAndFeel(info.getClassName());
+					UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
 					break;
 				}
 			}
@@ -218,9 +226,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		getContentPane().add(centerPane, cc);
 		getContentPane().add(bottomPane, bc);
 
-		leftPane.setMinimumSize(new Dimension(225, 600));
+		leftPane.setMinimumSize(new Dimension(175, 600));
 		centerPane.setMinimumSize(new Dimension(900, 700));
 		rightPane.setMinimumSize(new Dimension(675, 600));
+
 		pack();
 
 		titleBar();
@@ -252,7 +261,23 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		fc.setControlButtonsAreShown(false);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.addActionListener(this);
+		fc.setMinimumSize(new Dimension(600,600));
+		fc.setBorder(new EmptyBorder(0, 0, 0, 0));
+		Color bg = Color.WHITE;
+        setBG(fc.getComponents(), bg, 0 );
+        fc.setBackground( bg );
+        fc.setOpaque(true);
 	}
+	
+	private void setBG( Component[] jc, Color bg, int depth )
+    {
+          for( int i = 0; i < jc.length; i++ ) {
+                Component c = jc[i];
+                if( c instanceof Container )// {
+                      setBG( ((Container)c).getComponents(), bg, depth );
+                c.setBackground( bg );
+          }
+    }
 
 	/**
 	 * Barre de menu titulaire
@@ -322,8 +347,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private void bottomBar() {
 		JTextPane txtpnTest = new JTextPane();
 		txtpnTest.setEditable(false);
-		txtpnTest.setText("Salut "+Profil.getInstance().getUsername()+
-				", ton adresse mail est: "+Profil.getInstance().getMail());
+		txtpnTest.setText("Copyright 2014 - nmc_team@nukama.be - Developed By Antoine Ceyssens & Derek Van Hove" );
 		bottomPane.add(txtpnTest);
 	}
 
@@ -377,14 +401,17 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				rightPane.setLayout(new GridLayout(1,1));
 				addButton.setEnabled(true);
 				uploadDataPane.add(addButton,cc.xy(1, 17));
+				rightPane.add(uploadDataPane);
 			}
 			else{
-				rightPane.setLayout(new GridLayout(1,2));
-				rightPane.add(fc);
+				rightPane.setLayout(new GridBagLayout());
+				rcc.weightx = 1; rcc.weighty = 1; rcc.fill = GridBagConstraints.BOTH;
+				rightPane.add(fc, rcc);
+				rightPane.add(uploadDataPane, rcc);
 				uploadButton.setEnabled(false);
 				uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			}
-			rightPane.add(uploadDataPane);
+			
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
 			switch (node.toString()) {
 			case "Books":
