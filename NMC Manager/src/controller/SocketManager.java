@@ -149,58 +149,31 @@ public class SocketManager extends Socket {
 						(ArrayList<SeriesCollector>)ois.readObject()));
 				break;
 			case "albums": 
-				lists.setAlbumList(null);
-				do{
-					lists.setAlbumList((ArrayList<AlbumCollector>)ois.readObject());
-				}while (lists.getAlbumList() == null);
+				lists.setAlbumList((ArrayList<AlbumCollector>)ois.readObject());
 				break;
 			case "series":
-				lists.setSeriesList(null);
-				do{
-					lists.setSeriesList((ArrayList<SeriesCollector>)ois.readObject());
-				}while (lists.getSeriesList() == null);
+				lists.setSeriesList((ArrayList<SeriesCollector>)ois.readObject());
 				break;
 			case "audio": 
-				lists.setAudioList(null);
-				do{
-					lists.setAudioList((ArrayList<AudioCollector>) ois.readObject());
-				}while (lists.getAudioList() == null);
+				lists.setAudioList((ArrayList<AudioCollector>) ois.readObject());
 				break;
 			case "books": 
-				lists.setBookList(null);
-				do{
-					lists.setBookList((ArrayList<BookCollector>) ois.readObject());
-				}while (lists.getBookList() == null);
+				lists.setBookList((ArrayList<BookCollector>) ois.readObject());
 				break;
 			case "episodes": 
-				lists.setEpisodeList(null);
-				do{
-					lists.setEpisodeList((ArrayList<EpisodeCollector>) ois.readObject());
-				}while (lists.getEpisodeList() == null);
+				lists.setEpisodeList((ArrayList<EpisodeCollector>) ois.readObject());
 				break;
 			case "images": 
-				lists.setImageList(null);
-				do{
-					lists.setImageList((ArrayList<ImageCollector>) ois.readObject());
-				}while (lists.getImageList() == null);
+				lists.setImageList((ArrayList<ImageCollector>) ois.readObject());
 				break;
 			case "permissions": 
-				lists.setPermissionsList(null);
-				do{
-					lists.setPermissionsList((ArrayList<Permissions>)ois.readObject());
-				}while (lists.getPermissionsList() == null);
+				lists.setPermissionsList((ArrayList<Permissions>)ois.readObject());
 				break;
 			case "users": 
-				lists.setUsersList(null);
-				do{
-					lists.setUsersList((ArrayList<Profil>)ois.readObject());
-				}while (lists.getUsersList() == null);
+				lists.setUsersList((ArrayList<Profil>)ois.readObject());
 				break;
 			case "videos": 
-				lists.setVideoList(null);
-				do{
-					lists.setVideoList((ArrayList<VideoCollector>) ois.readObject());
-				}while (lists.getVideoList() == null);
+				lists.setVideoList((ArrayList<VideoCollector>) ois.readObject());
 				break;
 			}
 		} catch (ClassNotFoundException | IOException e) {
