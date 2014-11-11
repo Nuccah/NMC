@@ -19,32 +19,32 @@ public class Main {
 		Config.getInstance();
 		Profil.getInstance().reset();
 		//------------ IP Retrieve ----------
-		if(Config.getInstance().getProp("srv_url") == null){
+		if(Config.getInstance().getProp("srv_url").equals("localhost") || Config.getInstance().getProp("srv_url").equals(null)){
 			EventQueue.invokeLater(new Runnable(){
 
 				@Override
 				public void run() {
-					new IpAsk();					
+					IpAsk iAScreen = new IpAsk();
+					iAScreen.setVisible(true);
 				}				
 			});
-		} else {
-			//---------- IP Retrieve End --------
-			
+		}
+		else{
 			//------------ Auto Config ----------
 			while(Config.getInstance().getProp("init").compareTo("0") == 0){
 				SocketManager.getInstance().getConfig();
 			}
 			//---------- Auto Config End---------
-			
 			EventQueue.invokeLater(new Runnable() {
-				
+
 				@Override
 				public void run() {
-						Welcome wcScreen = new Welcome();
-						wcScreen.setVisible(true);								
+					Welcome wcScreen = new Welcome();
+					wcScreen.setVisible(true);								
 				}
 			});	
 		}
+		//---------- IP Retrieve End --------
 	}
 
 }

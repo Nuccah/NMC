@@ -34,6 +34,7 @@ public class Welcome extends JFrame implements ActionListener {
 	private JPasswordField pwdMotDePasse;
 	private JButton btnQuitter;
 	private JButton btnSeConnecter;
+	private JButton btnChangeIP;
 
 	/**
 	 * Initialisation de la fenêtre et de ses composants
@@ -106,13 +107,18 @@ public class Welcome extends JFrame implements ActionListener {
 		footerPanel.setLayout(null);
 		
 		btnSeConnecter = new JButton("Se connecter");
-		btnSeConnecter.setBounds(75, 28, 122, 29);
+		btnSeConnecter.setBounds(25, 28, 122, 29);
 		btnSeConnecter.addActionListener(this);
 		footerPanel.add(btnSeConnecter);
 		
+		btnChangeIP = new JButton("Change Server IP");
+		btnChangeIP.setBounds(155, 28, 140, 29);
+		btnChangeIP.addActionListener(this);
+		footerPanel.add(btnChangeIP);
+		
 		btnQuitter = new JButton("Quitter");
 		btnQuitter.addActionListener(this);
-		btnQuitter.setBounds(251, 28, 122, 29);
+		btnQuitter.setBounds(300, 28, 122, 29);
 		footerPanel.add(btnQuitter);
 	}
 	
@@ -133,6 +139,16 @@ public class Welcome extends JFrame implements ActionListener {
 				
 			}
 			
+		} else if(e.getSource() == btnChangeIP){
+			this.dispose();
+			EventQueue.invokeLater(new Runnable(){
+
+				@Override
+				public void run() {
+					IpAsk iAScreen = new IpAsk();
+					iAScreen.setVisible(true);
+				}				
+			});
 		}
 		
 	}

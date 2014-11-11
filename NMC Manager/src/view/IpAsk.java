@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -22,6 +23,7 @@ import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import controller.SocketManager;
 import model.Config;
 
 public class IpAsk extends JFrame implements ActionListener{
@@ -126,6 +128,19 @@ public class IpAsk extends JFrame implements ActionListener{
 				prop.setProperty("srv_url", ipField.getText());
 				Config.getInstance().saveProp(prop);
 				this.dispose();
+				//------------ Auto Config ----------
+				while(Config.getInstance().getProp("init").compareTo("0") == 0){
+					SocketManager.getInstance().getConfig();
+				}
+				//---------- Auto Config End---------
+				EventQueue.invokeLater(new Runnable() {
+					
+					@Override
+					public void run() {
+							Welcome wcScreen = new Welcome();
+							wcScreen.setVisible(true);								
+					}
+				});	
 			}			
 		}
 	}
