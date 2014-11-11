@@ -255,13 +255,13 @@ public class ServerListener implements Runnable {
 				break;
 			case "albums": oos.writeObject(Retriever.getInstance().selectAlbumList(null)); break;
 			case "series": oos.writeObject(Retriever.getInstance().selectSeriesList(null)); break;
-			case "audio": break;
-			case "books": break;
-			case "episodes": break;
-			case "images": break;
-			case "permissions": break;
-			case "users": break;
-			case "videos": break;
+			case "audio": oos.writeObject(Retriever.getInstance().selectAudioList(null)); break;
+			case "books": oos.writeObject(Retriever.getInstance().selectBookList(null)); break;
+			case "episodes": oos.writeObject(Retriever.getInstance().selectEpisodeList(null)); break;
+			case "images": oos.writeObject(Retriever.getInstance().selectImageList(null)); break;
+			case "permissions": oos.writeObject(Retriever.getInstance().selectPermissions(null)); break;
+			case "users": oos.writeObject(Retriever.getInstance().selectUsers(null)); break;
+			case "videos": oos.writeObject(Retriever.getInstance().selectVideoList(null)); break;
 			}
 		} catch (IOException e) {
 			System.out.println("[Error] - List could not be sent to: "+cl.getInetAddress());

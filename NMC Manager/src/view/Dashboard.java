@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -19,9 +18,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -60,8 +57,8 @@ import model.EpisodeCollector;
 import model.ImageCollector;
 import model.Lists;
 import model.MetaDataCollector;
+import model.NMCTableModel;
 import model.Permissions;
-import model.Profil;
 import model.SeriesCollector;
 import model.VideoCollector;
 
@@ -185,7 +182,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		ImageIcon icon = new ImageIcon(iconURL);
 		setIconImage(icon.getImage());
 		getContentPane().setLayout(main);
-		setSize(new Dimension(1024,768));
+		setSize(new Dimension(1024,864));
 		setMinimumSize(new Dimension(1024,768));
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int width = gd.getDisplayMode().getWidth();
@@ -226,9 +223,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		getContentPane().add(centerPane, cc);
 		getContentPane().add(bottomPane, bc);
 
-		leftPane.setMinimumSize(new Dimension(175, 600));
-		centerPane.setMinimumSize(new Dimension(900, 700));
-		rightPane.setMinimumSize(new Dimension(675, 600));
+		leftPane.setMinimumSize(new Dimension(200, 600));
+		centerPane.setMinimumSize(new Dimension(1024, 700));
+		rightPane.setMinimumSize(new Dimension(800, 600));
 
 		pack();
 
@@ -261,7 +258,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		fc.setControlButtonsAreShown(false);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.addActionListener(this);
-		fc.setMinimumSize(new Dimension(600,600));
+		fc.setMinimumSize(new Dimension(500,600));
 		fc.setBorder(new EmptyBorder(0, 0, 0, 0));
 		Color bg = Color.WHITE;
         setBG(fc.getComponents(), bg, 0 );
@@ -340,17 +337,84 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		leftPane.add(new JScrollPane(menuBar));
 
 	}
-
+	
 	/**
-	 * Bottom bar containing Copyright information
+	 * Switchcase redirection to appropriate methods
+	 * @param node
 	 */
-	private void bottomBar() {
-		JTextPane txtpnTest = new JTextPane();
-		txtpnTest.setEditable(false);
-		txtpnTest.setText("Copyright 2014 - nmc_team@nukama.be - Developed By Antoine Ceyssens & Derek Van Hove" );
-		bottomPane.add(txtpnTest);
+	private void mediaResultSet(DefaultMutableTreeNode node) {
+		rightPane.removeAll();
+		switch (node.toString()) {
+		case "Media": homePage(node); break;
+		case "Books": rightPane.add(createTable("books")); break;
+		case "Images": rightPane.add(createTable("images")); break;
+		case "Music": rightPane.add(createTable("albums")); break;
+		case "Movies": rightPane.add(createTable("videos")); break;
+		case "Series": rightPane.add(createTable("series")); break;
+		default: break;
+		}
+		rightPane.revalidate();
 	}
 
+	private JScrollPane createTable(String type) {
+		SocketManager.getInstance().getList(type);
+		JTable table = null;
+		String[] columns = null;
+		switch (type){
+		case "albums": 
+			columns = new String[]{"ID", "Title", "Artist", "Year", "Genre", "Description", "ModID", "VisID"};
+			table = new JTable(new NMCTableModel(Lists.getInstance().getAlbumList(), columns)); 
+			break;
+		case "books": 
+			columns = new String[]{"ID", "Title", "Author", "Year", "Genre", "Synopsis", "ModID", "VisID"};
+			table = new JTable(new NMCTableModel(Lists.getInstance().getBookList(), columns)); 
+			break;
+		case "images": 
+			columns = new String[]{"ID", "Title", "Photographer", "Year", "ModID", "VisID"};
+			table = new JTable(new NMCTableModel(Lists.getInstance().getImageList(), columns)); 
+			break;
+		case "series": 
+			columns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "ModID", "VisID"};
+			table = new JTable(new NMCTableModel(Lists.getInstance().getSeriesList(), columns)); 
+			break;
+		case "videos": 
+			columns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Director", "ModID", "VisID"};
+			table = new JTable(new NMCTableModel(Lists.getInstance().getVideoList(), columns)); 
+			break;
+		}
+        // Create the scroll pane and add the table to it.
+        JScrollPane scrollPane = new JScrollPane(table);
+        // Add the scroll pane to this panel.
+        return scrollPane;
+	}
+
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
+	private void userAdmin(DefaultMutableTreeNode node) {
+		switch (node.toString()) {
+		case "Create User": homePage(node); break;
+		case "Administration": homePage(node); break;
+		case "Permissions": homePage(node); break;
+		case "Preferences": homePage(node); break;
+		default: break;
+		}
+	}
+
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
+	private void parentPage(DefaultMutableTreeNode node) {
+		switch (node.getParent().toString()) {
+		case "Media": mediaResultSet(node); break;
+		case "Series": case "Music": uploadFilePage(node); break;
+		case "User Administration": userAdmin(node); break;
+		default: homePage(node); break;
+		}
+	}
+	
 	/**
 	 * Home page of client program
 	 * @param node --- TO DELETE
@@ -359,19 +423,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		rightPane.removeAll();
 		rightPane.add(new JTextArea(node.toString()));
 		rightPane.revalidate();
-	}
-
-	/**
-	 * Switchcase redirection to appropriate methods
-	 * @param node
-	 */
-	private void parentPage(DefaultMutableTreeNode node) {
-		switch (node.toString()) {
-		case "Media": mediaResultSet(node); break;
-		case "Upload": uploadFilePage(node); break;
-		case "User Administration": userAdmin(node); break;
-		default: uploadFilePage(node); break;
-		}
 	}
 
 	/**
@@ -392,7 +443,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		else{
 			clear();
 			FormLayout layout = new FormLayout(
-					"right:pref, 4dlu, fill:150dlu",
+					"right:pref, 4dlu, fill:130dlu",
 					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu");
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
@@ -474,35 +525,15 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
 		rightPane.revalidate();
 	}
-
+	
 	/**
-	 * Switchcase redirection to appropriate methods
-	 * @param node
+	 * Bottom bar containing Copyright information
 	 */
-	private void mediaResultSet(DefaultMutableTreeNode node) {
-		switch (node.toString()) {
-		case "Media": homePage(node); break;
-		case "Books": homePage(node); break;
-		case "Images": homePage(node); break;
-		case "Music": homePage(node); break;
-		case "Movies": homePage(node); break;
-		case "Series": homePage(node); break;
-		default: break;
-		}
-	}
-
-	/**
-	 * Switchcase redirection to appropriate methods
-	 * @param node
-	 */
-	private void userAdmin(DefaultMutableTreeNode node) {
-		switch (node.toString()) {
-		case "Create User": homePage(node); break;
-		case "Administration": homePage(node); break;
-		case "Permissions": homePage(node); break;
-		case "Preferences": homePage(node); break;
-		default: break;
-		}
+	private void bottomBar() {
+		JTextPane txtpnTest = new JTextPane();
+		txtpnTest.setEditable(false);
+		txtpnTest.setText("Copyright 2014 - nmc_team@nukama.be - Developed By Antoine Ceyssens & Derek Van Hove" );
+		bottomPane.add(txtpnTest);
 	}
 
 	public void clear(){
@@ -538,12 +569,12 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 * @return boolean whether metadata fields are empty or not
 	 */
 	public boolean verify(String node){
-		if (titleField == null)
+		if (titleField.getText().equals(""))
 			return false;
 		else{
 			switch (node) {
 			case "Books":
-				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null)
+				if (personField.getText().equals("")|| visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
 					return false;
 				else return true;
 			case "Images":
@@ -555,15 +586,15 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 					return false;
 				else return true;
 			case "Add New Albums":
-				if (personField == null || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null )
+				if (personField.getText().equals("") || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("") || genreField.getText().equals("") )
 					return false;
 				else return true;
 			case "Movies":
-				if ( visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null)
+				if ( visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
 					return false;
 				else return true;
 			case "Add New Series":
-				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField == null || genreField == null)
+				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("")|| genreField.getText().equals(""))
 					return false;
 				else return true;
 			case "Add New Episodes":
@@ -700,17 +731,17 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 						uploadButton.setEnabled(false);
 					}
 					else{
-						titleField.setText(selectedFile.getName());
+						titleField.setText(selectedFile.getName().substring(0, selectedFile.getName().lastIndexOf(".")));
 						uploadButton.setEnabled(true);
 					}
 				}
 				else{
-					titleField.setText(selectedFile.getName());
+					titleField.setText(selectedFile.getName().substring(0, selectedFile.getName().lastIndexOf(".")));
 					uploadButton.setEnabled(true);
 				}
 			}  
 			else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
-				titleField.setText(" ");
+				titleField.setText("");
 				uploadButton.setEnabled(false);
 			}
 		}

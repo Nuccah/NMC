@@ -47,7 +47,6 @@ public class Retriever {
 	public ArrayList<AudioCollector>  selectAudioList(String queryAdd) throws SQLException{
 		db.openConnection();
 		audioList = new ArrayList<AudioCollector>();
-		//TODO: [Derek] SQL Select Audio
 		String query = "SELECT nt.id as id, nt.title as title, filename, name, nmi.id as album, nmi.title as albumName FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_tracks_albums as nta ON nmi.id = nta.media_id "
 				+ "INNER JOIN nmc_tracks as nt ON nta.tracks_id = nt.id "
@@ -67,7 +66,6 @@ public class Retriever {
 	public ArrayList<AlbumCollector>  selectAlbumList(String queryAdd) throws SQLException{
 		db.openConnection();
 		albumList = new ArrayList<AlbumCollector>();
-		//TODO: [Derek] SQL Select Album
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, name, nmi.description as description, category FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_albums_categories as nac ON nmi.id = nac.media_id "
 				+ "INNER JOIN nmc_categories as nc ON nac.categories_id = nc.id "
@@ -87,7 +85,6 @@ public class Retriever {
 	public ArrayList<BookCollector>  selectBookList(String queryAdd) throws SQLException{
 		db.openConnection();
 		bookList = new ArrayList<BookCollector>();
-		//TODO: [Derek] SQL Select Book
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name, category, description FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_authors as nmia ON nmi.id = nmia.media_id "
 				+ "INNER JOIN nmc_persons as np ON nmia.persons_id = np.id "
@@ -107,7 +104,6 @@ public class Retriever {
 	public ArrayList<EpisodeCollector>  selectEpisodeList(String queryAdd) throws SQLException{
 		db.openConnection();
 		episodeList = new ArrayList<EpisodeCollector>();
-		//TODO: [Derek] SQL Select Episode
 		String query = "SELECT nmis.id as id, nmis.title as title, filename, nmi.id as series, nmi.title as seriesName, season, chrono FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_series as nmis ON nmi.id = nmis.media_id "
 				+ "INNER JOIN nmc_videos as nv ON nmis.media_id = nv.id ";
@@ -180,7 +176,6 @@ public class Retriever {
 	public ArrayList<Profil> selectUsers(String queryAdd) throws SQLException{
 		db.openConnection();
 		usersList = new ArrayList<Profil>();
-		//TODO: [Derek] SQL Select Users
 		String query = "SELECT * FROM nmc_users ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
@@ -196,14 +191,13 @@ public class Retriever {
 	public ArrayList<Permissions> selectPermissions(String queryAdd) throws SQLException{
 		db.openConnection();
 		permissionsList = new ArrayList<Permissions>();
-		//TODO: [Derek] SQL Select Permissions
 		String query = "SELECT * FROM nmc_permissions ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
-			permissionsList.add(new Permissions(rs.getString("label"), rs.getInt("level")));
+			permissionsList.add(new Permissions(rs.getInt("id"), rs.getString("label"), rs.getInt("level")));
 		}
 		db.closeConnection();
 		return permissionsList;
