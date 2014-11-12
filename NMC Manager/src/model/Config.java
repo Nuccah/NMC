@@ -145,6 +145,10 @@ public class Config {
 		}
 	}
 	
+	public void delCfg(){
+		cfg_file.delete();
+	}
+	
 	public String getDefaultDir(){
 		return defaultDir.getAbsolutePath();
 	}

@@ -40,7 +40,6 @@ import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -167,13 +166,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		super(Config.getInstance().getProp("base_title")+"Nukama Media Center");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					UIManager.setLookAndFeel(info.getClassName());
-					UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
-					break;
-				}
-			}
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
+			UIManager.put("OptionPane.background",Color.WHITE);
 		} catch (Exception e) {
 			// If Nimbus is not available, you can set the GUI to another look and feel.
 		}
@@ -261,20 +256,20 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		fc.setMinimumSize(new Dimension(500,600));
 		fc.setBorder(new EmptyBorder(0, 0, 0, 0));
 		Color bg = Color.WHITE;
-        setBG(fc.getComponents(), bg, 0 );
-        fc.setBackground( bg );
-        fc.setOpaque(true);
+		setBG(fc.getComponents(), bg, 0 );
+		fc.setBackground( bg );
+		fc.setOpaque(true);
 	}
-	
+
 	private void setBG( Component[] jc, Color bg, int depth )
-    {
-          for( int i = 0; i < jc.length; i++ ) {
-                Component c = jc[i];
-                if( c instanceof Container )// {
-                      setBG( ((Container)c).getComponents(), bg, depth );
-                c.setBackground( bg );
-          }
-    }
+	{
+		for( int i = 0; i < jc.length; i++ ) {
+			Component c = jc[i];
+			if( c instanceof Container )// {
+				setBG( ((Container)c).getComponents(), bg, depth );
+			c.setBackground( bg );
+		}
+	}
 
 	/**
 	 * Barre de menu titulaire
@@ -337,7 +332,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		leftPane.add(new JScrollPane(menuBar));
 
 	}
-	
+
 	/**
 	 * Switchcase redirection to appropriate methods
 	 * @param node
@@ -382,10 +377,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			table = new JTable(new NMCTableModel(Lists.getInstance().getVideoList(), columns)); 
 			break;
 		}
-        // Create the scroll pane and add the table to it.
-        JScrollPane scrollPane = new JScrollPane(table);
-        // Add the scroll pane to this panel.
-        return scrollPane;
+		// Create the scroll pane and add the table to it.
+		JScrollPane scrollPane = new JScrollPane(table);
+		// Add the scroll pane to this panel.
+		return scrollPane;
 	}
 
 	/**
@@ -414,7 +409,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		default: homePage(node); break;
 		}
 	}
-	
+
 	/**
 	 * Home page of client program
 	 * @param node --- TO DELETE
@@ -462,7 +457,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				uploadButton.setEnabled(false);
 				uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			}
-			
+
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
 			switch (node.toString()) {
 			case "Books":
@@ -525,7 +520,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
 		rightPane.revalidate();
 	}
-	
+
 	/**
 	 * Bottom bar containing Copyright information
 	 */

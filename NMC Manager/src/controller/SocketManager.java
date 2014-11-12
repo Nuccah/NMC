@@ -45,8 +45,11 @@ public class SocketManager extends Socket {
 			try {
 				instance = new SocketManager();
 			} catch (NumberFormatException | IOException e) {
-				JOptionPane.showMessageDialog(null, "Server unreachable.\nPlease verify your connection and the server status.");
+				JOptionPane.showMessageDialog(null, "Server unreachable.\nPlease verify your connection and the server status.", null, JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
+				if(Config.getInstance().getProp("init") == "0"){
+					Config.getInstance().delCfg();
+				}
 			}
 		}
 		return instance;
