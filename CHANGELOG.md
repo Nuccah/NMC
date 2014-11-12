@@ -1,5 +1,40 @@
 #Changelog NMC Java#
 ----------------
+###RC2 - 2.7###
+Features added:
+
+- Modified to permit change of NMC_STOCK Path
+- Ask now for server ip in manager at first launch or/& at Connection menu
+
+###RC2 - 2.6###
+Features added:
+
+- Media on Server can now be viewed in the Manager!
+
+###RC2 - 2.5###
+
+Features added:
+
+- All Metadata bugs now fixed, runs smooth as a whistle!
+2.5.1 - Bug fix when comparing Collectors in UploadTask
+2.5.2 - Added command line management system 
+		Can now be used with: restart and stop parameters
+GUI Enhancements
+Path Changes
+
+###RC2 - 2.4###
+
+Features added:
+
+- Retrieval based on matches of Id, now recovered and locally stored in
+application.
+
+###RC2 - 2.3###
+
+Features added:
+
+- Retrieval into Manager of existing Albums, Series, Users, Permissions
+
 ###RC2 - 2.2###
 
 Features added:
