@@ -3,6 +3,11 @@
 ###RC2 - 2.7###
 Features added:
 
+- New Look&Feel interface (tested in Windows & Linux!)
+
+###RC2 - 2.7###
+Features added:
+
 - Modified to permit change of NMC_STOCK Path
 - Ask now for server ip in manager at first launch or/& at Connection menu
 
