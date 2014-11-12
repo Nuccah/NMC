@@ -20,7 +20,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 import model.Config;
 import controller.SocketManager;
@@ -44,13 +43,9 @@ public class Welcome extends JFrame implements ActionListener {
 		super(Config.getInstance().getProp("base_title")+"Bienvenue");
 		setResizable(false);
 		try {
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					UIManager.setLookAndFeel(info.getClassName());
-					UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
-					break;
-				}
-			}
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
+			UIManager.put("OptionPane.background",Color.WHITE);
 		} catch (Exception e) {
 			// If Nimbus is not available, you can set the GUI to another look and feel.
 		}
@@ -138,7 +133,6 @@ public class Welcome extends JFrame implements ActionListener {
 						dbScreen.setVisible(true);
 					}
 				});
-
 			}
 
 		} else if(e.getSource() == btnChangeIP){
