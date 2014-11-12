@@ -47,6 +47,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 
 	@Override
 	public Void doInBackground(){
+		File resetName = null;
 		try {
 			if(directory == "Movies" || directory == "Series"){
 				String filepath = Converter.getInstance().convertToMP4(mdc, uploadFile);
@@ -62,6 +63,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				if (!SocketManager.getInstance().lastID(mdc))
 					cancel(true);
 				try {
+					resetName = uploadFile;
 					uploadFile = TransferManager.getInstance().setFilename(mdc, uploadFile);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -117,6 +119,12 @@ public class UploadTask extends SwingWorker<Void, Void> {
 					e.printStackTrace();
 					setProgress(0);
 					cancel(true);
+			}
+			try {
+				TransferManager.getInstance().resetFilename(uploadFile, resetName);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			System.out.println(mdc.toString() + "has been uploaded");
 		} catch (SftpException e){
