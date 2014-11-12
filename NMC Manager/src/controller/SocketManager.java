@@ -47,7 +47,7 @@ public class SocketManager extends Socket {
 			} catch (NumberFormatException | IOException e) {
 				JOptionPane.showMessageDialog(null, "Server unreachable.\nPlease verify your connection and the server status.", null, JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
-				if(Config.getInstance().getProp("init") == "0"){
+				if(Config.getInstance().getProp("init").equals("0")){
 					Config.getInstance().delCfg();
 				}
 			}
