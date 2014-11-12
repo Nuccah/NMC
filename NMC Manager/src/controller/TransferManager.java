@@ -122,6 +122,14 @@ public class TransferManager {
 	    return uploadFile;
 	}
 	
+	public void resetFilename(File uploadFile, File resetName) throws IOException{
+	    // Rename file (or directory)
+	    boolean success = uploadFile.renameTo(resetName);
+	    if (!success) {
+	    	throw new java.io.IOException("file could not be renamed");
+	    }
+	}
+	
 	/**
 	 * Permet d'envoyer le fichier fToSend au serveur FTP
 	 * @param directory : Dossier de placement du fichier sur le serveur <br />
