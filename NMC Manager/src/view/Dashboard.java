@@ -353,23 +353,23 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		String[] columns = null;
 		switch (type){
 		case "albums": 
-			columns = new String[]{"ID", "Title", "Artist", "Year", "Genre", "Description", "ModID", "VisID"};
+			columns = new String[]{"ID", "Title", "Artist", "Year", "Genre", "Description", "Modification Rights", "Visibility Rights"};
 			table = new JTable(new NMCTableModel(Lists.getInstance().getAlbumList(), columns)); 
 			break;
 		case "books": 
-			columns = new String[]{"ID", "Title", "Author", "Year", "Genre", "Synopsis", "ModID", "VisID"};
+			columns = new String[]{"ID", "Title", "Author", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
 			table = new JTable(new NMCTableModel(Lists.getInstance().getBookList(), columns)); 
 			break;
 		case "images": 
-			columns = new String[]{"ID", "Title", "Photographer", "Year", "ModID", "VisID"};
+			columns = new String[]{"ID", "Title", "Photographer", "Year", "Modification Rights", "Visibility Rights"};
 			table = new JTable(new NMCTableModel(Lists.getInstance().getImageList(), columns)); 
 			break;
 		case "series": 
-			columns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "ModID", "VisID"};
+			columns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
 			table = new JTable(new NMCTableModel(Lists.getInstance().getSeriesList(), columns)); 
 			break;
 		case "videos": 
-			columns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Director", "ModID", "VisID"};
+			columns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Director", "Modification Rights", "Visibility Rights"};
 			table = new JTable(new NMCTableModel(Lists.getInstance().getVideoList(), columns)); 
 			break;
 		}
