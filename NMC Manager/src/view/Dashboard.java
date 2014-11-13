@@ -5,8 +5,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -18,6 +20,9 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +44,6 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -58,6 +62,7 @@ import model.Lists;
 import model.MetaDataCollector;
 import model.NMCTableModel;
 import model.Permissions;
+import model.Profil;
 import model.SeriesCollector;
 import model.VideoCollector;
 
@@ -84,6 +89,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 	private JButton uploadButton = new JButton("Upload");
 	private JButton addButton = new JButton("Confirm");
+	private JButton modifyButton = new JButton("Confirm Modifications");
 	private JButton clearButton = new JButton("Clear");
 	private JButton mnProfil = new JButton("Profil");
 	private JButton mnAide = new JButton("Aide");
@@ -103,6 +109,26 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JLabel seasonLabel = new JLabel("Season");
 	private JLabel chronoLabel = new JLabel("Chronology");
 	private JLabel seriesLabel = new JLabel("Series");
+	
+	private JLabel userLabel= new JLabel("Username");
+	private JLabel passLabel= new JLabel("Password");
+	private JLabel confirmPassLabel = new JLabel("Confirm Password");
+	private JLabel mailLabel= new JLabel("Email");
+	private JLabel firstNameLabel= new JLabel("First Name");
+	private JLabel lastNameLabel= new JLabel("Last Name");
+	private JLabel birthLabel= new JLabel("Birthdate");
+	private JLabel regLabel= new JLabel("Registration Date");
+	private JLabel permLabel= new JLabel("Permission Level");
+	
+	private JTextField userField = new JTextField();
+	private JTextField passField = new JTextField();
+	private JTextField confirmPassField = new JTextField();
+	private JTextField mailField = new JTextField();
+	private JTextField firstNameField = new JTextField();
+	private JTextField lastNameField = new JTextField();
+	private JTextField birthField = new JTextField();
+	private JTextField regField = new JTextField();
+	private JTextField permField = new JTextField();
 
 	private JTree menuBar;
 	private JFileChooser fc;
@@ -138,7 +164,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private GridBagConstraints lc = new GridBagConstraints();
 	private GridBagConstraints rc = new GridBagConstraints();
 	private GridBagConstraints rcc = new GridBagConstraints();
-
+	private GridBagConstraints ltc = new GridBagConstraints();
+	private GridBagConstraints rtc = new GridBagConstraints();
+	private GridBagConstraints gcc = new GridBagConstraints();
+	private GridBagConstraints bc = new GridBagConstraints(); 
 	private CellConstraints cc;
 	private JDialog dlg;
 	private JProgressBar progressBar;
@@ -162,15 +191,8 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 * Initialise la fenêtre et ses composants
 	 */
 	protected Dashboard() {
-		super(Config.getInstance().getProp("base_title")+"Nukama Media Center");
+		super(Config.getInstance().getProp("base_title")+"Nukama Media Center Manager");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
-			UIManager.put("OptionPane.background",Color.WHITE);
-		} catch (Exception e) {
-			// If Nimbus is not available, you can set the GUI to another look and feel.
-		}
 		GridBagLayout main = new GridBagLayout();
 		URL iconURL = getClass().getResource("nmc.png");
 		ImageIcon icon = new ImageIcon(iconURL);
@@ -182,9 +204,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		int width = gd.getDisplayMode().getWidth();
 		int height = gd.getDisplayMode().getHeight();
 		setBounds((width/2) - (width/3), (height/2) - (height/3), (int)(width/1.5), (int)(height/1.5));
-		GridBagConstraints tc = new GridBagConstraints(), cc = new GridBagConstraints(), bc = new GridBagConstraints();
-		tc.gridx = 0; tc.gridy = 0; tc.weightx = 1; tc.weighty = 0.1; tc.fill = GridBagConstraints.BOTH;
-		cc.gridx = 0; cc.gridy = 1; cc.weightx = 1; cc.weighty = 0.8; cc.fill = GridBagConstraints.BOTH;
+		ltc.gridx = 0; ltc.weightx = 1; ltc.weighty = 0.1; ltc.fill = GridBagConstraints.BOTH;
+		rtc.gridx = 0; rtc.weightx = 1; rtc.weighty = 0.9; rtc.fill = GridBagConstraints.BOTH;
+		gcc.gridx = 0; gcc.gridy = 1; gcc.weightx = 1; gcc.weighty = 0.8; gcc.fill = GridBagConstraints.BOTH;
 		bc.gridx = 0; bc.gridy = 2; bc.weightx = 1; bc.weighty = 0.1; bc.fill = GridBagConstraints.BOTH;
 
 		topPane = new JPanel();
@@ -202,7 +224,8 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		rightPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		bottomPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		leftPane.setLayout(new GridLayout(1,1));
+		topPane.setLayout(new GridBagLayout());
+		leftPane.setLayout(new GridBagLayout());
 		rightPane.setLayout(new GridLayout(1,1));
 		centerPane.setLayout(new GridBagLayout());
 
@@ -211,10 +234,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
 		rc.gridx = 1; rc.gridy = 0; rc.weightx = 0.75; rc.weighty = 1; rc.fill = GridBagConstraints.BOTH;
 
+		leftPane.add(topPane, ltc);
 		centerPane.add(leftPane, lc);
 		centerPane.add(rightPane, rc);
-		getContentPane().add(topPane, tc);
-		getContentPane().add(centerPane, cc);
+		getContentPane().add(centerPane, gcc);
 		getContentPane().add(bottomPane, bc);
 
 		leftPane.setMinimumSize(new Dimension(200, 600));
@@ -236,12 +259,17 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		fieldList.add(personField);
 		fieldList.add(chronoField);
 		fieldList.add(seasonField);
+		fieldList.add(passField);
+		fieldList.add(confirmPassField);
+		fieldList.add(mailField);
+		
 		cbPList.add(modificationBox);
 		cbPList.add(visibilityBox);
 
 		clear();
 		populateLists();		
-
+		mnProfil.addActionListener(this);
+		mnAide.addActionListener(this);
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
 		addButton.addActionListener(this);
@@ -325,7 +353,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		menuBar = new JTree(home);
 		menuBar.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		menuBar.addTreeSelectionListener(this);
-		leftPane.add(new JScrollPane(menuBar));
+		leftPane.add(new JScrollPane(menuBar), rtc);
 
 	}
 
@@ -531,11 +559,26 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	public void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText(null);
+		mailField.setText(Profil.getInstance().getMail());
 		seriesBox.setSelectedItem(null);
 		albumBox.setSelectedItem(null);
 		for (JComboBox<Permissions> cbl : cbPList)
 			cbl.setSelectedItem(null);
 		uploadButton.setEnabled(false);
+	}
+	
+	public void initFields(String type){
+		if (type.equals("profil")){
+			userField.setText(Profil.getInstance().getUsername());
+			passField.setText(null);
+			confirmPassField.setText(null);
+			mailField.setText(Profil.getInstance().getMail());
+			firstNameField.setText(Profil.getInstance().getFirstName()); firstNameField.setEditable(false);
+			lastNameField.setText(Profil.getInstance().getLastName()); lastNameField.setEditable(false);
+			birthField.setText(Profil.getInstance().getBirthdate()); birthField.setEditable(false);
+			regField.setText(Profil.getInstance().getRegDate()); regField.setEditable(false);
+			permField.setText(Lists.getInstance().returnLabel(Profil.getInstance().getPermissions_id())); permField.setEditable(false);
+		}
 	}
 
 	private void populateLists() {
@@ -634,6 +677,43 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		if(e.getSource() == mnQuitter){
 			SocketManager.getInstance().logout();
 			System.exit(0);
+		}
+		else if(e.getSource() == mnAide){
+			if(Desktop.isDesktopSupported())
+			{
+				try {
+					Desktop.getDesktop().browse(new URI("http://mediacenter.nukama.be/support.php"));
+				} catch (IOException | URISyntaxException e1){
+					e1.printStackTrace();
+				}
+			}		
+		}
+		else if(e.getSource() == mnProfil){
+			System.out.println("?");
+			clear();
+			initFields("profil");
+			rightPane.removeAll();
+			uploadDataPane.removeAll();
+			FormLayout layout = new FormLayout(
+					"right:pref, 4dlu, fill:130dlu",
+					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref");
+			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
+			uploadDataPane.setLayout(layout);
+			cc = new CellConstraints();
+			uploadDataPane.add(userLabel, cc.xy(1, 1)); uploadDataPane.add(userField, cc.xy(3,1));
+			uploadDataPane.add(passLabel, cc.xy(1, 3)); uploadDataPane.add(passField, cc.xy(3,3));
+			uploadDataPane.add(confirmPassLabel, cc.xy(1,5)); uploadDataPane.add(confirmPassField, cc.xy(3,5));
+			uploadDataPane.add(mailLabel, cc.xy(1, 7)); uploadDataPane.add(mailField, cc.xy(3,7));
+			uploadDataPane.add(firstNameLabel, cc.xy(1, 9)); uploadDataPane.add(firstNameField, cc.xy(3,9));
+			uploadDataPane.add(lastNameLabel, cc.xy(1, 11)); uploadDataPane.add(lastNameField, cc.xy(3,11));
+			uploadDataPane.add(birthLabel, cc.xy(1, 13)); uploadDataPane.add(birthField, cc.xy(3,13));
+			uploadDataPane.add(regLabel, cc.xy(1, 15)); uploadDataPane.add(regField, cc.xy(3,15));
+			uploadDataPane.add(permLabel, cc.xy(1, 17)); uploadDataPane.add(permField, cc.xy(3,17));
+			uploadDataPane.add(modifyButton, cc.xy(1, 19)); uploadDataPane.add(clearButton, cc.xy(3,19));
+			rightPane.setLayout(new GridBagLayout());
+			rightPane.add(uploadDataPane, new GridBagConstraints());
+			uploadDataPane.repaint(); uploadDataPane.revalidate();
+			rightPane.revalidate();
 		}
 		else if(e.getSource() == addButton){
 			if (!verify(node.toString())){

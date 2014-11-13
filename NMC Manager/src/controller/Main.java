@@ -1,6 +1,9 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.EventQueue;
+
+import javax.swing.UIManager;
 
 import controller.SocketManager;
 import model.Config;
@@ -18,6 +21,13 @@ public class Main {
 	public static void main(String[] args) {
 		Config.getInstance();
 		Profil.getInstance().reset();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
+			UIManager.put("OptionPane.background",Color.WHITE);
+		} catch (Exception e) {
+			// If Nimbus is not available, you can set the GUI to another look and feel.
+		}
 		//------------ IP Retrieve ----------
 		if(Config.getInstance().getProp("srv_url") == null){
 			EventQueue.invokeLater(new Runnable(){

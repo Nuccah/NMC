@@ -149,6 +149,7 @@ public class ServerListener implements Runnable {
 				pf.setLastName(res.getString("last_name"));
 				pf.setBirthdate(res.getDate("birthdate"));
 				pf.setRegDate(res.getTimestamp("reg_date"));
+				pf.setPermissions_id(res.getInt("permissions_id"));
 				try{
 					oos.writeObject(pf);
 					sendList();

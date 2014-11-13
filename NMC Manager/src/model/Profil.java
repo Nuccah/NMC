@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * Classe comprenant toutes les infos de l'utilisateur connecté
@@ -120,14 +121,14 @@ public class Profil implements Serializable {
 	public void setLastName(String last_name) {
 		this.last_name = last_name;
 	}
-	public Date getBirthdate() {
-		return birthdate;
+	public String getBirthdate() {
+		return new SimpleDateFormat("dd/MM/yyyy").format(birthdate);
 	}
 	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
 	}
-	public Timestamp getRegDate() {
-		return reg_date;
+	public String getRegDate() {
+		return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(reg_date);
 	}
 	public void setRegDate(Timestamp reg_date) {
 		this.reg_date = reg_date;

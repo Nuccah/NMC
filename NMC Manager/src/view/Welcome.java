@@ -42,13 +42,6 @@ public class Welcome extends JFrame implements ActionListener {
 	public Welcome() {
 		super(Config.getInstance().getProp("base_title")+"Bienvenue");
 		setResizable(false);
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
-			UIManager.put("OptionPane.background",Color.WHITE);
-		} catch (Exception e) {
-			// If Nimbus is not available, you can set the GUI to another look and feel.
-		}
 		BoxLayout mainBox = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
 		getContentPane().setLayout(mainBox);
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
