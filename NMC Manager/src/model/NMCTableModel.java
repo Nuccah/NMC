@@ -47,7 +47,7 @@ public class NMCTableModel extends AbstractTableModel {
 		else if (mdc instanceof AlbumCollector){
 			switch (col) {
 			case 2:
-				return ((AudioCollector) mdc).getArtist();
+				return ((AlbumCollector) mdc).getArtist();
 			case 3:
 				return ((AlbumCollector) mdc).getYear();
 			case 4:
