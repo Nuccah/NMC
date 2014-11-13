@@ -88,8 +88,8 @@ public class Retriever {
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name, category, description FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_authors as nmia ON nmi.id = nmia.media_id "
 				+ "INNER JOIN nmc_persons as np ON nmia.persons_id = np.id "
-				+ "INNER JOIN nmc_books_categories as nbc ON nmi.id = nbc.media_id "
-				+ "INNER JOIN nmc_categories as nc ON nbc.categories_id = nc.id ";
+				+ "LEFT OUTER JOIN nmc_books_categories as nbc ON nmi.id = nbc.media_id "
+				+ "LEFT OUTER JOIN nmc_categories as nc ON nbc.categories_id = nc.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -122,8 +122,8 @@ public class Retriever {
 		db.openConnection();
 		imageList = new ArrayList<ImageCollector>();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name FROM nmc_media as nmi "
-				+ "INNER JOIN nmc_media_photographers as nmp ON nmi.id = nmp.media_id "
-				+ "INNER JOIN nmc_persons as np ON nmp.persons_id = np.id ";
+				+ "LEFT OUTER JOIN nmc_media_photographers as nmp ON nmi.id = nmp.media_id "
+				+ "LEFT OUTER JOIN nmc_persons as np ON nmp.persons_id = np.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
@@ -158,10 +158,10 @@ public class Retriever {
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, filename, name, category, description FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_films as nmif ON nmi.id = nmif.media_id "
 				+ "INNER JOIN nmc_videos as nv ON nmif.videos_id = nv.id "
-				+ "INNER JOIN nmc_videos_directors as nvd ON nv.id = nvd.videos_id "
-				+ "INNER JOIN nmc_persons as np ON nvd.persons_id = np.id "
-				+ "INNER JOIN nmc_films_categories as nfc ON nmi.id = nfc.media_id "
-				+ "INNER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ";
+				+ "LEFT OUTER JOIN nmc_videos_directors as nvd ON nv.id = nvd.videos_id "
+				+ "LEFT OUTER JOIN nmc_persons as np ON nvd.persons_id = np.id "
+				+ "LEFT OUTER JOIN nmc_films_categories as nfc ON nmi.id = nfc.media_id "
+				+ "LEFT OUTER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(";");
