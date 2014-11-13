@@ -87,7 +87,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JButton clearButton = new JButton("Clear");
 	private JButton mnProfil = new JButton("Profil");
 	private JButton mnAide = new JButton("Aide");
-	private JButton mnParametres = new JButton("Parametres");
 	private JButton mnQuitter = new JButton("Quitter");
 
 	private JLabel titleLabel = new JLabel("Title");
@@ -279,9 +278,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		mnProfil.setHorizontalAlignment(SwingConstants.LEFT);
 		topPane.add(mnProfil);
 
-		mnParametres.setHorizontalAlignment(SwingConstants.LEFT);
-		topPane.add(mnParametres);
-
 		mnAide.setHorizontalAlignment(SwingConstants.LEFT);
 		topPane.add(mnAide);
 
@@ -439,7 +435,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			clear();
 			FormLayout layout = new FormLayout(
 					"right:pref, 4dlu, fill:130dlu",
-					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu");
+					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
 			cc = new CellConstraints();
@@ -458,56 +454,56 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			}
 
-			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(titleField,cc.xy(3, 1));
+			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(new JLabel("*"), cc.xy(2,1)); uploadDataPane.add(titleField,cc.xy(3, 1));
 			switch (node.toString()) {
 			case "Books":
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
-				uploadDataPane.add(authorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
+				uploadDataPane.add(authorLabel,cc.xy(1, 5) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 7)); uploadDataPane.add(synopsisField,cc.xy(3, 7));
 				uploadDataPane.add(genreLabel,cc.xy(1, 9)); uploadDataPane.add(genreField,cc.xy(3, 9));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(new JLabel("*"), cc.xy(2,13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
 				fc.setFileFilter(bookFilter);
 				break;
 			case "Images":
 				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(photographerLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 7)); uploadDataPane.add(visibilityBox,cc.xy(3, 7)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 9)); uploadDataPane.add(modificationBox,cc.xy(3, 9));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 7)); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(visibilityBox,cc.xy(3, 7)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 9)); uploadDataPane.add(new JLabel("*"), cc.xy(2,9)); uploadDataPane.add(modificationBox,cc.xy(3, 9));
 				fc.setFileFilter(imageFilter);
 				break;
 			case "Add New Music": 
-				uploadDataPane.add(albumLabel,cc.xy(1, 3)); uploadDataPane.add(albumBox,cc.xy(3, 3));
-				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(albumLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(albumBox,cc.xy(3, 3));
+				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				fc.setFileFilter(musicFilter);
 				break;
 			case "Movies":
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(directorLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(genreLabel,cc.xy(1, 7)); uploadDataPane.add(genreField,cc.xy(3, 7));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 9)); uploadDataPane.add(synopsisField,cc.xy(3, 9));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(new JLabel("*"), cc.xy(2,13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
 				fc.setFileFilter(videoFilter);
 				break;
 			case "Add New Episodes": 
-				uploadDataPane.add(seriesLabel,cc.xy(1, 3)); uploadDataPane.add(seriesBox,cc.xy(3, 3));
+				uploadDataPane.add(seriesLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(seriesBox,cc.xy(3, 3));
 				uploadDataPane.add(directorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(seasonLabel,cc.xy(1, 7) ); uploadDataPane.add(seasonField,cc.xy(3, 7));
 				uploadDataPane.add(chronoLabel,cc.xy(1, 9) ); uploadDataPane.add(chronoField,cc.xy(3, 9));
 				fc.setFileFilter(videoFilter);
 				break;
 			case "Add New Series":
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 5) ); uploadDataPane.add(synopsisField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 9)); uploadDataPane.add(visibilityBox,cc.xy(3, 9)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 11)); uploadDataPane.add(modificationBox,cc.xy(3, 11));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 9)); uploadDataPane.add(new JLabel("*"), cc.xy(2,9)); uploadDataPane.add(visibilityBox,cc.xy(3, 9)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(modificationBox,cc.xy(3, 11));
 				break;
 			case "Add New Albums":
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
-				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
+				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(genreField,cc.xy(3, 7));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 9) ); uploadDataPane.add(synopsisField,cc.xy(3, 9));
 				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
 				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
@@ -515,6 +511,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				break;
 			default: break;
 			}
+			uploadDataPane.add(new JLabel("* denotes required fields"), cc.xy(3,15));
 			uploadDataPane.add(clearButton,cc.xy(3, 17));
 		}
 		uploadDataPane.repaint(); uploadDataPane.revalidate();
