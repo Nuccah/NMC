@@ -20,11 +20,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
-import controller.SocketManager;
 import model.Config;
+import controller.SocketManager;
 
 public class IpAsk extends JFrame implements ActionListener{
 	private static final long serialVersionUID = -1447417979022041682L;

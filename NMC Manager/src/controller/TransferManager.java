@@ -85,20 +85,6 @@ public class TransferManager {
 		}
 	}
 
-	
-	public static String chooseDirectory(String node) {
-		switch(node){
-			case "Add New Albums": return "Music";
-			case "Add New Series": return "Series";
-			case "Add New Episodes": return "Series";
-			case "Add New Music": return "Music";
-			case "Books": return "Books";
-			case "Movies": return "Movies";
-			case "Images": return "Images";
-		}
-		return null;
-	}
-
 	public File setFilename(MetaDataCollector mdc, File uploadFile) throws IOException {
 
 	    // File (or directory) with new name

@@ -8,7 +8,6 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -70,7 +69,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import controller.SocketManager;
-import controller.TransferManager;
 
 /**
  * Fenêtre principale du programme
@@ -87,38 +85,38 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JPanel bottomPane;
 	private JPanel uploadDataPane;
 
-	private JButton uploadButton = new JButton("Upload");
-	private JButton addButton = new JButton("Confirm");
-	private JButton modifyButton = new JButton("Confirm Modifications");
-	private JButton clearButton = new JButton("Clear");
-	private JButton mnProfil = new JButton("Profil");
-	private JButton mnAide = new JButton("Aide");
-	private JButton mnQuitter = new JButton("Quitter");
+	private static final JButton uploadButton = new JButton("Upload");
+	private static final JButton addButton = new JButton("Confirm");
+	private static final JButton modifyButton = new JButton("Confirm Modifications");
+	private static final JButton clearButton = new JButton("Clear");
+	private static final JButton mnProfil = new JButton("Profil");
+	private static final JButton mnAide = new JButton("Aide");
+	private static final JButton mnQuitter = new JButton("Quitter");
 
-	private JLabel titleLabel = new JLabel("Title");
-	private JLabel yearLabel = new JLabel("Year");
-	private JLabel authorLabel = new JLabel("Author");
-	private JLabel synopsisLabel = new JLabel("Synopsis");
-	private JLabel genreLabel = new JLabel("Genre");
-	private JLabel photographerLabel = new JLabel("Photographer");
-	private JLabel artistLabel = new JLabel("Artist");
-	private JLabel directorLabel = new JLabel("Director");
-	private JLabel visibilityLabel = new JLabel("Visibility Level");
-	private JLabel modificationLabel = new JLabel("Modification Level");
-	private JLabel albumLabel = new JLabel("Album");
-	private JLabel seasonLabel = new JLabel("Season");
-	private JLabel chronoLabel = new JLabel("Chronology");
-	private JLabel seriesLabel = new JLabel("Series");
+	private static final JLabel titleLabel = new JLabel("Title");
+	private static final JLabel yearLabel = new JLabel("Year");
+	private static final JLabel authorLabel = new JLabel("Author");
+	private static final JLabel synopsisLabel = new JLabel("Synopsis");
+	private static final JLabel genreLabel = new JLabel("Genre");
+	private static final JLabel photographerLabel = new JLabel("Photographer");
+	private static final JLabel artistLabel = new JLabel("Artist");
+	private static final JLabel directorLabel = new JLabel("Director");
+	private static final JLabel visibilityLabel = new JLabel("Visibility Level");
+	private static final JLabel modificationLabel = new JLabel("Modification Level");
+	private static final JLabel albumLabel = new JLabel("Album");
+	private static final JLabel seasonLabel = new JLabel("Season");
+	private static final JLabel chronoLabel = new JLabel("Chronology");
+	private static final JLabel seriesLabel = new JLabel("Series");
 	
-	private JLabel userLabel= new JLabel("Username");
-	private JLabel passLabel= new JLabel("Password");
-	private JLabel confirmPassLabel = new JLabel("Confirm Password");
-	private JLabel mailLabel= new JLabel("Email");
-	private JLabel firstNameLabel= new JLabel("First Name");
-	private JLabel lastNameLabel= new JLabel("Last Name");
-	private JLabel birthLabel= new JLabel("Birthdate");
-	private JLabel regLabel= new JLabel("Registration Date");
-	private JLabel permLabel= new JLabel("Permission Level");
+	private static final JLabel userLabel= new JLabel("Username");
+	private static final JLabel passLabel= new JLabel("Password");
+	private static final JLabel confirmPassLabel = new JLabel("Confirm Password");
+	private static final JLabel mailLabel= new JLabel("Email");
+	private static final JLabel firstNameLabel= new JLabel("First Name");
+	private static final JLabel lastNameLabel= new JLabel("Last Name");
+	private static final JLabel birthLabel= new JLabel("Birthdate");
+	private static final JLabel regLabel= new JLabel("Registration Date");
+	private static final JLabel permLabel= new JLabel("Permission Level");
 	
 	private JTextField userField = new JTextField();
 	private JTextField passField = new JTextField();
@@ -134,12 +132,31 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JFileChooser fc;
 
 	private DefaultMutableTreeNode node;
-	private DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
-	private DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
-	private DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Upload");
-	private DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
-	private DefaultMutableTreeNode seriesNode = new DefaultMutableTreeNode("Series");
-	private DefaultMutableTreeNode musicNode = new DefaultMutableTreeNode("Music");
+	private final DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
+	private final DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Media");
+	private final DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Upload");
+	private final DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
+	private final DefaultMutableTreeNode seriesNode = new DefaultMutableTreeNode("Series");
+	private final DefaultMutableTreeNode musicNode = new DefaultMutableTreeNode("Music");
+	
+	private static final DefaultMutableTreeNode viewBooks = new DefaultMutableTreeNode("View Books Data");
+	private static final DefaultMutableTreeNode viewImages = new DefaultMutableTreeNode("View Images Data");
+	private static final DefaultMutableTreeNode viewMusic = new DefaultMutableTreeNode("View Music Data");
+	private static final DefaultMutableTreeNode viewMovies = new DefaultMutableTreeNode("View Movies Data");
+	private static final DefaultMutableTreeNode viewSeries = new DefaultMutableTreeNode("View Series Data");
+	
+	private static final DefaultMutableTreeNode uploadBooks = new DefaultMutableTreeNode("Add New Books");
+	private static final DefaultMutableTreeNode uploadImages = new DefaultMutableTreeNode("Add New Images");
+	private static final DefaultMutableTreeNode uploadMusic = new DefaultMutableTreeNode("Add New Music");
+	private static final DefaultMutableTreeNode uploadAlbums = new DefaultMutableTreeNode("Add New Albums");
+	private static final DefaultMutableTreeNode uploadMovies = new DefaultMutableTreeNode("Add New Movies");
+	private static final DefaultMutableTreeNode uploadEpisodes = new DefaultMutableTreeNode("Add New Episodes");
+	private static final DefaultMutableTreeNode uploadSeries = new DefaultMutableTreeNode("Add New Series");
+	
+	private static final DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("Create User");
+	private static final DefaultMutableTreeNode adminNode = new DefaultMutableTreeNode("Administration");
+	private static final DefaultMutableTreeNode permNode = new DefaultMutableTreeNode("Manage Permissions");
+	private static final DefaultMutableTreeNode prefNode = new DefaultMutableTreeNode("Preferences");
 
 	private JTextField titleField = new JTextField();
 	private JTextField yearField = new JTextField();
@@ -156,11 +173,17 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox<Permissions>> cbPList = new ArrayList<JComboBox<Permissions>>();
 
-	private FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
-	private FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav", "wma", "flac");
-	private FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
-	private FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
+	private static final FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
+	private static final FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav", "wma", "flac");
+	private static final FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
+	private static final FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
 
+	private static final String[] albumColumns = new String[]{"ID", "Title", "Artist", "Year", "Genre", "Description", "Modification Rights", "Visibility Rights"};
+	private static final String[] imageColumns = new String[]{"ID", "Title", "Photographer", "Year", "Modification Rights", "Visibility Rights"};
+	private static final String[] bookColumns = new String[]{"ID", "Title", "Author", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
+	private static final String[] videoColumns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Director", "Modification Rights", "Visibility Rights"};
+	private static final String[] seriesColumns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
+	
 	private GridBagConstraints lc = new GridBagConstraints();
 	private GridBagConstraints rc = new GridBagConstraints();
 	private GridBagConstraints rcc = new GridBagConstraints();
@@ -274,28 +297,28 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		clearButton.addActionListener(this);
 		addButton.addActionListener(this);
 	}
-
-	private void modifyFileChooser(Component[] components) {
-		fc.setAcceptAllFileFilterUsed(false);
-		fc.setControlButtonsAreShown(false);
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fc.addActionListener(this);
-		fc.setMinimumSize(new Dimension(500,600));
-		fc.setBorder(new EmptyBorder(0, 0, 0, 0));
-		Color bg = Color.WHITE;
-		setBG(fc.getComponents(), bg, 0 );
-		fc.setBackground( bg );
-		fc.setOpaque(true);
+	
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
+	private void parentPage(DefaultMutableTreeNode node) {
+		switch (node.getParent().toString()) {
+		case "Media": mediaResultSet(node); break;
+		case "Series": case "Music": uploadFilePage(node); break;
+		case "User Administration": userAdmin(node); break;
+		default: homePage(); break;
+		}
 	}
 
-	private void setBG( Component[] jc, Color bg, int depth )
-	{
-		for( int i = 0; i < jc.length; i++ ) {
-			Component c = jc[i];
-			if( c instanceof Container )// {
-				setBG( ((Container)c).getComponents(), bg, depth );
-			c.setBackground( bg );
-		}
+	/**
+	 * Home page of client program
+	 * @param node --- TO DELETE
+	 */
+	private void homePage() {
+		rightPane.removeAll();
+		rightPane.add(new JTextArea(node.toString()));
+		rightPane.revalidate();
 	}
 
 	/**
@@ -322,27 +345,27 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 */
 	private void menuBar() {
 		//create the child nodes
-		mediaNode.add(new DefaultMutableTreeNode("Books"));
-		mediaNode.add(new DefaultMutableTreeNode("Images"));
-		mediaNode.add(new DefaultMutableTreeNode("Music"));
-		mediaNode.add(new DefaultMutableTreeNode("Movies"));
-		mediaNode.add(new DefaultMutableTreeNode("Series"));
-
-		uploadNode.add(new DefaultMutableTreeNode("Books"));
-		uploadNode.add(new DefaultMutableTreeNode("Images"));
+		mediaNode.add(viewBooks);
+		mediaNode.add(viewImages);
+		mediaNode.add(viewMovies);
+		mediaNode.add(viewMusic);
+		mediaNode.add(viewSeries);
+		
+		seriesNode.add(uploadEpisodes);
+		seriesNode.add(uploadSeries);
+		musicNode.add(uploadAlbums);
+		musicNode.add(uploadMusic);
+		
+		uploadNode.add(uploadBooks);
+		uploadNode.add(uploadImages);
+		uploadNode.add(uploadMovies);
 		uploadNode.add(musicNode);
-		uploadNode.add(new DefaultMutableTreeNode("Movies"));
 		uploadNode.add(seriesNode);
 
-		seriesNode.add(new DefaultMutableTreeNode("Add New Episodes"));
-		seriesNode.add(new DefaultMutableTreeNode("Add New Series"));
-		musicNode.add(new DefaultMutableTreeNode("Add New Music"));
-		musicNode.add(new DefaultMutableTreeNode("Add New Albums"));
-
-		usersNode.add(new DefaultMutableTreeNode("Create User"));
-		usersNode.add(new DefaultMutableTreeNode("Administration"));
-		usersNode.add(new DefaultMutableTreeNode("Permissions"));        
-		usersNode.add(new DefaultMutableTreeNode("Preferences"));
+		usersNode.add(userNode);
+		usersNode.add(adminNode);        
+		usersNode.add(permNode);
+		usersNode.add(prefNode);
 
 		//add the child nodes to the root node
 		home.add(mediaNode);
@@ -363,42 +386,39 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 */
 	private void mediaResultSet(DefaultMutableTreeNode node) {
 		rightPane.removeAll();
-		switch (node.toString()) {
-		case "Media": homePage(node); break;
-		case "Books": rightPane.add(createTable("books")); break;
-		case "Images": rightPane.add(createTable("images")); break;
-		case "Music": rightPane.add(createTable("albums")); break;
-		case "Movies": rightPane.add(createTable("videos")); break;
-		case "Series": rightPane.add(createTable("series")); break;
-		default: break;
-		}
+		if (node == mediaNode)
+			homePage();
+		else if (node == viewBooks)
+			rightPane.add(createTable("books"));
+		else if (node == viewImages)
+			rightPane.add(createTable("images"));
+		else if (node == viewMusic)
+			rightPane.add(createTable("albums"));
+		else if (node == viewMovies)
+			rightPane.add(createTable("videos"));
+		else if (node == viewSeries)
+			rightPane.add(createTable("series"));
 		rightPane.revalidate();
 	}
 
 	private JScrollPane createTable(String type) {
 		SocketManager.getInstance().getList(type);
 		JTable table = null;
-		String[] columns = null;
 		switch (type){
 		case "albums": 
-			columns = new String[]{"ID", "Title", "Artist", "Year", "Genre", "Description", "Modification Rights", "Visibility Rights"};
-			table = new JTable(new NMCTableModel(Lists.getInstance().getAlbumList(), columns)); 
+			table = new JTable(new NMCTableModel(Lists.getInstance().getAlbumList(), albumColumns)); 
 			break;
 		case "books": 
-			columns = new String[]{"ID", "Title", "Author", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
-			table = new JTable(new NMCTableModel(Lists.getInstance().getBookList(), columns)); 
+			table = new JTable(new NMCTableModel(Lists.getInstance().getBookList(), bookColumns)); 
 			break;
 		case "images": 
-			columns = new String[]{"ID", "Title", "Photographer", "Year", "Modification Rights", "Visibility Rights"};
-			table = new JTable(new NMCTableModel(Lists.getInstance().getImageList(), columns)); 
+			table = new JTable(new NMCTableModel(Lists.getInstance().getImageList(), imageColumns)); 
 			break;
 		case "series": 
-			columns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
-			table = new JTable(new NMCTableModel(Lists.getInstance().getSeriesList(), columns)); 
+			table = new JTable(new NMCTableModel(Lists.getInstance().getSeriesList(), seriesColumns)); 
 			break;
 		case "videos": 
-			columns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Director", "Modification Rights", "Visibility Rights"};
-			table = new JTable(new NMCTableModel(Lists.getInstance().getVideoList(), columns)); 
+			table = new JTable(new NMCTableModel(Lists.getInstance().getVideoList(), videoColumns)); 
 			break;
 		}
 		// Create the scroll pane and add the table to it.
@@ -412,36 +432,14 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 * @param node
 	 */
 	private void userAdmin(DefaultMutableTreeNode node) {
-		switch (node.toString()) {
-		case "Create User": homePage(node); break;
-		case "Administration": homePage(node); break;
-		case "Permissions": homePage(node); break;
-		case "Preferences": homePage(node); break;
-		default: break;
-		}
-	}
-
-	/**
-	 * Switchcase redirection to appropriate methods
-	 * @param node
-	 */
-	private void parentPage(DefaultMutableTreeNode node) {
-		switch (node.getParent().toString()) {
-		case "Media": mediaResultSet(node); break;
-		case "Series": case "Music": uploadFilePage(node); break;
-		case "User Administration": userAdmin(node); break;
-		default: homePage(node); break;
-		}
-	}
-
-	/**
-	 * Home page of client program
-	 * @param node --- TO DELETE
-	 */
-	private void homePage(DefaultMutableTreeNode node) {
-		rightPane.removeAll();
-		rightPane.add(new JTextArea(node.toString()));
-		rightPane.revalidate();
+		if (node == userNode)
+			homePage();
+		else if (node == adminNode)
+			homePage();
+		else if (node == permNode)
+			homePage();
+		else if (node == prefNode)
+			homePage();
 	}
 
 	/**
@@ -451,11 +449,11 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private void uploadFilePage(DefaultMutableTreeNode node) {
 		rightPane.removeAll();
 		uploadDataPane.removeAll();
-		if (node.toString() == "Upload"){
+		if (node == uploadNode){
 			rightPane.setLayout(new GridLayout(1,1));
 			rightPane.add(uploadDataPane);
 		}
-		else if(node.toString() == "Music" || node.toString() == "Series"){
+		else if(node == musicNode || node == seriesNode){
 			rightPane.setLayout(new GridLayout(1,1));
 			rightPane.add(uploadDataPane);
 		}
@@ -467,11 +465,11 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
 			cc = new CellConstraints();
-			if(node.toString() == "Add New Albums" || node.toString() == "Add New Series"){
-				rightPane.setLayout(new GridLayout(1,1));
+			if(node == uploadAlbums || node == uploadSeries){
+				rightPane.setLayout(new GridBagLayout());
 				addButton.setEnabled(true);
 				uploadDataPane.add(addButton,cc.xy(1, 17));
-				rightPane.add(uploadDataPane);
+				rightPane.add(uploadDataPane, new GridBagConstraints());
 			}
 			else{
 				rightPane.setLayout(new GridBagLayout());
@@ -483,8 +481,15 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			}
 
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(new JLabel("*"), cc.xy(2,1)); uploadDataPane.add(titleField,cc.xy(3, 1));
-			switch (node.toString()) {
-			case "Books":
+			if (node == uploadAlbums){
+				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
+				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(genreField,cc.xy(3, 7));
+				uploadDataPane.add(synopsisLabel,cc.xy(1, 9) ); uploadDataPane.add(synopsisField,cc.xy(3, 9));
+				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
+				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
+			}
+			else if (node == uploadBooks){
 				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(authorLabel,cc.xy(1, 5) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 7)); uploadDataPane.add(synopsisField,cc.xy(3, 7));
@@ -492,20 +497,27 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
 				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(new JLabel("*"), cc.xy(2,13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
 				fc.setFileFilter(bookFilter);
-				break;
-			case "Images":
+			}
+			else if (node == uploadEpisodes){
+				uploadDataPane.add(seriesLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(seriesBox,cc.xy(3, 3));
+				uploadDataPane.add(directorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
+				uploadDataPane.add(seasonLabel,cc.xy(1, 7) ); uploadDataPane.add(seasonField,cc.xy(3, 7));
+				uploadDataPane.add(chronoLabel,cc.xy(1, 9) ); uploadDataPane.add(chronoField,cc.xy(3, 9));
+				fc.setFileFilter(videoFilter);
+			}
+			else if (node == uploadImages){
 				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(photographerLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(visibilityLabel,cc.xy(1, 7)); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(visibilityBox,cc.xy(3, 7)); 
 				uploadDataPane.add(modificationLabel,cc.xy(1, 9)); uploadDataPane.add(new JLabel("*"), cc.xy(2,9)); uploadDataPane.add(modificationBox,cc.xy(3, 9));
 				fc.setFileFilter(imageFilter);
-				break;
-			case "Add New Music": 
+			}
+			else if (node == uploadMusic){
 				uploadDataPane.add(albumLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(albumBox,cc.xy(3, 3));
 				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				fc.setFileFilter(musicFilter);
-				break;
-			case "Movies":
+			}
+			else if (node == uploadMovies){
 				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(directorLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
 				uploadDataPane.add(genreLabel,cc.xy(1, 7)); uploadDataPane.add(genreField,cc.xy(3, 7));
@@ -513,31 +525,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
 				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(new JLabel("*"), cc.xy(2,13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
 				fc.setFileFilter(videoFilter);
-				break;
-			case "Add New Episodes": 
-				uploadDataPane.add(seriesLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(seriesBox,cc.xy(3, 3));
-				uploadDataPane.add(directorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(seasonLabel,cc.xy(1, 7) ); uploadDataPane.add(seasonField,cc.xy(3, 7));
-				uploadDataPane.add(chronoLabel,cc.xy(1, 9) ); uploadDataPane.add(chronoField,cc.xy(3, 9));
-				fc.setFileFilter(videoFilter);
-				break;
-			case "Add New Series":
+			}
+			else if (node == uploadSeries){
 				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
 				uploadDataPane.add(synopsisLabel,cc.xy(1, 5) ); uploadDataPane.add(synopsisField,cc.xy(3, 5));
 				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(genreField,cc.xy(3, 7));
 				uploadDataPane.add(visibilityLabel,cc.xy(1, 9)); uploadDataPane.add(new JLabel("*"), cc.xy(2,9)); uploadDataPane.add(visibilityBox,cc.xy(3, 9)); 
 				uploadDataPane.add(modificationLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(modificationBox,cc.xy(3, 11));
-				break;
-			case "Add New Albums":
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
-				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(genreField,cc.xy(3, 7));
-				uploadDataPane.add(synopsisLabel,cc.xy(1, 9) ); uploadDataPane.add(synopsisField,cc.xy(3, 9));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
-
-				break;
-			default: break;
 			}
 			uploadDataPane.add(new JLabel("* denotes required fields"), cc.xy(3,15));
 			uploadDataPane.add(clearButton,cc.xy(3, 17));
@@ -599,45 +593,74 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 	}
 
-	/** Determines whether or not metadata fields are empty or not
+	/** Determines whether  metadata fields are empty or not
 	 * @param node the String of the node selected
 	 * @return boolean whether metadata fields are empty or not
 	 */
-	public boolean verify(String node){
+	public boolean verify(DefaultMutableTreeNode node){
 		if (titleField.getText().equals(""))
 			return false;
 		else{
-			switch (node) {
-			case "Books":
-				if (personField.getText().equals("")|| visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
-					return false;
-				else return true;
-			case "Images":
-				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
-					return false;
-				else return true;
-			case "Add New Music":
-				if (personField == null || albumBox.getSelectedItem() == null || genreField == null)
-					return false;
-				else return true;
-			case "Add New Albums":
+			if (node == uploadAlbums){
 				if (personField.getText().equals("") || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("") || genreField.getText().equals("") )
 					return false;
 				else return true;
-			case "Movies":
-				if ( visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
+			}
+			else if (node == uploadBooks){
+				if (personField.getText().equals("")|| visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
 					return false;
 				else return true;
-			case "Add New Series":
-				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("")|| genreField.getText().equals(""))
-					return false;
-				else return true;
-			case "Add New Episodes":
+			}
+			else if (node == uploadEpisodes){
 				if (seriesBox.getSelectedItem() == null)
 					return false;
 				else return true;	
-			default: return true;
 			}
+			else if (node == uploadImages){
+				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+					return false;
+				else return true;
+			}
+			else if (node == uploadMusic){
+				if (personField == null || albumBox.getSelectedItem() == null || genreField == null)
+					return false;
+				else return true;
+			}
+			else if (node == uploadMovies){
+				if ( visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
+					return false;
+				else return true;
+			}
+			else if (node == uploadSeries){
+				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("")|| genreField.getText().equals(""))
+					return false;
+				else return true;
+			}
+			else
+				return false;
+		}
+	}
+	
+	private void modifyFileChooser(Component[] components) {
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setControlButtonsAreShown(false);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.addActionListener(this);
+		fc.setMinimumSize(new Dimension(500,600));
+		fc.setBorder(new EmptyBorder(0, 0, 0, 0));
+		Color bg = Color.WHITE;
+		setBG(fc.getComponents(), bg, 0 );
+		fc.setBackground( bg );
+		fc.setOpaque(true);
+	}
+
+	private void setBG( Component[] jc, Color bg, int depth )
+	{
+		for( int i = 0; i < jc.length; i++ ) {
+			Component c = jc[i];
+			if( c instanceof Container )// {
+				setBG( ((Container)c).getComponents(), bg, depth );
+			c.setBackground( bg );
 		}
 	}
 
@@ -659,6 +682,8 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		dlg.setLocationRelativeTo((Frame) getOwner());
 		dlg.setVisible(true);
 	}
+	
+	
 
 	/**
 	 * Invoked when task's progress property changes.
@@ -716,13 +741,19 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			rightPane.revalidate();
 		}
 		else if(e.getSource() == addButton){
-			if (!verify(node.toString())){
+			if (!verify(node)){
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Not all data fields have been set",
 						"Insufficient Data",
 						JOptionPane.ERROR_MESSAGE);
 			}
 			else{
+				if (node == uploadAlbums){
+
+				}
+				else if (node == uploadSeries){
+
+				}
 				switch (node.toString()) {
 				case "Add New Albums": fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());
@@ -747,7 +778,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			}
 		}
 		else if(e.getSource() == uploadButton){
-			if (!verify(node.toString())){
+			if (!verify(node)){
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Not all data fields have been set",
 						"Insufficient Data",
@@ -756,21 +787,27 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			else{
 				//Instances of javax.swing.SwingWorker are not reusuable, so
 				//we create new instances as needed.
-				switch (node.toString()) {
-				case "Books": fileC = new BookCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());break;
-				case "Images": fileC = new ImageCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText()); break;
-				case "Add New Music": fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), 
-						((AlbumCollector) albumBox.getSelectedItem()).getId(), ((AlbumCollector) albumBox.getSelectedItem()).getTitle()); break;
-				case "Movies": fileC = new VideoCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); break;
-				case "Add New Episodes": fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), ((SeriesCollector)seriesBox.getSelectedItem()).getId(), 
-						((SeriesCollector)seriesBox.getSelectedItem()).getTitle(), personField.getText(), seasonField.getText(), chronoField.getText()); break;
-				default: break;
+				if (node == uploadBooks){
+					fileC = new BookCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());					
 				}
-
-				uTask = new UploadTask(TransferManager.chooseDirectory(node.toString()), fc.getSelectedFile(), fileC);
+				else if (node == uploadEpisodes){
+					fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), ((SeriesCollector)seriesBox.getSelectedItem()).getId(), 
+							((SeriesCollector)seriesBox.getSelectedItem()).getTitle(), personField.getText(), seasonField.getText(), chronoField.getText()); 
+				}
+				else if (node == uploadImages){
+					fileC = new ImageCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText());
+				}
+				else if (node == uploadMusic){
+					fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), 
+							((AlbumCollector) albumBox.getSelectedItem()).getId(), ((AlbumCollector) albumBox.getSelectedItem()).getTitle()); 	
+				}
+				else if (node == uploadMovies){
+					fileC = new VideoCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); 
+				}
+				uTask = new UploadTask(chooseDirectory(node), fc.getSelectedFile(), fileC);
 				uTask.addPropertyChangeListener(this);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				uTask.execute();
@@ -827,14 +864,23 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		if (node == null) return;
 
 		/* React to the node selection. */
-		if (node.toString() == "Home") homePage(node);
+		if (node == home) homePage();
 		else{
-			switch (node.getParent().toString()) {
-			case "Media": mediaResultSet(node); break;
-			case "Upload": uploadFilePage(node);	break;
-			case "User Administration": userAdmin(node); break;
-			default: parentPage(node); break;
-			}
+			if (node.getParent() == mediaNode) mediaResultSet(node);
+			else if (node.getParent() == uploadNode) uploadFilePage(node);  
+			else if (node.getParent() == usersNode) userAdmin(node);
+			else parentPage(node);
 		}
+	}
+	
+	public static String chooseDirectory(DefaultMutableTreeNode node) {
+		if (node == uploadAlbums) return "Music";
+		else if (node == uploadBooks) return "Books";
+		else if (node == uploadEpisodes) return "Series";
+		else if (node == uploadImages) return "Images";
+		else if (node == uploadMusic) return "Music";
+		else if (node == uploadMovies) return "Movies";
+		else if (node == uploadSeries) return "Series";
+		else return null;
 	}
 }
