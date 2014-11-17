@@ -76,6 +76,9 @@ public class ServerListener implements Runnable {
 			oos.writeObject("ACK");
 			lastID();
 			break;
+		case "modify":
+			oos.writeObject("ACK");
+			modify();
 		case "logout":
 			oos.writeObject("ACK");
 			logout();
@@ -84,7 +87,7 @@ public class ServerListener implements Runnable {
 			oos.writeObject("NACK");
 		}
 	}
-
+	
 	/**
 	 * Permet d'envoyer les configurations de bases au client
 	 */
@@ -285,6 +288,29 @@ public class ServerListener implements Runnable {
 		} catch (SQLException e) {
 			System.out.println("[Error] SQL Error");
 			e.printStackTrace();
+		}
+	}
+	
+	private void modify() {
+		Profil profil = null;
+		Modifier mod = Modifier.getInstance();
+		try {
+			profil = (Profil) ois.readObject();
+		} catch (ClassNotFoundException | IOException e) {
+			System.out.println("[Error] - Reception of Profil from: "+cl.getInetAddress()+" failed");
+			if(Main.getDebug()) e.printStackTrace();
+		}
+		try {
+			mod.modifyUser(profil);
+		} catch (SQLException e) {
+			System.out.println("[SQL Error] - Could not update profile!");
+			if(Main.getDebug()) e.printStackTrace();
+		}
+		try {
+			oos.writeObject("ACK");
+		} catch (IOException e){
+			System.out.println("[Error] - ACK couldn't be sent to: "+cl.getInetAddress());
+			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
 

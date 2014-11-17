@@ -234,6 +234,27 @@ public class SocketManager extends Socket {
 		System.out.println("Return ID: "+id);
 		return true;
 	}
+	
+	public boolean modifyUser(String pass) {
+		Profil.getInstance().setPassword(Crypter.encrypt(pass));
+		String ack = null;
+		try{
+			do{
+				oos.writeObject("modify");
+				ack = String.valueOf(ois.readObject());
+			} while (ack.compareTo("ACK") != 0);
+			ack = null;
+			do{
+				oos.writeObject(Profil.getInstance());
+				ack = String.valueOf(ois.readObject());
+			} while (ack.compareTo("ACK") != 0);
+
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
 	public void delObject(Object o){
 		//TODO: Trouver comment envoyer la requête de suppression
@@ -251,5 +272,4 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 		}
 	}
-
 }

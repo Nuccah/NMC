@@ -35,6 +35,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -89,10 +90,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final JButton uploadButton = new JButton("Upload");
 	private static final JButton addButton = new JButton("Confirm");
 	private static final JButton modifyButton = new JButton("Confirm Modifications");
+	private static final JButton modifyPassButton = new JButton("Modify Password");
 	private static final JButton clearButton = new JButton("Clear");
 	private static final JButton mnProfil = new JButton("Profil");
 	private static final JButton mnAide = new JButton("Aide");
 	private static final JButton mnQuitter = new JButton("Quitter");
+	private static final JButton confirmButton = new JButton("OK");
+	private static final JButton cancelButton = new JButton("Cancel");
 
 	private static final JLabel titleLabel = new JLabel("Title");
 	private static final JLabel yearLabel = new JLabel("Year");
@@ -108,7 +112,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final JLabel seasonLabel = new JLabel("Season");
 	private static final JLabel chronoLabel = new JLabel("Chronology");
 	private static final JLabel seriesLabel = new JLabel("Series");
-	
+
 	private static final JLabel userLabel= new JLabel("Username");
 	private static final JLabel passLabel= new JLabel("Password");
 	private static final JLabel confirmPassLabel = new JLabel("Confirm Password");
@@ -118,10 +122,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final JLabel birthLabel= new JLabel("Birthdate");
 	private static final JLabel regLabel= new JLabel("Registration Date");
 	private static final JLabel permLabel= new JLabel("Permission Level");
-	
+
 	private JTextField userField = new JTextField();
-	private JTextField passField = new JTextField();
-	private JTextField confirmPassField = new JTextField();
+	private JPasswordField passField = new JPasswordField();
+	private JPasswordField confirmPassField = new JPasswordField();
 	private JTextField mailField = new JTextField();
 	private JTextField firstNameField = new JTextField();
 	private JTextField lastNameField = new JTextField();
@@ -139,13 +143,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private final DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("User Admin");
 	private final DefaultMutableTreeNode seriesNode = new DefaultMutableTreeNode("Series");
 	private final DefaultMutableTreeNode musicNode = new DefaultMutableTreeNode("Music");
-	
+
 	private static final DefaultMutableTreeNode viewBooks = new DefaultMutableTreeNode("View Books Data");
 	private static final DefaultMutableTreeNode viewImages = new DefaultMutableTreeNode("View Images Data");
 	private static final DefaultMutableTreeNode viewMusic = new DefaultMutableTreeNode("View Music Data");
 	private static final DefaultMutableTreeNode viewMovies = new DefaultMutableTreeNode("View Movies Data");
 	private static final DefaultMutableTreeNode viewSeries = new DefaultMutableTreeNode("View Series Data");
-	
+
 	private static final DefaultMutableTreeNode uploadBooks = new DefaultMutableTreeNode("Add New Books");
 	private static final DefaultMutableTreeNode uploadImages = new DefaultMutableTreeNode("Add New Images");
 	private static final DefaultMutableTreeNode uploadMusic = new DefaultMutableTreeNode("Add New Music");
@@ -153,7 +157,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final DefaultMutableTreeNode uploadMovies = new DefaultMutableTreeNode("Add New Movies");
 	private static final DefaultMutableTreeNode uploadEpisodes = new DefaultMutableTreeNode("Add New Episodes");
 	private static final DefaultMutableTreeNode uploadSeries = new DefaultMutableTreeNode("Add New Series");
-	
+
 	private static final DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("Create User");
 	private static final DefaultMutableTreeNode adminNode = new DefaultMutableTreeNode("Administration");
 	private static final DefaultMutableTreeNode permNode = new DefaultMutableTreeNode("Manage Permissions");
@@ -184,7 +188,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final String[] bookColumns = new String[]{"ID", "Title", "Author", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
 	private static final String[] videoColumns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Director", "Modification Rights", "Visibility Rights"};
 	private static final String[] seriesColumns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
-	
+
 	private GridBagConstraints lc = new GridBagConstraints();
 	private GridBagConstraints rc = new GridBagConstraints();
 	private GridBagConstraints rcc = new GridBagConstraints();
@@ -193,11 +197,14 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private GridBagConstraints gcc = new GridBagConstraints();
 	private GridBagConstraints bc = new GridBagConstraints(); 
 	private CellConstraints cc = new CellConstraints();
+
 	private JDialog dlg;
+	private JDialog passDialog;
+
 	private JProgressBar progressBar;
 	private UploadTask uTask;
 	private static Dashboard instance = null;
-	
+
 	private MetaDataCollector fileC;
 
 	/**
@@ -247,32 +254,36 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		leftPane.setMinimumSize(new Dimension(200, 600));
 		centerPane.setMinimumSize(new Dimension(1024, 700));
 		rightPane.setMinimumSize(new Dimension(800, 600));
-		
+
 		setTitleBar();
 		setMenuBar();
 		setBottomBar();
 		setFileChooser(fc.getComponents());
-		
+
 		populateLists();
 		setComponentLists();
 		setProfilPane();
-		
+
 		mnProfil.addActionListener(this);
 		mnAide.addActionListener(this);
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
 		addButton.addActionListener(this);
-		
+		modifyPassButton.addActionListener(this);
+		confirmButton.addActionListener(this);
+		cancelButton.addActionListener(this);
+		modifyButton.addActionListener(this);
+
 		clear();
 
 		centerPane.add(leftPane, lc);
 		centerPane.add(rightPane, rc);
 		getContentPane().add(centerPane, gcc);
 		getContentPane().add(bottomPane, bc);
-		
+
 		pack();
 	}
-	
+
 	/**
 	 * Barre de menu titulaire
 	 */
@@ -303,12 +314,12 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		mediaNode.add(viewMovies);
 		mediaNode.add(viewMusic);
 		mediaNode.add(viewSeries);
-		
+
 		seriesNode.add(uploadEpisodes);
 		seriesNode.add(uploadSeries);
 		musicNode.add(uploadAlbums);
 		musicNode.add(uploadMusic);
-		
+
 		uploadNode.add(uploadBooks);
 		uploadNode.add(uploadImages);
 		uploadNode.add(uploadMovies);
@@ -342,7 +353,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		txtpnTest.setText("Copyright 2014 - nmc_team@nukama.be - Developed By Antoine Ceyssens & Derek Van Hove" );
 		bottomPane.add(txtpnTest);
 	}
-	
+
 	private void setFileChooser(Component[] components) {
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setControlButtonsAreShown(false);
@@ -365,7 +376,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			c.setBackground( bg );
 		}
 	}
-	
+
 	private void setComponentLists() {
 		fieldList.add(titleField);
 		fieldList.add(yearField);
@@ -377,7 +388,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		fieldList.add(passField);
 		fieldList.add(confirmPassField);
 		fieldList.add(mailField);
-		
+		fieldList.add(passField);
+		fieldList.add(confirmPassField);
+
 		cbPList.add(modificationBox);
 		cbPList.add(visibilityBox);
 	}
@@ -385,6 +398,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private void setProfilPane() {
 		initFields("profil");
 		userField.setText(Profil.getInstance().getUsername());
+		mailField.setText(Profil.getInstance().getMail()); mailField.setEditable(false);
 		firstNameField.setText(Profil.getInstance().getFirstName()); firstNameField.setEditable(false);
 		lastNameField.setText(Profil.getInstance().getLastName()); lastNameField.setEditable(false);
 		birthField.setText(Profil.getInstance().getBirthdate()); birthField.setEditable(false);
@@ -396,8 +410,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
 		profilePane.setLayout(layout);
 		profilePane.add(userLabel, cc.xy(1, 1)); profilePane.add(userField, cc.xy(3,1));
-		profilePane.add(passLabel, cc.xy(1, 3)); profilePane.add(passField, cc.xy(3,3));
-		profilePane.add(confirmPassLabel, cc.xy(1,5)); profilePane.add(confirmPassField, cc.xy(3,5));
+		profilePane.add(passLabel, cc.xy(1, 3)); profilePane.add(modifyPassButton, cc.xy(3,3));
 		profilePane.add(mailLabel, cc.xy(1, 7)); profilePane.add(mailField, cc.xy(3,7));
 		profilePane.add(firstNameLabel, cc.xy(1, 9)); profilePane.add(firstNameField, cc.xy(3,9));
 		profilePane.add(lastNameLabel, cc.xy(1, 11)); profilePane.add(lastNameField, cc.xy(3,11));
@@ -405,6 +418,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		profilePane.add(regLabel, cc.xy(1, 15)); profilePane.add(regField, cc.xy(3,15));
 		profilePane.add(permLabel, cc.xy(1, 17)); profilePane.add(permField, cc.xy(3,17));
 		profilePane.add(modifyButton, cc.xy(1, 19)); profilePane.add(clearButton, cc.xy(3,19));
+		modifyButton.setEnabled(false);
 	}
 
 	/**
@@ -598,13 +612,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		for (JComboBox<Permissions> cbl : cbPList)
 			cbl.setSelectedItem(null);
 		uploadButton.setEnabled(false);
+		modifyButton.setEnabled(false);
 	}
-	
+
 	public void initFields(String type){
 		if (type.equals("profil")){
 			passField.setText(null);
 			confirmPassField.setText(null);
-			mailField.setText(Profil.getInstance().getMail());
 			profilePane.add(clearButton, cc.xy(3,19));
 		}
 	}
@@ -681,7 +695,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	public void progressBar() {
 		//Create the demo's UI.
 		dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
-
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
@@ -693,8 +706,20 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		dlg.setLocationRelativeTo((Frame) getOwner());
 		dlg.setVisible(true);
 	}
-	
-	
+
+	private void setPassDialog() {
+		passDialog = new JDialog((Frame) getOwner(), "Modify Password", true);
+		passDialog.setLayout(new GridLayout(3, 2));
+		passDialog.add(passLabel);
+		passDialog.add(confirmPassLabel);
+		passDialog.add(passField);
+		passDialog.add(confirmPassField);
+		passDialog.add(confirmButton);
+		passDialog.add(cancelButton);
+		passDialog.setSize(300, 125);
+		passDialog.setLocationRelativeTo((Frame) getOwner());
+		passDialog.setVisible(true);
+	}
 
 	/**
 	 * Invoked when task's progress property changes.
@@ -705,7 +730,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			progressBar.setValue(progress);
 			if(progress == 100) dlg.dispose();
 			else progressBar.setString("Uploading");
-		} 
+		}
 	}
 
 	@Override
@@ -713,8 +738,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		if(e.getSource() == mnQuitter){
 			SocketManager.getInstance().logout();
 			System.exit(0);
-		}
-		else if(e.getSource() == mnAide){
+		} else if(e.getSource() == mnAide){
 			if(Desktop.isDesktopSupported())
 			{
 				try {
@@ -723,8 +747,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 					e1.printStackTrace();
 				}
 			}		
-		}
-		else if(e.getSource() == mnProfil){
+		} else if(e.getSource() == mnProfil){
 			clear();
 			initFields("profil");
 			rightPane.removeAll();
@@ -732,8 +755,49 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			rightPane.add(profilePane, new GridBagConstraints());
 			profilePane.repaint(); profilePane.revalidate();
 			rightPane.revalidate();
-		}
-		else if(e.getSource() == addButton){
+		} else if(e.getSource() == modifyButton){
+			if(SocketManager.getInstance().modifyUser(String.valueOf(passField.getPassword())))
+				JOptionPane.showMessageDialog(getContentPane(),
+						"Password has been changed successfully!",
+						"Modifications Successful",
+						JOptionPane.INFORMATION_MESSAGE);
+			else
+				JOptionPane.showMessageDialog(getContentPane(),
+						"Password has not been changed!",
+						"Modifications Failed",
+						JOptionPane.ERROR_MESSAGE);
+			modifyButton.setEnabled(false);
+		} else if(e.getSource() == modifyPassButton){
+			clear();
+			setPassDialog();
+		} else if (e.getSource() == confirmButton){
+			if(String.valueOf(passField.getPassword()).isEmpty() && String.valueOf(confirmPassField.getPassword()).isEmpty()){
+				JOptionPane.showMessageDialog(getContentPane(),
+						"New password has not been set!",
+						"No Password!",
+						JOptionPane.ERROR_MESSAGE);
+			} else if(!String.valueOf(passField.getPassword()).equals(String.valueOf(confirmPassField.getPassword()))){
+				JOptionPane.showMessageDialog(getContentPane(),
+						"Passwords do not match",
+						"Bad Password!",
+						JOptionPane.ERROR_MESSAGE);
+			} else{
+				if(String.valueOf(passField.getPassword()).length() < 8){
+					JOptionPane.showMessageDialog(getContentPane(),
+							"Passwords must be a minimum of 8 characters",
+							"Bad Password!",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				else{
+					modifyButton.setEnabled(true);
+					passDialog.dispose();
+				}
+
+			}
+		} else if (e.getSource() == cancelButton){
+			passDialog.dispose();
+			modifyButton.setEnabled(false);
+		} else if(e.getSource() == addButton){
 			if (!verify(node)){
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Not all data fields have been set",
@@ -742,61 +806,43 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			}
 			else{
 				if (node == uploadAlbums){
-
+					fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());
+				} else if (node == uploadSeries){
+					fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); 
 				}
-				else if (node == uploadSeries){
-
-				}
-				switch (node.toString()) {
-				case "Add New Albums": fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());
-				break;
-				case "Add New Series": fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-						(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); 
-				break;
-				default: break;
-				}
-
 				SocketManager.getInstance().sendMeta(fileC);
-
 				if(fileC instanceof AlbumCollector) SocketManager.getInstance().getList("albums");
 				else SocketManager.getInstance().getList("series");
-
 				populateLists();
-
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Your series/album has been successfully added!",
 						"Success",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
-		}
-		else if(e.getSource() == uploadButton){
+		} else if(e.getSource() == uploadButton){
 			if (!verify(node)){
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Not all data fields have been set",
 						"Insufficient Data",
 						JOptionPane.ERROR_MESSAGE);
-			}
-			else{
+			} else{
 				//Instances of javax.swing.SwingWorker are not reusuable, so
 				//we create new instances as needed.
 				if (node == uploadBooks){
 					fileC = new BookCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());					
-				}
-				else if (node == uploadEpisodes){
+				} else if (node == uploadEpisodes){
 					fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), ((SeriesCollector)seriesBox.getSelectedItem()).getId(), 
 							((SeriesCollector)seriesBox.getSelectedItem()).getTitle(), personField.getText(), seasonField.getText(), chronoField.getText()); 
-				}
-				else if (node == uploadImages){
+				} else if (node == uploadImages){
 					fileC = new ImageCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText());
-				}
-				else if (node == uploadMusic){
+				} else if (node == uploadMusic){
 					fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), 
 							((AlbumCollector) albumBox.getSelectedItem()).getId(), ((AlbumCollector) albumBox.getSelectedItem()).getTitle()); 	
-				}
-				else if (node == uploadMovies){
+				} else if (node == uploadMovies){
 					fileC = new VideoCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); 
 				}
@@ -812,11 +858,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				});
 				clear();
 			}
-		}
-		else if(e.getSource() == clearButton){
+		} else if(e.getSource() == clearButton){
 			clear();
-		}
-		else{
+		} else{
 			JFileChooser theFileChooser = (JFileChooser)e.getSource();
 			String command = e.getActionCommand();
 			if (command.equals(JFileChooser.APPROVE_SELECTION)) {
@@ -831,18 +875,15 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 					if (n == JOptionPane.NO_OPTION) {
 						fc.cancelSelection();
 						uploadButton.setEnabled(false);
-					}
-					else{
+					} else{
 						titleField.setText(selectedFile.getName().substring(0, selectedFile.getName().lastIndexOf(".")));
 						uploadButton.setEnabled(true);
 					}
-				}
-				else{
+				} else{
 					titleField.setText(selectedFile.getName().substring(0, selectedFile.getName().lastIndexOf(".")));
 					uploadButton.setEnabled(true);
 				}
-			}  
-			else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+			} else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 				titleField.setText("");
 				uploadButton.setEnabled(false);
 			}
@@ -857,15 +898,16 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		if (node == null) return;
 
 		/* React to the node selection. */
-		if (node == home) homePage();
-		else{
+		if (node == home){
+			homePage();
+		} else{
 			if (node.getParent() == mediaNode) mediaResultSet(node);
 			else if (node.getParent() == uploadNode) uploadFilePage(node);  
 			else if (node.getParent() == usersNode) userAdmin(node);
 			else parentPage(node);
 		}
 	}
-	
+
 	public static String chooseDirectory(DefaultMutableTreeNode node) {
 		if (node == uploadAlbums) return "Music";
 		else if (node == uploadBooks) return "Books";
