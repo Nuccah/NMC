@@ -300,6 +300,7 @@ public class ServerListener implements Runnable {
 			System.out.println("[Error] - Reception of Profil from: "+cl.getInetAddress()+" failed");
 			if(Main.getDebug()) e.printStackTrace();
 		}
+		Profil.getInstance().setPassword(profil.getPassword());
 		try {
 			mod.modifyUser(profil);
 		} catch (SQLException e) {

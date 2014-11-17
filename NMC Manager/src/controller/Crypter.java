@@ -25,7 +25,6 @@ public class Crypter {
 		try {
 			md = MessageDigest.getInstance("SHA-512", "BC");
 		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-			System.out.println("Algorithme de cryptage ou fournisseur non trouvé!");
 			e.printStackTrace();
 		}
 		

@@ -62,7 +62,6 @@ public class NMCTableModel extends AbstractTableModel {
 			}
 		}
 		else if (mdc instanceof BookCollector){
-			System.out.println(((BookCollector) mdc).getAuthor());
 			switch (col) {
 			case 2:
 				return ((BookCollector) mdc).getAuthor();

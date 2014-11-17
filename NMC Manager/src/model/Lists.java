@@ -120,7 +120,6 @@ public class Lists {
 	}
 	public String returnLabel(int id){
 		for (Permissions perms : this.permissionsList) {
-			System.out.println(perms.getId());
 			if (perms.getId() == id)
 				return perms.getLabel();
 		}

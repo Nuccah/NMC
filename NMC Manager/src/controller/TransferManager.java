@@ -139,7 +139,6 @@ public class TransferManager {
 				AudioCollector cdc = (AudioCollector)mdc;
 				filename = directory+"/"+cdc.getAlbum()+cdc.getAlbumName()+"/"+fToSend.getName();
 				relPath = directory+slash+cdc.getAlbum()+cdc.getAlbumName()+slash+fToSend.getName();
-				System.out.println(filename);
 			}
 			else if (mdc instanceof EpisodeCollector){
 				EpisodeCollector edc = (EpisodeCollector)mdc;
@@ -159,12 +158,10 @@ public class TransferManager {
 			String tmp = conf.getProp("root_dir");
 			while((i = tmp.indexOf("\\")) != -1){
 				root_path = root_path.concat(tmp.substring(0, i)+"/");
-				System.out.println("root_path with i = "+i+": "+root_path);
 				tmp = tmp.substring(i + 1);
 			}
 			root_path = root_path.concat(tmp);
 			if((i = root_path.indexOf(':')) != -1) root_path = root_path.substring(0, i)+root_path.substring(i+1);
-			System.out.println("root_path generated: "+root_path);
 		} else {
 			root_path = conf.getProp("root_dir");
 		}

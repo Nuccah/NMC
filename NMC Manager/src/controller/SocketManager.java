@@ -190,7 +190,6 @@ public class SocketManager extends Socket {
 	 * @param mdc : MetaDataCollector à envoyer
 	 */
 	public boolean sendMeta(MetaDataCollector mdc){
-		System.out.println("Sending :" +mdc.toString());
 		try {
 			String ack = null;
 			do {
@@ -211,7 +210,6 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 			return false;
 		}
-		System.out.println("Metadata Successfully Sent");
 		return true;
 	}
 
@@ -231,27 +229,28 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 			return false;
 		}
-		System.out.println("Return ID: "+id);
 		return true;
 	}
-	
-	public boolean modifyUser(String pass) {
-		Profil.getInstance().setPassword(Crypter.encrypt(pass));
-		String ack = null;
-		try{
-			do{
-				oos.writeObject("modify");
-				ack = String.valueOf(ois.readObject());
-			} while (ack.compareTo("ACK") != 0);
-			ack = null;
-			do{
-				oos.writeObject(Profil.getInstance());
-				ack = String.valueOf(ois.readObject());
-			} while (ack.compareTo("ACK") != 0);
 
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-			return false;
+	public boolean modifyUser(String pass) {
+		if(!Profil.getInstance().getPassword().equals(Crypter.encrypt(pass))){
+			Profil.getInstance().setPassword(Crypter.encrypt(pass));
+			String ack = null;
+			try{
+				do{
+					oos.writeObject("modify");
+					ack = String.valueOf(ois.readObject());
+				} while (ack.compareTo("ACK") != 0);
+				ack = null;
+				do{
+					oos.writeObject(Profil.getInstance());
+					ack = String.valueOf(ois.readObject());
+				} while (ack.compareTo("ACK") != 0);
+
+			} catch (IOException | ClassNotFoundException e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
 		return true;
 	}
@@ -268,7 +267,6 @@ public class SocketManager extends Socket {
 			ois.close();
 			if(!this.isClosed()) this.close();
 		} catch (IOException e) {
-			System.out.println("[Warning] - Socket and Streams are already closed!");
 			e.printStackTrace();
 		}
 	}
