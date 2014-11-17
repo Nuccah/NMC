@@ -54,7 +54,7 @@ public class Retriever {
 				+ "INNER JOIN nmc_bands as nb ON ntb.bands_id = nb.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
-		query.concat(";");
+		query.concat(" ORDER BY title DESC;");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
 			audioList.add(new AudioCollector(rs.getInt("id"), rs.getString("title"), rs.getString("filename"), rs.getString("name"), rs.getInt("album"), rs.getString("albumName")));
@@ -73,7 +73,7 @@ public class Retriever {
 				+ "INNER JOIN nmc_bands as nb ON nmib.bands_id = nb.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
-		query.concat(";");
+		query.concat(" ORDER BY title DESC;");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
 			albumList.add(new AlbumCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("name"), rs.getString("description"), rs.getString("category")));
@@ -92,7 +92,7 @@ public class Retriever {
 				+ "LEFT OUTER JOIN nmc_categories as nc ON nbc.categories_id = nc.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
-		query.concat(";");
+		query.concat(" ORDER BY title DESC;");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
 			bookList.add(new BookCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("path"), rs.getString("name"), rs.getString("category"), rs.getString("description")));
@@ -109,7 +109,7 @@ public class Retriever {
 				+ "INNER JOIN nmc_videos as nv ON nmis.media_id = nv.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
-		query.concat(";");
+		query.concat(" ORDER BY title DESC;");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
 			episodeList.add(new EpisodeCollector(rs.getInt("id"), rs.getString("title"), rs.getString("filename"), rs.getInt("series"), rs.getString("seriesName"), rs.getString("name"), String.valueOf(rs.getInt("season")), String.valueOf(rs.getInt("chrono"))));
@@ -123,10 +123,11 @@ public class Retriever {
 		imageList = new ArrayList<ImageCollector>();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name FROM nmc_media as nmi "
 				+ "LEFT OUTER JOIN nmc_media_photographers as nmp ON nmi.id = nmp.media_id "
-				+ "LEFT OUTER JOIN nmc_persons as np ON nmp.persons_id = np.id ";
+				+ "LEFT OUTER JOIN nmc_persons as np ON nmp.persons_id = np.id "
+				+ "WHERE type = 'image' ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
-		query.concat(";");
+		query.concat(" ORDER BY title DESC;");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
 			imageList.add(new ImageCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("path"), rs.getString("name")));
@@ -143,7 +144,7 @@ public class Retriever {
 				+ "INNER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
-		query.concat(";");
+		query.concat(" ORDER BY title, year DESC;");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
 			seriesList.add(new SeriesCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("description"), rs.getString("category")));
@@ -164,7 +165,7 @@ public class Retriever {
 				+ "LEFT OUTER JOIN nmc_categories as nc ON nfc.categories_id = nc.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
-		query.concat(";");
+		query.concat(" ORDER BY title, year DESC;");
 		ResultSet rs = db.select(query);
 		while(rs.next()){
 			videoList.add(new VideoCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("filename"), rs.getString("name"), rs.getString("category"), rs.getString("description")));
