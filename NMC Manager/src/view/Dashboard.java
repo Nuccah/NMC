@@ -78,12 +78,13 @@ import controller.SocketManager;
 
 public class Dashboard extends JFrame implements ActionListener, TreeSelectionListener, PropertyChangeListener{
 	private static final long serialVersionUID = -5998048938167814342L;
-	private JPanel topPane;
-	private JPanel leftPane;
-	private JPanel rightPane;
-	private JPanel centerPane;
-	private JPanel bottomPane;
-	private JPanel uploadDataPane;
+	private JPanel topPane = new JPanel();;
+	private JPanel leftPane = new JPanel();;
+	private JPanel rightPane = new JPanel();;
+	private JPanel centerPane = new JPanel();;
+	private JPanel bottomPane = new JPanel();;
+	private JPanel uploadDataPane = new JPanel();;
+	private JPanel profilePane = new JPanel();;
 
 	private static final JButton uploadButton = new JButton("Upload");
 	private static final JButton addButton = new JButton("Confirm");
@@ -129,7 +130,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JTextField permField = new JTextField();
 
 	private JTree menuBar;
-	private JFileChooser fc;
+	private JFileChooser fc = new JFileChooser();;
 
 	private DefaultMutableTreeNode node;
 	private final DefaultMutableTreeNode home = new DefaultMutableTreeNode("Home");
@@ -191,15 +192,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private GridBagConstraints rtc = new GridBagConstraints();
 	private GridBagConstraints gcc = new GridBagConstraints();
 	private GridBagConstraints bc = new GridBagConstraints(); 
-	private CellConstraints cc;
+	private CellConstraints cc = new CellConstraints();
 	private JDialog dlg;
 	private JProgressBar progressBar;
 	private UploadTask uTask;
 	private static Dashboard instance = null;
-
-	AlbumCollector albumC;
-	SeriesCollector seriesC;
-	MetaDataCollector fileC;
+	
+	private MetaDataCollector fileC;
 
 	/**
 	 * Creates instance of Dashboard
@@ -231,15 +230,8 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		rtc.gridx = 0; rtc.weightx = 1; rtc.weighty = 0.9; rtc.fill = GridBagConstraints.BOTH;
 		gcc.gridx = 0; gcc.gridy = 1; gcc.weightx = 1; gcc.weighty = 0.8; gcc.fill = GridBagConstraints.BOTH;
 		bc.gridx = 0; bc.gridy = 2; bc.weightx = 1; bc.weighty = 0.1; bc.fill = GridBagConstraints.BOTH;
-
-		topPane = new JPanel();
-		centerPane = new JPanel();
-		leftPane = new JPanel();
-		rightPane = new JPanel();
-		bottomPane = new JPanel();
-		uploadDataPane = new JPanel();
-		fc = new JFileChooser();
-
+		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
+		rc.gridx = 1; rc.gridy = 0; rc.weightx = 0.75; rc.weighty = 1; rc.fill = GridBagConstraints.BOTH;
 
 		topPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		centerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -252,79 +244,39 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		rightPane.setLayout(new GridLayout(1,1));
 		centerPane.setLayout(new GridBagLayout());
 
-		System.out.println(getSize().toString());
-
-		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
-		rc.gridx = 1; rc.gridy = 0; rc.weightx = 0.75; rc.weighty = 1; rc.fill = GridBagConstraints.BOTH;
-
-		leftPane.add(topPane, ltc);
-		centerPane.add(leftPane, lc);
-		centerPane.add(rightPane, rc);
-		getContentPane().add(centerPane, gcc);
-		getContentPane().add(bottomPane, bc);
-
 		leftPane.setMinimumSize(new Dimension(200, 600));
 		centerPane.setMinimumSize(new Dimension(1024, 700));
 		rightPane.setMinimumSize(new Dimension(800, 600));
-
-		pack();
-
-		titleBar();
-		menuBar();
-		bottomBar();
-
-		modifyFileChooser(fc.getComponents());
-
-		fieldList.add(titleField);
-		fieldList.add(yearField);
-		fieldList.add(synopsisField);
-		fieldList.add(genreField);
-		fieldList.add(personField);
-		fieldList.add(chronoField);
-		fieldList.add(seasonField);
-		fieldList.add(passField);
-		fieldList.add(confirmPassField);
-		fieldList.add(mailField);
 		
-		cbPList.add(modificationBox);
-		cbPList.add(visibilityBox);
-
-		clear();
-		populateLists();		
+		setTitleBar();
+		setMenuBar();
+		setBottomBar();
+		setFileChooser(fc.getComponents());
+		
+		populateLists();
+		setComponentLists();
+		setProfilPane();
+		
 		mnProfil.addActionListener(this);
 		mnAide.addActionListener(this);
 		uploadButton.addActionListener(this);
 		clearButton.addActionListener(this);
 		addButton.addActionListener(this);
+		
+		clear();
+
+		centerPane.add(leftPane, lc);
+		centerPane.add(rightPane, rc);
+		getContentPane().add(centerPane, gcc);
+		getContentPane().add(bottomPane, bc);
+		
+		pack();
 	}
 	
 	/**
-	 * Switchcase redirection to appropriate methods
-	 * @param node
-	 */
-	private void parentPage(DefaultMutableTreeNode node) {
-		switch (node.getParent().toString()) {
-		case "Media": mediaResultSet(node); break;
-		case "Series": case "Music": uploadFilePage(node); break;
-		case "User Administration": userAdmin(node); break;
-		default: homePage(); break;
-		}
-	}
-
-	/**
-	 * Home page of client program
-	 * @param node --- TO DELETE
-	 */
-	private void homePage() {
-		rightPane.removeAll();
-		rightPane.add(new JTextArea(node.toString()));
-		rightPane.revalidate();
-	}
-
-	/**
 	 * Barre de menu titulaire
 	 */
-	public void titleBar(){
+	public void setTitleBar(){
 
 		mnProfil.setHorizontalAlignment(SwingConstants.LEFT);
 		topPane.add(mnProfil);
@@ -338,12 +290,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 		topPane.repaint();
 		topPane.revalidate();
+		leftPane.add(topPane, ltc);
 	}
 
 	/**
 	 * Bar de menu pour les gestions possibles
 	 */
-	private void menuBar() {
+	private void setMenuBar() {
 		//create the child nodes
 		mediaNode.add(viewBooks);
 		mediaNode.add(viewImages);
@@ -378,6 +331,103 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		menuBar.addTreeSelectionListener(this);
 		leftPane.add(new JScrollPane(menuBar), rtc);
 
+	}
+
+	/**
+	 * Bottom bar containing Copyright information
+	 */
+	private void setBottomBar() {
+		JTextPane txtpnTest = new JTextPane();
+		txtpnTest.setEditable(false);
+		txtpnTest.setText("Copyright 2014 - nmc_team@nukama.be - Developed By Antoine Ceyssens & Derek Van Hove" );
+		bottomPane.add(txtpnTest);
+	}
+	
+	private void setFileChooser(Component[] components) {
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setControlButtonsAreShown(false);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.addActionListener(this);
+		fc.setMinimumSize(new Dimension(500,600));
+		fc.setBorder(new EmptyBorder(0, 0, 0, 0));
+		Color bg = Color.WHITE;
+		setBG(fc.getComponents(), bg, 0 );
+		fc.setBackground( bg );
+		fc.setOpaque(true);
+	}
+
+	private void setBG( Component[] jc, Color bg, int depth )
+	{
+		for( int i = 0; i < jc.length; i++ ) {
+			Component c = jc[i];
+			if( c instanceof Container )// {
+				setBG( ((Container)c).getComponents(), bg, depth );
+			c.setBackground( bg );
+		}
+	}
+	
+	private void setComponentLists() {
+		fieldList.add(titleField);
+		fieldList.add(yearField);
+		fieldList.add(synopsisField);
+		fieldList.add(genreField);
+		fieldList.add(personField);
+		fieldList.add(chronoField);
+		fieldList.add(seasonField);
+		fieldList.add(passField);
+		fieldList.add(confirmPassField);
+		fieldList.add(mailField);
+		
+		cbPList.add(modificationBox);
+		cbPList.add(visibilityBox);
+	}
+
+	private void setProfilPane() {
+		initFields("profil");
+		userField.setText(Profil.getInstance().getUsername());
+		firstNameField.setText(Profil.getInstance().getFirstName()); firstNameField.setEditable(false);
+		lastNameField.setText(Profil.getInstance().getLastName()); lastNameField.setEditable(false);
+		birthField.setText(Profil.getInstance().getBirthdate()); birthField.setEditable(false);
+		regField.setText(Profil.getInstance().getRegDate()); regField.setEditable(false);
+		permField.setText(Lists.getInstance().returnLabel(Profil.getInstance().getPermissions_id())); permField.setEditable(false);
+		FormLayout layout = new FormLayout(
+				"right:pref, 4dlu, fill:130dlu",
+				"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref");
+		layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
+		profilePane.setLayout(layout);
+		profilePane.add(userLabel, cc.xy(1, 1)); profilePane.add(userField, cc.xy(3,1));
+		profilePane.add(passLabel, cc.xy(1, 3)); profilePane.add(passField, cc.xy(3,3));
+		profilePane.add(confirmPassLabel, cc.xy(1,5)); profilePane.add(confirmPassField, cc.xy(3,5));
+		profilePane.add(mailLabel, cc.xy(1, 7)); profilePane.add(mailField, cc.xy(3,7));
+		profilePane.add(firstNameLabel, cc.xy(1, 9)); profilePane.add(firstNameField, cc.xy(3,9));
+		profilePane.add(lastNameLabel, cc.xy(1, 11)); profilePane.add(lastNameField, cc.xy(3,11));
+		profilePane.add(birthLabel, cc.xy(1, 13)); profilePane.add(birthField, cc.xy(3,13));
+		profilePane.add(regLabel, cc.xy(1, 15)); profilePane.add(regField, cc.xy(3,15));
+		profilePane.add(permLabel, cc.xy(1, 17)); profilePane.add(permField, cc.xy(3,17));
+		profilePane.add(modifyButton, cc.xy(1, 19)); profilePane.add(clearButton, cc.xy(3,19));
+	}
+
+	/**
+	 * Switchcase redirection to appropriate methods
+	 * @param node
+	 */
+	private void parentPage(DefaultMutableTreeNode node) {
+		switch (node.getParent().toString()) {
+		case "Media": mediaResultSet(node); break;
+		case "Series": case "Music": uploadFilePage(node); break;
+		case "User Administration": userAdmin(node); break;
+		default: homePage(); break;
+		}
+	}
+
+	/**
+	 * Home page of client program
+	 * @param node --- TO DELETE
+	 */
+	private void homePage() {
+		rightPane.removeAll();
+		rightPane.add(new JTextArea(node.toString()));
+		rightPane.revalidate();
 	}
 
 	/**
@@ -464,7 +514,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
 			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(layout);
-			cc = new CellConstraints();
 			if(node == uploadAlbums || node == uploadSeries){
 				rightPane.setLayout(new GridBagLayout());
 				addButton.setEnabled(true);
@@ -540,16 +589,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		rightPane.revalidate();
 	}
 
-	/**
-	 * Bottom bar containing Copyright information
-	 */
-	private void bottomBar() {
-		JTextPane txtpnTest = new JTextPane();
-		txtpnTest.setEditable(false);
-		txtpnTest.setText("Copyright 2014 - nmc_team@nukama.be - Developed By Antoine Ceyssens & Derek Van Hove" );
-		bottomPane.add(txtpnTest);
-	}
-
 	public void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText(null);
@@ -563,15 +602,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	
 	public void initFields(String type){
 		if (type.equals("profil")){
-			userField.setText(Profil.getInstance().getUsername());
 			passField.setText(null);
 			confirmPassField.setText(null);
 			mailField.setText(Profil.getInstance().getMail());
-			firstNameField.setText(Profil.getInstance().getFirstName()); firstNameField.setEditable(false);
-			lastNameField.setText(Profil.getInstance().getLastName()); lastNameField.setEditable(false);
-			birthField.setText(Profil.getInstance().getBirthdate()); birthField.setEditable(false);
-			regField.setText(Profil.getInstance().getRegDate()); regField.setEditable(false);
-			permField.setText(Lists.getInstance().returnLabel(Profil.getInstance().getPermissions_id())); permField.setEditable(false);
+			profilePane.add(clearButton, cc.xy(3,19));
 		}
 	}
 
@@ -640,29 +674,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				return false;
 		}
 	}
-	
-	private void modifyFileChooser(Component[] components) {
-		fc.setAcceptAllFileFilterUsed(false);
-		fc.setControlButtonsAreShown(false);
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fc.addActionListener(this);
-		fc.setMinimumSize(new Dimension(500,600));
-		fc.setBorder(new EmptyBorder(0, 0, 0, 0));
-		Color bg = Color.WHITE;
-		setBG(fc.getComponents(), bg, 0 );
-		fc.setBackground( bg );
-		fc.setOpaque(true);
-	}
-
-	private void setBG( Component[] jc, Color bg, int depth )
-	{
-		for( int i = 0; i < jc.length; i++ ) {
-			Component c = jc[i];
-			if( c instanceof Container )// {
-				setBG( ((Container)c).getComponents(), bg, depth );
-			c.setBackground( bg );
-		}
-	}
 
 	/**
 	 * Creation of new progress bar, dialog for each upload
@@ -714,30 +725,12 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			}		
 		}
 		else if(e.getSource() == mnProfil){
-			System.out.println("?");
 			clear();
 			initFields("profil");
 			rightPane.removeAll();
-			uploadDataPane.removeAll();
-			FormLayout layout = new FormLayout(
-					"right:pref, 4dlu, fill:130dlu",
-					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref");
-			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
-			uploadDataPane.setLayout(layout);
-			cc = new CellConstraints();
-			uploadDataPane.add(userLabel, cc.xy(1, 1)); uploadDataPane.add(userField, cc.xy(3,1));
-			uploadDataPane.add(passLabel, cc.xy(1, 3)); uploadDataPane.add(passField, cc.xy(3,3));
-			uploadDataPane.add(confirmPassLabel, cc.xy(1,5)); uploadDataPane.add(confirmPassField, cc.xy(3,5));
-			uploadDataPane.add(mailLabel, cc.xy(1, 7)); uploadDataPane.add(mailField, cc.xy(3,7));
-			uploadDataPane.add(firstNameLabel, cc.xy(1, 9)); uploadDataPane.add(firstNameField, cc.xy(3,9));
-			uploadDataPane.add(lastNameLabel, cc.xy(1, 11)); uploadDataPane.add(lastNameField, cc.xy(3,11));
-			uploadDataPane.add(birthLabel, cc.xy(1, 13)); uploadDataPane.add(birthField, cc.xy(3,13));
-			uploadDataPane.add(regLabel, cc.xy(1, 15)); uploadDataPane.add(regField, cc.xy(3,15));
-			uploadDataPane.add(permLabel, cc.xy(1, 17)); uploadDataPane.add(permField, cc.xy(3,17));
-			uploadDataPane.add(modifyButton, cc.xy(1, 19)); uploadDataPane.add(clearButton, cc.xy(3,19));
 			rightPane.setLayout(new GridBagLayout());
-			rightPane.add(uploadDataPane, new GridBagConstraints());
-			uploadDataPane.repaint(); uploadDataPane.revalidate();
+			rightPane.add(profilePane, new GridBagConstraints());
+			profilePane.repaint(); profilePane.revalidate();
 			rightPane.revalidate();
 		}
 		else if(e.getSource() == addButton){
