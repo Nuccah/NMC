@@ -25,7 +25,7 @@ import model.Config;
  * &nbsp;- restart : crée une nouvelle instance du serveur et tue celle existante. <br />
  * &nbsp;- stop : tue l'instance existante.
  * @author Antoine Ceyssens & Derek Van Hove
- * @version RC2-2.5.2
+ * @version RC3-3.3
  *
  */
 public class Main {
@@ -128,6 +128,11 @@ public class Main {
 		}
 		//--------- Icon Tray End ----------
 		
+		if(!DEBUG) {
+			System.out.flush();
+			System.out.close();
+		}
+		
 		//------------- INIT ---------------
 		if(INIT){
 			if(args[initInd+3] == null){
@@ -184,7 +189,9 @@ public class Main {
 		//-------- SOCKET ZONE END --------
 		
 		//-------- SFTP ZONE --------------
-		TransferManager.getInstance().start();
+		TransferManager tm = TransferManager.getInstance();
+		if(!DEBUG) tm.setDaemon(true);
+		tm.start();		
 		//-------- SFTP ZONE END ----------
 	}
 	/**
