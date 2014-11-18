@@ -206,6 +206,8 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static Dashboard instance = null;
 
 	private MetaDataCollector fileC;
+	
+	private String messagePB;
 
 	/**
 	 * Creates instance of Dashboard
@@ -466,7 +468,16 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	}
 
 	private JScrollPane createTable(String type) {
-		SocketManager.getInstance().getList(type);
+		try {
+			SocketManager.getInstance().getList(type);
+		} catch (ClassNotFoundException | IOException e) {
+			JOptionPane.showMessageDialog(getContentPane(),
+					"Unable to receive updated list after addition of series/album."
+					+ "Please restart the application",
+					"Update Failure",
+					JOptionPane.WARNING_MESSAGE);
+			e.printStackTrace();
+		}
 		JTable table = null;
 		switch (type){
 		case "albums": 
@@ -692,13 +703,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	/**
 	 * Creation of new progress bar, dialog for each upload
 	 */
-	public void progressBar() {
+	public void progressBar(String message) {
 		//Create the demo's UI.
 		dlg = new JDialog((Frame) getOwner(), "Progress Dialog", true);
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
-		progressBar.setString("Converting... (this could take some time)");
+		progressBar.setString(message);
 		dlg.add(BorderLayout.CENTER, progressBar);
 		dlg.add(BorderLayout.NORTH, new JLabel("Progress..."));
 		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -812,14 +823,27 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 					fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); 
 				}
-				SocketManager.getInstance().sendMeta(fileC);
-				if(fileC instanceof AlbumCollector) SocketManager.getInstance().getList("albums");
-				else SocketManager.getInstance().getList("series");
-				populateLists();
-				JOptionPane.showMessageDialog(getContentPane(),
-						"Your series/album has been successfully added!",
-						"Success",
-						JOptionPane.INFORMATION_MESSAGE);
+				if(SocketManager.getInstance().sendMeta(fileC)){
+					try {
+						if (fileC instanceof AlbumCollector)
+							
+								SocketManager.getInstance().getList("albums");
+						else 
+							SocketManager.getInstance().getList("series");
+					} catch (ClassNotFoundException | IOException e1) {
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Unable to receive updated list after addition of series/album."
+								+ "Please restart the application",
+								"Update Failure",
+								JOptionPane.WARNING_MESSAGE);
+						e1.printStackTrace();
+					}	
+					populateLists();
+					JOptionPane.showMessageDialog(getContentPane(),
+							"Your series/album has been successfully added!",
+							"Success",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		} else if(e.getSource() == uploadButton){
 			if (!verify(node)){
@@ -833,18 +857,23 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				if (node == uploadBooks){
 					fileC = new BookCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText());					
+					messagePB = "Uploading";
 				} else if (node == uploadEpisodes){
 					fileC = new EpisodeCollector(titleField.getText(), fc.getSelectedFile().getName(), ((SeriesCollector)seriesBox.getSelectedItem()).getId(), 
 							((SeriesCollector)seriesBox.getSelectedItem()).getTitle(), personField.getText(), seasonField.getText(), chronoField.getText()); 
+					messagePB = "Converting... (this could take some time)";
 				} else if (node == uploadImages){
 					fileC = new ImageCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText());
+					messagePB = "Uploading";
 				} else if (node == uploadMusic){
 					fileC = new AudioCollector(titleField.getText(), fc.getSelectedFile().getName(), personField.getText(), 
-							((AlbumCollector) albumBox.getSelectedItem()).getId(), ((AlbumCollector) albumBox.getSelectedItem()).getTitle()); 	
+							((AlbumCollector) albumBox.getSelectedItem()).getId(), ((AlbumCollector) albumBox.getSelectedItem()).getTitle()); 
+					messagePB = "Converting... (this could take some time)";
 				} else if (node == uploadMovies){
 					fileC = new VideoCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
 							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), fc.getSelectedFile().getName(), personField.getText(), genreField.getText(), synopsisField.getText()); 
+					messagePB = "Converting... (this could take some time)";
 				}
 				uTask = new UploadTask(chooseDirectory(node), fc.getSelectedFile(), fileC);
 				uTask.addPropertyChangeListener(this);
@@ -852,7 +881,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				uTask.execute();
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
-						progressBar();
+						progressBar(messagePB);
 						setCursor(null); //turn off the wait cursor
 					}
 				});
@@ -865,7 +894,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			String command = e.getActionCommand();
 			if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 				File selectedFile = theFileChooser.getSelectedFile();
-				if (((double)(((selectedFile.length()/1024)/1024/1024))) > 5){
+				if (((double)(((selectedFile.length()/1024)/1024/1024))) > 10){
 					int n = JOptionPane.showConfirmDialog((JPanel) getContentPane(),
 							"The file you wish to upload is larger\n"
 									+ "than 10GB, are you sure you wish.\n"

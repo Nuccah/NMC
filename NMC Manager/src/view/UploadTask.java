@@ -126,7 +126,6 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(mdc.toString() + "has been uploaded");
 		} catch (SftpException e){
 			JOptionPane.showMessageDialog(null,  "SFTP Error: " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);

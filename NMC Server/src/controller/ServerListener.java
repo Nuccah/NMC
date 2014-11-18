@@ -147,6 +147,7 @@ public class ServerListener implements Runnable {
 				Profil pf = Profil.getInstance();
 				pf.setUsername(username);
 				pf.setId(res.getInt("id"));
+				pf.setPassword(res.getString("password"));
 				pf.setMail(res.getString("mail"));
 				pf.setFirstName(res.getString("first_name"));
 				pf.setLastName(res.getString("last_name"));

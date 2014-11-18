@@ -131,56 +131,58 @@ public class SocketManager extends Socket {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void getList(String type){
-		try {
-			Lists lists = Lists.getInstance();
-			if (type != "startup"){
-				String ack = null;
-				do{
-					oos.writeObject("list");
-					ack = (String) ois.readObject();
-				} while(ack.compareTo("ACK") != 0);
-				oos.writeObject(type);
-			}
-			else
-				oos.writeObject(type);
-			switch(type){
-			case "startup":
-				Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
-						(ArrayList<Permissions>)ois.readObject(),
-						(ArrayList<AlbumCollector>)ois.readObject(),
-						(ArrayList<SeriesCollector>)ois.readObject()));
-				break;
-			case "albums": 
-				lists.setAlbumList((ArrayList<AlbumCollector>)ois.readObject());
-				break;
-			case "series":
-				lists.setSeriesList((ArrayList<SeriesCollector>)ois.readObject());
-				break;
-			case "audio": 
-				lists.setAudioList((ArrayList<AudioCollector>) ois.readObject());
-				break;
-			case "books": 
-				lists.setBookList((ArrayList<BookCollector>) ois.readObject());
-				break;
-			case "episodes": 
-				lists.setEpisodeList((ArrayList<EpisodeCollector>) ois.readObject());
-				break;
-			case "images": 
-				lists.setImageList((ArrayList<ImageCollector>) ois.readObject());
-				break;
-			case "permissions": 
-				lists.setPermissionsList((ArrayList<Permissions>)ois.readObject());
-				break;
-			case "users": 
-				lists.setUsersList((ArrayList<Profil>)ois.readObject());
-				break;
-			case "videos": 
-				lists.setVideoList((ArrayList<VideoCollector>) ois.readObject());
-				break;
-			}
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
+	public void getList(String type) throws ClassNotFoundException, IOException{
+		Lists lists = Lists.getInstance();
+		if (type != "startup"){
+			String ack = null;
+			do{
+				oos.writeObject("list");
+				ack = (String) ois.readObject();
+			} while(ack.compareTo("ACK") != 0);
+			oos.writeObject(type);
+		}
+		else
+			oos.writeObject(type);
+		switch(type){
+		case "startup":
+			Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
+					(ArrayList<Permissions>)ois.readObject(),
+					(ArrayList<AlbumCollector>)ois.readObject(),
+					(ArrayList<SeriesCollector>)ois.readObject()));
+			break;
+		case "albums": 
+			lists.setAlbumList((ArrayList<AlbumCollector>)ois.readObject());
+			for (AlbumCollector var: Lists.getInstance().getAlbumList())
+				System.out.println(var);
+			break;
+		case "series":
+			lists.setSeriesList((ArrayList<SeriesCollector>)ois.readObject());
+			for (SeriesCollector var: Lists.getInstance().getSeriesList())
+				System.out.println(var);
+			break;
+		case "audio": 
+			lists.setAudioList((ArrayList<AudioCollector>) ois.readObject());
+			break;
+		case "books": 
+			lists.setBookList((ArrayList<BookCollector>) ois.readObject());
+			for (BookCollector var: Lists.getInstance().getBookList())
+				System.out.println(var);
+			break;
+		case "episodes": 
+			lists.setEpisodeList((ArrayList<EpisodeCollector>) ois.readObject());
+			break;
+		case "images": 
+			lists.setImageList((ArrayList<ImageCollector>) ois.readObject());
+			break;
+		case "permissions": 
+			lists.setPermissionsList((ArrayList<Permissions>)ois.readObject());
+			break;
+		case "users": 
+			lists.setUsersList((ArrayList<Profil>)ois.readObject());
+			break;
+		case "videos": 
+			lists.setVideoList((ArrayList<VideoCollector>) ois.readObject());
+			break;
 		}
 
 	}
@@ -233,6 +235,8 @@ public class SocketManager extends Socket {
 	}
 
 	public boolean modifyUser(String pass) {
+		System.out.println(Crypter.encrypt(pass));
+		System.out.println(Profil.getInstance().getPassword());
 		if(!Profil.getInstance().getPassword().equals(Crypter.encrypt(pass))){
 			Profil.getInstance().setPassword(Crypter.encrypt(pass));
 			String ack = null;
@@ -246,7 +250,6 @@ public class SocketManager extends Socket {
 					oos.writeObject(Profil.getInstance());
 					ack = String.valueOf(ois.readObject());
 				} while (ack.compareTo("ACK") != 0);
-
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 				return false;
