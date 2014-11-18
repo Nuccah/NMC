@@ -99,7 +99,7 @@ public class Welcome extends JFrame implements ActionListener {
 		btnSeConnecter.addActionListener(this);
 		footerPanel.add(btnSeConnecter);
 
-		btnChangeIP = new JButton("Change Server IP");
+		btnChangeIP = new JButton("Changer l'adresse serveur");
 		btnChangeIP.setBounds(155, 28, 140, 29);
 		btnChangeIP.addActionListener(this);
 		footerPanel.add(btnChangeIP);

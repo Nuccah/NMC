@@ -146,7 +146,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 		Toolkit.getDefaultToolkit().beep();
 		if (!isCancelled()) {
 			JOptionPane.showMessageDialog(null,
-					"File has been converted & uploaded successfully!", "Message",
+					"Le fichier a bien été converti et téléversé!", "Info",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
