@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
  * @version 1.0
  */
 public class Profil implements Serializable {
-	private static final long serialVersionUID = 1399111452938397134L;
+	private static final long serialVersionUID = 1245938594141489262L;
 	private static Profil instance = null;
 	private int id;
 	private String username;

@@ -79,6 +79,7 @@ public class ServerListener implements Runnable {
 		case "modify":
 			oos.writeObject("ACK");
 			modify();
+			break;
 		case "logout":
 			oos.writeObject("ACK");
 			logout();
@@ -301,8 +302,8 @@ public class ServerListener implements Runnable {
 			System.out.println("[Error] - Reception of Profil from: "+cl.getInetAddress()+" failed");
 			if(Main.getDebug()) e.printStackTrace();
 		}
-		Profil.getInstance().setPassword(profil.getPassword());
 		try {
+			
 			mod.modifyUser(profil);
 		} catch (SQLException e) {
 			System.out.println("[SQL Error] - Could not update profile!");
@@ -327,17 +328,20 @@ public class ServerListener implements Runnable {
 			if(!cl.isClosed()) cl.close();
 		} catch(IOException e){
 			System.out.println("[Warning] - Streams are already closed");
+			if(Main.getDebug()) e.printStackTrace();
 		}		
 	}
 
 	@Override
 	public void run() {
 		try {
-			while(!cl.isClosed()) executeAction();
+			while(!cl.isClosed()){
+				executeAction();
+			}
 		} catch (ClassNotFoundException | IOException e) {
 			if(e instanceof EOFException) System.out.println("[Info] - Socket "+cl.getInetAddress()+" closed");
 			else System.out.println("[Error] - Couldn't define action to execute.");
-		}
+			if(Main.getDebug()) e.printStackTrace();
+		} 
 	}
-
 }

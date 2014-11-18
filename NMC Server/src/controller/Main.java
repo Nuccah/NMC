@@ -172,8 +172,8 @@ public class Main {
 						} finally {
 							try {
 								srv.close();
-							} catch (IOException e) {
 								System.out.println("[Warning] Server listener is closed!");
+							} catch (IOException e) {
 								if(DEBUG) e.printStackTrace();
 							}
 						}

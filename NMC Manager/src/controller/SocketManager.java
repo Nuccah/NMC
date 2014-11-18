@@ -78,7 +78,8 @@ public class SocketManager extends Socket {
 			} while(ack.compareTo("CRED ACK") != 0);
 			oos.writeObject("Ready");
 		} catch(ClassNotFoundException | IOException e){
-			JOptionPane.showMessageDialog(null, "Unable to send credentials to the server.\nPlease verify the server is up.");
+			JOptionPane.showMessageDialog(null, "Unable to send credentials to the server. "
+					+ "Please verify the server is up.");
 			e.printStackTrace();
 		}
 		try {
@@ -235,10 +236,9 @@ public class SocketManager extends Socket {
 	}
 
 	public boolean modifyUser(String pass) {
-		System.out.println(Crypter.encrypt(pass));
-		System.out.println(Profil.getInstance().getPassword());
 		if(!Profil.getInstance().getPassword().equals(Crypter.encrypt(pass))){
-			Profil.getInstance().setPassword(Crypter.encrypt(pass));
+			Profil temp = Profil.getInstance();
+			temp.setPassword(Crypter.encrypt(pass));
 			String ack = null;
 			try{
 				do{
@@ -247,7 +247,7 @@ public class SocketManager extends Socket {
 				} while (ack.compareTo("ACK") != 0);
 				ack = null;
 				do{
-					oos.writeObject(Profil.getInstance());
+					oos.writeObject(temp);
 					ack = String.valueOf(ois.readObject());
 				} while (ack.compareTo("ACK") != 0);
 			} catch (IOException | ClassNotFoundException e) {
