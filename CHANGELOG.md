@@ -1,5 +1,27 @@
 #Changelog NMC Java#
 ----------------
+
+###RC3 - 3.2###
+Features added:
+
+- Server is now daemonized
+
+###RC3 - 3.1###
+Fixes:
+
+- SQL Bug Fix
+- GUI Changes
+
+###RC3###
+Features added:
+
+- New Look & Feel for Windows & Linux!
+
+Fixes:
+
+- Injector Bug Fix
+- Reset filename after transfer
+
 ###RC2 - 2.7###
 Features added:
 
