@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.attribute.standard.MediaName;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -79,13 +80,16 @@ import controller.SocketManager;
 
 public class Dashboard extends JFrame implements ActionListener, TreeSelectionListener, PropertyChangeListener{
 	private static final long serialVersionUID = -5998048938167814342L;
-	private JPanel topPane = new JPanel();;
-	private JPanel leftPane = new JPanel();;
-	private JPanel rightPane = new JPanel();;
-	private JPanel centerPane = new JPanel();;
-	private JPanel bottomPane = new JPanel();;
-	private JPanel uploadDataPane = new JPanel();;
-	private JPanel profilePane = new JPanel();;
+	private JPanel topPane = new JPanel();
+	private JPanel leftPane = new JPanel();
+	private JPanel rightPane = new JPanel();
+	private JPanel centerPane = new JPanel();
+	private JPanel bottomPane = new JPanel();
+	private JPanel uploadDataPane = new JPanel();
+	private JPanel viewPane = new JPanel();
+	private JPanel createUserPane = new JPanel();
+	private JPanel addPermPane = new JPanel();
+	private JPanel profilePane = new JPanel();
 
 	private static final JButton uploadButton = new JButton("Uploader");
 	private static final JButton addButton = new JButton("Ajouter");
@@ -134,7 +138,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JTextField permField = new JTextField();
 
 	private JTree menuBar;
-	private JFileChooser fc = new JFileChooser();;
+	private JFileChooser fc = new JFileChooser();
 
 	private DefaultMutableTreeNode node;
 	private final DefaultMutableTreeNode home = new DefaultMutableTreeNode("Accueil");
@@ -161,7 +165,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("Créer un utilisateur");
 	private static final DefaultMutableTreeNode adminNode = new DefaultMutableTreeNode("Administration");
 	private static final DefaultMutableTreeNode permNode = new DefaultMutableTreeNode("Gérer les droits d'accès");
-	private static final DefaultMutableTreeNode prefNode = new DefaultMutableTreeNode("Préférences");
+//	private static final DefaultMutableTreeNode prefNode = new DefaultMutableTreeNode("Préférences"); [TODO]
 
 	private JTextField titleField = new JTextField();
 	private JTextField yearField = new JTextField();
@@ -175,6 +179,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JComboBox<SeriesCollector> seriesBox = new JComboBox<SeriesCollector>();
 	private JComboBox<Permissions> visibilityBox = new JComboBox<Permissions>();
 	private JComboBox<Permissions> modificationBox = new JComboBox<Permissions>();
+	private JComboBox<Permissions> permissionsBox = new JComboBox<Permissions>();
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox<Permissions>> cbPList = new ArrayList<JComboBox<Permissions>>();
 
@@ -183,11 +188,13 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
 	private static final FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
 
-	private static final String[] albumColumns = new String[]{"ID", "Title", "Artist", "Year", "Genre", "Description", "Modification Rights", "Visibility Rights"};
-	private static final String[] imageColumns = new String[]{"ID", "Title", "Photographer", "Year", "Modification Rights", "Visibility Rights"};
-	private static final String[] bookColumns = new String[]{"ID", "Title", "Author", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
-	private static final String[] videoColumns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Director", "Modification Rights", "Visibility Rights"};
-	private static final String[] seriesColumns = new String[]{"ID", "Title", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
+	private static final String[] albumColumns = new String[]{"Title", "Artist", "Year", "Genre", "Description", "Modification Rights", "Visibility Rights"};
+	private static final String[] imageColumns = new String[]{"Title", "Photographer", "Year", "Modification Rights", "Visibility Rights"};
+	private static final String[] bookColumns = new String[]{"Title", "Author", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
+	private static final String[] videoColumns = new String[]{"Title", "Year", "Genre", "Synopsis", "Director", "Modification Rights", "Visibility Rights"};
+	private static final String[] seriesColumns = new String[]{"Title", "Year", "Genre", "Synopsis", "Modification Rights", "Visibility Rights"};
+	private static final String[] userColumns = new String[]{"Username", "First Name", "Last Name", "Email", "Birthdate", "Registration Date", "Permission Level"};
+	private static final String[] permissionColumns = new String[]{"Label", "Level"};
 
 	private GridBagConstraints lc = new GridBagConstraints();
 	private GridBagConstraints rc = new GridBagConstraints();
@@ -195,9 +202,29 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private GridBagConstraints ltc = new GridBagConstraints();
 	private GridBagConstraints rtc = new GridBagConstraints();
 	private GridBagConstraints gcc = new GridBagConstraints();
-	private GridBagConstraints bc = new GridBagConstraints(); 
+	private GridBagConstraints bc = new GridBagConstraints();
+	private GridBagConstraints vmc = new GridBagConstraints();
 	private CellConstraints cc = new CellConstraints();
-
+	
+	private final FormLayout profileLayout = new FormLayout(
+			"right:pref, 4dlu, fill:130dlu",
+			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
+			+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref");
+	
+	private final FormLayout uploadLayout = new FormLayout(
+			"right:pref, 4dlu, fill:130dlu",
+			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
+			+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
+	
+	private final FormLayout userLayout = new FormLayout(
+			"right:pref, 4dlu, fill:130dlu",
+			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
+			+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
+	
+	private final FormLayout permissionsLayout = new FormLayout(
+			"right:pref, 4dlu, fill:130dlu",
+			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref,");
+	
 	private JDialog dlg;
 	private JDialog passDialog;
 
@@ -241,7 +268,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		bc.gridx = 0; bc.gridy = 2; bc.weightx = 1; bc.weighty = 0.1; bc.fill = GridBagConstraints.BOTH;
 		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
 		rc.gridx = 1; rc.gridy = 0; rc.weightx = 0.75; rc.weighty = 1; rc.fill = GridBagConstraints.BOTH;
-
+		
 		topPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		centerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		leftPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -252,6 +279,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		leftPane.setLayout(new GridBagLayout());
 		rightPane.setLayout(new GridLayout(1,1));
 		centerPane.setLayout(new GridBagLayout());
+		viewPane.setLayout(new GridBagLayout());
 
 		leftPane.setMinimumSize(new Dimension(200, 600));
 		centerPane.setMinimumSize(new Dimension(1024, 700));
@@ -264,7 +292,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 
 		populateLists();
 		setComponentLists();
-		setProfilPane();
+		setCreateUserPane();
 
 		mnProfil.addActionListener(this);
 		mnAide.addActionListener(this);
@@ -331,7 +359,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		usersNode.add(userNode);
 		usersNode.add(adminNode);        
 		usersNode.add(permNode);
-		usersNode.add(prefNode);
+//		usersNode.add(prefNode); [TODO]
 
 		//add the child nodes to the root node
 		home.add(mediaNode);
@@ -390,27 +418,28 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		fieldList.add(passField);
 		fieldList.add(confirmPassField);
 		fieldList.add(mailField);
-		fieldList.add(passField);
-		fieldList.add(confirmPassField);
+		fieldList.add(userField);
+		fieldList.add(firstNameField);
+		fieldList.add(lastNameField);
+		fieldList.add(birthField);
 
 		cbPList.add(modificationBox);
 		cbPList.add(visibilityBox);
+		cbPList.add(permissionsBox);
 	}
 
 	private void setProfilPane() {
 		initFields("profil");
-		userField.setText(Profil.getInstance().getUsername());
+		userField.setText(Profil.getInstance().getUsername()); userField.setEditable(false);
 		mailField.setText(Profil.getInstance().getMail()); mailField.setEditable(false);
 		firstNameField.setText(Profil.getInstance().getFirstName()); firstNameField.setEditable(false);
 		lastNameField.setText(Profil.getInstance().getLastName()); lastNameField.setEditable(false);
 		birthField.setText(Profil.getInstance().getBirthdate()); birthField.setEditable(false);
 		regField.setText(Profil.getInstance().getRegDate()); regField.setEditable(false);
 		permField.setText(Lists.getInstance().returnLabel(Profil.getInstance().getPermissions_id())); permField.setEditable(false);
-		FormLayout layout = new FormLayout(
-				"right:pref, 4dlu, fill:130dlu",
-				"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref");
-		layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
-		profilePane.setLayout(layout);
+		
+		profileLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
+		profilePane.setLayout(profileLayout);
 		profilePane.add(userLabel, cc.xy(1, 1)); profilePane.add(userField, cc.xy(3,1));
 		profilePane.add(passLabel, cc.xy(1, 3)); profilePane.add(modifyPassButton, cc.xy(3,3));
 		profilePane.add(mailLabel, cc.xy(1, 7)); profilePane.add(mailField, cc.xy(3,7));
@@ -422,17 +451,53 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		profilePane.add(modifyButton, cc.xy(1, 19)); profilePane.add(clearButton, cc.xy(3,19));
 		modifyButton.setEnabled(false);
 	}
+	
+	private void setCreateUserPane(){
+		userField.setEditable(true);
+		mailField.setEditable(true);
+		firstNameField.setEditable(true);
+		lastNameField.setEditable(true);
+		birthField.setEditable(true);
+		regField.setEditable(true);
+		permField.setEditable(true);
+		createUserPane.add(userLabel, cc.xy(1, 1)); createUserPane.add(userField, cc.xy(3,1));
+		createUserPane.add(passLabel, cc.xy(1, 3)); createUserPane.add(passField, cc.xy(3,3));
+		createUserPane.add(confirmPassLabel, cc.xy(1, 5)); createUserPane.add(confirmPassField, cc.xy(3,5));
+		createUserPane.add(mailLabel, cc.xy(1, 7)); createUserPane.add(mailField, cc.xy(3,7));
+		createUserPane.add(firstNameLabel, cc.xy(1, 9)); createUserPane.add(firstNameField, cc.xy(3,9));
+		createUserPane.add(lastNameLabel, cc.xy(1, 11)); createUserPane.add(lastNameField, cc.xy(3,11));
+		createUserPane.add(birthLabel, cc.xy(1, 13)); createUserPane.add(birthField, cc.xy(3,13));
+		createUserPane.add(permLabel, cc.xy(1, 15)); createUserPane.add(permissionsBox, cc.xy(3,15));
+		createUserPane.add(addButton, cc.xy(1, 19)); createUserPane.add(clearButton, cc.xy(3,19));
+		createUserPane.revalidate(); 
+		createUserPane.repaint();
+	}
+	
+	private void setPermsPane(){
+		addPermPane.add(addButton, cc.xy(1, 11)); addPermPane.add(clearButton, cc.xy(3,11));
+		addPermPane.revalidate();
+		addPermPane.repaint();
+	}
 
 	/**
 	 * Switchcase redirection to appropriate methods
 	 * @param node
 	 */
 	private void parentPage(DefaultMutableTreeNode node) {
-		switch (node.getParent().toString()) {
-		case "Affichage des Médias": mediaResultSet(node); break;
-		case "Séries": case "Musiques": uploadFilePage(node); break;
-		case "Gérer les utilisateurs": userAdmin(node); break;
-		default: homePage(); break;
+		if (node.getParent() == mediaNode){
+			mediaResultSet(node); 
+		}
+		else if (node.getParent() == seriesNode){
+			uploadFilePage(node); 
+		}
+		else if (node.getParent() == musicNode){
+			uploadFilePage(node); 
+		}
+		else if (node.getParent() == usersNode){
+			userAdmin(node); 
+		}
+		else{
+			homePage(); 
 		}
 	}
 
@@ -452,18 +517,22 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 */
 	private void mediaResultSet(DefaultMutableTreeNode node) {
 		rightPane.removeAll();
+		viewPane.removeAll();
+		vmc.weightx = 1; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
 		if (node == mediaNode)
 			homePage();
 		else if (node == viewBooks)
-			rightPane.add(createTable("books"));
+			viewPane.add(createTable("books"), vmc);
 		else if (node == viewImages)
-			rightPane.add(createTable("images"));
+			viewPane.add(createTable("images"), vmc);
 		else if (node == viewMusic)
-			rightPane.add(createTable("albums"));
+			viewPane.add(createTable("albums"), vmc);
 		else if (node == viewMovies)
-			rightPane.add(createTable("videos"));
+			viewPane.add(createTable("videos"), vmc);
 		else if (node == viewSeries)
-			rightPane.add(createTable("series"));
+			viewPane.add(createTable("series"), vmc);
+		viewPane.revalidate();
+		rightPane.add(viewPane, vmc);
 		rightPane.revalidate();
 	}
 
@@ -495,6 +564,12 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		case "videos": 
 			table = new JTable(new NMCTableModel(Lists.getInstance().getVideoList(), videoColumns)); 
 			break;
+		case "users":
+			table = new JTable(new NMCTableModel(Lists.getInstance().getUsersList(), userColumns));
+			break;
+		case "permissions":
+			table = new JTable(new NMCTableModel(Lists.getInstance().getPermissionsList(), permissionColumns));;
+			break;
 		}
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -507,14 +582,56 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 * @param node
 	 */
 	private void userAdmin(DefaultMutableTreeNode node) {
-		if (node == userNode)
-			homePage();
-		else if (node == adminNode)
-			homePage();
-		else if (node == permNode)
-			homePage();
-		else if (node == prefNode)
-			homePage();
+		clear();
+		rightPane.removeAll();
+		rightPane.setLayout(new GridBagLayout());
+		if (node == userNode){
+			setCreateUserPane();
+			userLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
+			createUserPane.setLayout(userLayout);
+			rightPane.add(createUserPane, new GridBagConstraints());
+		}
+		else if (node == adminNode){
+			viewPane.removeAll();
+			try {
+				SocketManager.getInstance().getList("users");
+			} catch (ClassNotFoundException | IOException e) {
+				JOptionPane.showMessageDialog(getContentPane(),
+						"Impossible de récupérer la liste des utilisateurs."
+						+ "Veuillez relancer l'application",
+						"Erreur de mise à jour",
+						JOptionPane.WARNING_MESSAGE);
+				e.printStackTrace();
+			}
+			vmc.weightx = 1; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
+			viewPane.add(createTable("users"), vmc);
+			rightPane.add(viewPane,vmc);
+		}
+		else if (node == permNode){
+			viewPane.removeAll();
+			setPermsPane();
+			try {
+				SocketManager.getInstance().getList("permissions");
+			} catch (ClassNotFoundException | IOException e) {
+				JOptionPane.showMessageDialog(getContentPane(),
+						"Impossible de récupérer la liste des permissions."
+						+ "Veuillez relancer l'application",
+						"Erreur de mise à jour",
+						JOptionPane.WARNING_MESSAGE);
+				e.printStackTrace();
+			} 
+			permissionsLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11}});
+			addPermPane.setLayout(permissionsLayout);
+			vmc.weightx = 0.2; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
+			viewPane.add(createTable("permissions"), vmc);
+			vmc.weightx = 0.8; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
+			viewPane.add(addPermPane, vmc);
+			rightPane.add(viewPane);
+		}
+//		else if (node == prefNode){
+//			[TODO]
+//		}
+		rightPane.revalidate();
 	}
 
 	/**
@@ -534,11 +651,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 		else{
 			clear();
-			FormLayout layout = new FormLayout(
-					"right:pref, 4dlu, fill:130dlu",
-					"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
-			layout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
-			uploadDataPane.setLayout(layout);
+			
+			uploadLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
+			uploadDataPane.setLayout(uploadLayout);
 			if(node == uploadAlbums || node == uploadSeries){
 				rightPane.setLayout(new GridBagLayout());
 				addButton.setEnabled(true);
@@ -617,7 +732,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	public void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText(null);
-		mailField.setText(Profil.getInstance().getMail());
 		seriesBox.setSelectedItem(null);
 		albumBox.setSelectedItem(null);
 		for (JComboBox<Permissions> cbl : cbPList)
@@ -643,6 +757,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		for(Permissions perms : Lists.getInstance().getPermissionsList()){
 			modificationBox.addItem(perms);
 			visibilityBox.addItem(perms);
+			permissionsBox.addItem(perms);
 		}
 		for(SeriesCollector series : Lists.getInstance().getSeriesList()){
 			seriesBox.addItem(series);
@@ -760,6 +875,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			}		
 		} else if(e.getSource() == mnProfil){
 			clear();
+			setProfilPane();
 			initFields("profil");
 			rightPane.removeAll();
 			rightPane.setLayout(new GridBagLayout());
