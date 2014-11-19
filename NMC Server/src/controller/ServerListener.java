@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import model.AlbumCollector;
@@ -20,6 +21,7 @@ import model.ConnectorDB;
 import model.EpisodeCollector;
 import model.ImageCollector;
 import model.MetaDataCollector;
+import model.Permissions;
 import model.Profil;
 import model.SeriesCollector;
 import model.VideoCollector;
@@ -32,6 +34,15 @@ public class ServerListener implements Runnable {
 	private Socket cl;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
+	private ArrayList<AudioCollector> audioList;
+	private ArrayList<AlbumCollector> albumList;
+	private ArrayList<BookCollector> bookList;
+	private ArrayList<ImageCollector> imageList;
+	private ArrayList<EpisodeCollector> episodeList;
+	private ArrayList<SeriesCollector> seriesList;
+	private ArrayList<VideoCollector> videoList;
+	private ArrayList<Profil> usersList;
+	private ArrayList<Permissions> permissionsList;
 
 	protected ServerListener(Socket cl) {
 		this.cl = cl;
@@ -88,7 +99,7 @@ public class ServerListener implements Runnable {
 			oos.writeObject("NACK");
 		}
 	}
-	
+
 	/**
 	 * Permet d'envoyer les configurations de bases au client
 	 */
@@ -252,23 +263,10 @@ public class ServerListener implements Runnable {
 		try {
 			String action = String.valueOf(ois.readObject());
 			System.out.println(action+" recieved from: "+cl.getInetAddress());
-			switch (action){
-			case "startup":
-				oos.writeObject(Retriever.getInstance().selectUsers(null));
-				oos.writeObject(Retriever.getInstance().selectPermissions(null));
-				oos.writeObject(Retriever.getInstance().selectAlbumList(null));
-				oos.writeObject(Retriever.getInstance().selectSeriesList(null));
-				break;
-			case "albums": oos.writeObject(Retriever.getInstance().selectAlbumList(null)); break;
-			case "series": oos.writeObject(Retriever.getInstance().selectSeriesList(null)); break;
-			case "audio": oos.writeObject(Retriever.getInstance().selectAudioList(null)); break;
-			case "books": oos.writeObject(Retriever.getInstance().selectBookList(null)); break;
-			case "episodes": oos.writeObject(Retriever.getInstance().selectEpisodeList(null)); break;
-			case "images": oos.writeObject(Retriever.getInstance().selectImageList(null)); break;
-			case "permissions": oos.writeObject(Retriever.getInstance().selectPermissions(null)); break;
-			case "users": oos.writeObject(Retriever.getInstance().selectUsers(null)); break;
-			case "videos": oos.writeObject(Retriever.getInstance().selectVideoList(null)); break;
-			}
+			if (action.equals("startup"))
+				createArrayLists(action, null);
+			else
+				oos.writeObject(createArrayLists(action, null));
 		} catch (IOException e) {
 			System.out.println("[Error] - List could not be sent to: "+cl.getInetAddress());
 			if(Main.getDebug()) e.printStackTrace();
@@ -280,7 +278,7 @@ public class ServerListener implements Runnable {
 			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
-	
+
 	private void lastID() {
 		try {
 			oos.writeObject(Retriever.getInstance().selectLastEntry());
@@ -292,10 +290,12 @@ public class ServerListener implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void modify() {
 		Profil profil = null;
+		ResultSet rs = null;
 		Modifier mod = Modifier.getInstance();
+		Retriever retr = Retriever.getInstance();
 		try {
 			profil = (Profil) ois.readObject();
 		} catch (ClassNotFoundException | IOException e) {
@@ -303,8 +303,10 @@ public class ServerListener implements Runnable {
 			if(Main.getDebug()) e.printStackTrace();
 		}
 		try {
-			
-			mod.modifyUser(profil);
+			rs = retr.selectUsers("WHERE id = '"+profil.getId()+"'");
+			if (rs.next())
+				if (!rs.getString("password").equals(profil.getPassword()))
+					mod.modifyUser(profil);
 		} catch (SQLException e) {
 			System.out.println("[SQL Error] - Could not update profile!");
 			if(Main.getDebug()) e.printStackTrace();
@@ -330,6 +332,82 @@ public class ServerListener implements Runnable {
 			System.out.println("[Warning] - Streams are already closed");
 			if(Main.getDebug()) e.printStackTrace();
 		}		
+	}
+
+	private ArrayList<?> createArrayLists(String action, String query) throws IOException, SQLException{
+		ResultSet rs = null;
+		switch (action){
+		case "startup":
+			oos.writeObject(createArrayLists("users", null));
+			oos.writeObject(createArrayLists("permissions", null));
+			oos.writeObject(createArrayLists("albums", null));
+			oos.writeObject(createArrayLists("series", null));
+			return null;
+		case "albums":
+			albumList = new ArrayList<AlbumCollector>();
+			rs = Retriever.getInstance().selectAlbumList(query);
+			while(rs.next()){
+				albumList.add(new AlbumCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("name"), rs.getString("description"), rs.getString("category")));
+			}
+			return albumList;
+		case "audio":
+			audioList = new ArrayList<AudioCollector>();
+			rs = Retriever.getInstance().selectAudioList(query);
+			while(rs.next()){
+				audioList.add(new AudioCollector(rs.getInt("id"), rs.getString("title"), rs.getString("filename"), rs.getString("name"), rs.getInt("album"), rs.getString("albumName")));
+			}
+			return audioList;
+		case "books": 
+			bookList = new ArrayList<BookCollector>();
+			rs = Retriever.getInstance().selectBookList(query);
+			while(rs.next()){
+				bookList.add(new BookCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("path"), rs.getString("name"), rs.getString("category"), rs.getString("description")));
+			}
+			return bookList;
+		case "episodes": 
+			episodeList = new ArrayList<EpisodeCollector>();
+			rs = Retriever.getInstance().selectEpisodeList(query);
+			while(rs.next()){
+				episodeList.add(new EpisodeCollector(rs.getInt("id"), rs.getString("title"), rs.getString("filename"), rs.getInt("series"), rs.getString("seriesName"), rs.getString("name"), String.valueOf(rs.getInt("season")), String.valueOf(rs.getInt("chrono"))));
+			}
+			return episodeList;
+		case "images": 
+			imageList = new ArrayList<ImageCollector>();
+			rs = Retriever.getInstance().selectImageList(query);
+			while(rs.next()){
+				imageList.add(new ImageCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("path"), rs.getString("name")));
+			}
+			return imageList;
+		case "permissions": 
+			permissionsList = new ArrayList<Permissions>();
+			rs = Retriever.getInstance().selectPermissions(query);
+			while(rs.next()){
+				permissionsList.add(new Permissions(rs.getInt("id"), rs.getString("label"), rs.getInt("level")));
+			}
+			return permissionsList;
+		case "series": 
+			seriesList = new ArrayList<SeriesCollector>();
+			rs = Retriever.getInstance().selectSeriesList(query);
+			while(rs.next()){
+				seriesList.add(new SeriesCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("description"), rs.getString("category")));
+			}
+			return seriesList;
+		case "users": 
+			usersList = new ArrayList<Profil>();
+			rs = Retriever.getInstance().selectUsers(query);
+			while(rs.next()){
+				usersList.add(new Profil(rs.getInt("id"), rs.getString("login"), rs.getString("mail"), rs.getString("first_name"), rs.getString("last_name"), rs.getDate("birthdate"), rs.getTimestamp("reg_date"), rs.getInt("permissions_id")));
+			}
+			return usersList;
+		case "videos": 
+			videoList = new ArrayList<VideoCollector>();
+			rs = Retriever.getInstance().selectVideoList(query);
+			while(rs.next()){
+				videoList.add(new VideoCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("filename"), rs.getString("name"), rs.getString("category"), rs.getString("description")));
+			}
+			return videoList;
+		}
+		return null;
 	}
 
 	@Override

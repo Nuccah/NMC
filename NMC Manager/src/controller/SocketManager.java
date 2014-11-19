@@ -236,24 +236,22 @@ public class SocketManager extends Socket {
 	}
 
 	public boolean modifyUser(String pass) {
-		if(!Profil.getInstance().getPassword().equals(Crypter.encrypt(pass))){
-			Profil temp = Profil.getInstance();
-			temp.setPassword(Crypter.encrypt(pass));
-			String ack = null;
-			try{
-				do{
-					oos.writeObject("modify");
-					ack = String.valueOf(ois.readObject());
-				} while (ack.compareTo("ACK") != 0);
-				ack = null;
-				do{
-					oos.writeObject(temp);
-					ack = String.valueOf(ois.readObject());
-				} while (ack.compareTo("ACK") != 0);
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-				return false;
-			}
+		Profil temp = Profil.getInstance();
+		temp.setPassword(Crypter.encrypt(pass));
+		String ack = null;
+		try{
+			do{
+				oos.writeObject("modify");
+				ack = String.valueOf(ois.readObject());
+			} while (ack.compareTo("ACK") != 0);
+			ack = null;
+			do{
+				oos.writeObject(temp);
+				ack = String.valueOf(ois.readObject());
+			} while (ack.compareTo("ACK") != 0);
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
 		}
 		return true;
 	}
