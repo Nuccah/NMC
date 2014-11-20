@@ -234,6 +234,25 @@ public class SocketManager extends Socket {
 		}
 		return true;
 	}
+	
+	public boolean createUser(Profil user){
+		String ack = null;
+		try{
+			do{
+				oos.writeObject("create");
+				ack = String.valueOf(ois.readObject());
+			} while (ack.compareTo("ACK") != 0);
+			ack = null;
+			do{
+				oos.writeObject(user);
+				ack = String.valueOf(ois.readObject());
+			} while (ack.compareTo("ACK") != 0);
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
 	public boolean modifyUser(String pass) {
 		Profil temp = Profil.getInstance();

@@ -38,6 +38,16 @@ public class Profil implements Serializable {
 		permissions_id = 0;
 	}
 	
+	public Profil(String login, String password, String email, String first_name, String last_name, Date birthdate, int permissions_id){
+		this.username = login;
+		this.password = password;
+		this.mail = email;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.birthdate = birthdate;
+		this.permissions_id = permissions_id;
+	}
+	
 	public Profil(int users_id, String login, String email, String first_name, String last_name, Date birthdate, Timestamp reg_date, int permissions_id){
 		this.id = users_id;
 		this.username = login;

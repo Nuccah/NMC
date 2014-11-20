@@ -23,10 +23,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import javax.print.attribute.standard.MediaName;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -70,6 +72,7 @@ import model.VideoCollector;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import controller.Crypter;
 import controller.SocketManager;
 
 /**
@@ -88,7 +91,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JPanel uploadDataPane = new JPanel();
 	private JPanel viewPane = new JPanel();
 	private JPanel createUserPane = new JPanel();
-	private JPanel addPermPane = new JPanel();
 	private JPanel profilePane = new JPanel();
 
 	private static final JButton uploadButton = new JButton("Uploader");
@@ -123,7 +125,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final JLabel mailLabel= new JLabel("Email");
 	private static final JLabel firstNameLabel= new JLabel("Prénom");
 	private static final JLabel lastNameLabel= new JLabel("Nom");
-	private static final JLabel birthLabel= new JLabel("Date de naissance");
+	private static final JLabel birthLabel= new JLabel("Date de naissance (dd/MM/YYYY)");
 	private static final JLabel regLabel= new JLabel("Date d'enregistrement");
 	private static final JLabel permLabel= new JLabel("Droits d'accès");
 
@@ -136,6 +138,17 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JTextField birthField = new JTextField();
 	private JTextField regField = new JTextField();
 	private JTextField permField = new JTextField();
+	private JTextField permLevelField = new JTextField();
+
+	private JTextField titleField = new JTextField();
+	private JTextField yearField = new JTextField();
+	private JTextField synopsisField = new JTextField();
+	private JTextField genreField = new JTextField();
+	private JTextField personField = new JTextField();
+	private JTextField chronoField = new JTextField();
+	private JTextField seasonField = new JTextField();
+
+
 
 	private JTree menuBar;
 	private JFileChooser fc = new JFileChooser();
@@ -165,15 +178,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("Créer un utilisateur");
 	private static final DefaultMutableTreeNode adminNode = new DefaultMutableTreeNode("Administration");
 	private static final DefaultMutableTreeNode permNode = new DefaultMutableTreeNode("Gérer les droits d'accès");
-//	private static final DefaultMutableTreeNode prefNode = new DefaultMutableTreeNode("Préférences"); [TODO]
-
-	private JTextField titleField = new JTextField();
-	private JTextField yearField = new JTextField();
-	private JTextField synopsisField = new JTextField();
-	private JTextField genreField = new JTextField();
-	private JTextField personField = new JTextField();
-	private JTextField chronoField = new JTextField();
-	private JTextField seasonField = new JTextField();
+	//	private static final DefaultMutableTreeNode prefNode = new DefaultMutableTreeNode("Préférences"); [TODO]
 
 	private JComboBox<AlbumCollector> albumBox = new JComboBox<AlbumCollector>();
 	private JComboBox<SeriesCollector> seriesBox = new JComboBox<SeriesCollector>();
@@ -205,26 +210,26 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private GridBagConstraints bc = new GridBagConstraints();
 	private GridBagConstraints vmc = new GridBagConstraints();
 	private CellConstraints cc = new CellConstraints();
-	
+
 	private final FormLayout profileLayout = new FormLayout(
 			"right:pref, 4dlu, fill:130dlu",
 			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
-			+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref");
-	
+					+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref");
+
 	private final FormLayout uploadLayout = new FormLayout(
 			"right:pref, 4dlu, fill:130dlu",
 			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
-			+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
-	
+					+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
+
 	private final FormLayout userLayout = new FormLayout(
 			"right:pref, 4dlu, fill:130dlu",
 			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
-			+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
-	
-	private final FormLayout permissionsLayout = new FormLayout(
-			"right:pref, 4dlu, fill:130dlu",
-			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref,");
-	
+					+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
+
+	//	private final FormLayout permissionsLayout = new FormLayout(
+	//			"right:pref, 4dlu, fill:130dlu",
+	//			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref,");
+
 	private JDialog dlg;
 	private JDialog passDialog;
 
@@ -233,7 +238,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static Dashboard instance = null;
 
 	private MetaDataCollector fileC;
-	
+
 	private String messagePB;
 
 	/**
@@ -268,7 +273,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		bc.gridx = 0; bc.gridy = 2; bc.weightx = 1; bc.weighty = 0.1; bc.fill = GridBagConstraints.BOTH;
 		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
 		rc.gridx = 1; rc.gridy = 0; rc.weightx = 0.75; rc.weighty = 1; rc.fill = GridBagConstraints.BOTH;
-		
+
 		topPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		centerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		leftPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -359,7 +364,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		usersNode.add(userNode);
 		usersNode.add(adminNode);        
 		usersNode.add(permNode);
-//		usersNode.add(prefNode); [TODO]
+		//		usersNode.add(prefNode); [TODO]
 
 		//add the child nodes to the root node
 		home.add(mediaNode);
@@ -422,6 +427,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		fieldList.add(firstNameField);
 		fieldList.add(lastNameField);
 		fieldList.add(birthField);
+		fieldList.add(permLevelField);
 
 		cbPList.add(modificationBox);
 		cbPList.add(visibilityBox);
@@ -437,7 +443,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		birthField.setText(Profil.getInstance().getBirthdate()); birthField.setEditable(false);
 		regField.setText(Profil.getInstance().getRegDate()); regField.setEditable(false);
 		permField.setText(Lists.getInstance().returnLabel(Profil.getInstance().getPermissions_id())); permField.setEditable(false);
-		
+
 		profileLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
 		profilePane.setLayout(profileLayout);
 		profilePane.add(userLabel, cc.xy(1, 1)); profilePane.add(userField, cc.xy(3,1));
@@ -451,7 +457,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		profilePane.add(modifyButton, cc.xy(1, 19)); profilePane.add(clearButton, cc.xy(3,19));
 		modifyButton.setEnabled(false);
 	}
-	
+
 	private void setCreateUserPane(){
 		userField.setEditable(true);
 		mailField.setEditable(true);
@@ -460,24 +466,27 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		birthField.setEditable(true);
 		regField.setEditable(true);
 		permField.setEditable(true);
-		createUserPane.add(userLabel, cc.xy(1, 1)); createUserPane.add(userField, cc.xy(3,1));
-		createUserPane.add(passLabel, cc.xy(1, 3)); createUserPane.add(passField, cc.xy(3,3));
-		createUserPane.add(confirmPassLabel, cc.xy(1, 5)); createUserPane.add(confirmPassField, cc.xy(3,5));
-		createUserPane.add(mailLabel, cc.xy(1, 7)); createUserPane.add(mailField, cc.xy(3,7));
-		createUserPane.add(firstNameLabel, cc.xy(1, 9)); createUserPane.add(firstNameField, cc.xy(3,9));
-		createUserPane.add(lastNameLabel, cc.xy(1, 11)); createUserPane.add(lastNameField, cc.xy(3,11));
-		createUserPane.add(birthLabel, cc.xy(1, 13)); createUserPane.add(birthField, cc.xy(3,13));
-		createUserPane.add(permLabel, cc.xy(1, 15)); createUserPane.add(permissionsBox, cc.xy(3,15));
+		createUserPane.add(userLabel, cc.xy(1, 1)); createUserPane.add(new JLabel("*"), cc.xy(2,1)); createUserPane.add(userField, cc.xy(3,1));
+		createUserPane.add(passLabel, cc.xy(1, 3)); createUserPane.add(new JLabel("*"), cc.xy(2,3)); createUserPane.add(passField, cc.xy(3,3));
+		createUserPane.add(confirmPassLabel, cc.xy(1, 5)); createUserPane.add(new JLabel("*"), cc.xy(2,5)); createUserPane.add(confirmPassField, cc.xy(3,5));
+		createUserPane.add(mailLabel, cc.xy(1, 7)); createUserPane.add(new JLabel("*"), cc.xy(2,7)); createUserPane.add(mailField, cc.xy(3,7));
+		createUserPane.add(firstNameLabel, cc.xy(1, 9)); createUserPane.add(new JLabel("*"), cc.xy(2,9)); createUserPane.add(firstNameField, cc.xy(3,9));
+		createUserPane.add(lastNameLabel, cc.xy(1, 11)); createUserPane.add(new JLabel("*"), cc.xy(2,11)); createUserPane.add(lastNameField, cc.xy(3,11));
+		createUserPane.add(birthLabel, cc.xy(1, 13)); createUserPane.add(new JLabel("*"), cc.xy(2,13)); createUserPane.add(birthField, cc.xy(3,13));
+		createUserPane.add(permLabel, cc.xy(1, 15)); createUserPane.add(new JLabel("*"), cc.xy(2,15)); createUserPane.add(permissionsBox, cc.xy(3,15));
+		createUserPane.add(new JLabel("* = champs requis"), cc.xy(3,17));
 		createUserPane.add(addButton, cc.xy(1, 19)); createUserPane.add(clearButton, cc.xy(3,19));
 		createUserPane.revalidate(); 
 		createUserPane.repaint();
 	}
-	
-	private void setPermsPane(){
-		addPermPane.add(addButton, cc.xy(1, 11)); addPermPane.add(clearButton, cc.xy(3,11));
-		addPermPane.revalidate();
-		addPermPane.repaint();
-	}
+
+	//	private void setPermsPane(){
+	//		addPermPane.add(permLabel, cc.xy(1, 1)); addPermPane.add(permField, cc.xy(3,1));
+	//		addPermPane.add(permLevelLabel, cc.xy(1,3)); addPermPane.add(permLevelField, cc.xy(3,3));
+	//		addPermPane.add(addButton, cc.xy(1, 11)); addPermPane.add(clearButton, cc.xy(3,11));
+	//		addPermPane.revalidate();
+	//		addPermPane.repaint();
+	//	}
 
 	/**
 	 * Switchcase redirection to appropriate methods
@@ -542,9 +551,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		} catch (ClassNotFoundException | IOException e) {
 			JOptionPane.showMessageDialog(getContentPane(),
 					"Impossible de récupérer la liste mise à jour après l'ajout d'une série ou d'un album."
-					+ "Veuillez relancer l'application",
-					"Erreur de mise à jour",
-					JOptionPane.WARNING_MESSAGE);
+							+ "Veuillez relancer l'application",
+							"Erreur de mise à jour",
+							JOptionPane.WARNING_MESSAGE);
 			e.printStackTrace();
 		}
 		JTable table = null;
@@ -586,10 +595,11 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		rightPane.removeAll();
 		rightPane.setLayout(new GridBagLayout());
 		if (node == userNode){
-			setCreateUserPane();
+			createUserPane.removeAll();
 			userLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
 			createUserPane.setLayout(userLayout);
 			rightPane.add(createUserPane, new GridBagConstraints());
+			setCreateUserPane();
 		}
 		else if (node == adminNode){
 			viewPane.removeAll();
@@ -598,9 +608,9 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			} catch (ClassNotFoundException | IOException e) {
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Impossible de récupérer la liste des utilisateurs."
-						+ "Veuillez relancer l'application",
-						"Erreur de mise à jour",
-						JOptionPane.WARNING_MESSAGE);
+								+ "Veuillez relancer l'application",
+								"Erreur de mise à jour",
+								JOptionPane.WARNING_MESSAGE);
 				e.printStackTrace();
 			}
 			vmc.weightx = 1; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
@@ -609,28 +619,22 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 		else if (node == permNode){
 			viewPane.removeAll();
-			setPermsPane();
 			try {
 				SocketManager.getInstance().getList("permissions");
 			} catch (ClassNotFoundException | IOException e) {
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Impossible de récupérer la liste des permissions."
-						+ "Veuillez relancer l'application",
-						"Erreur de mise à jour",
-						JOptionPane.WARNING_MESSAGE);
+								+ "Veuillez relancer l'application",
+								"Erreur de mise à jour",
+								JOptionPane.WARNING_MESSAGE);
 				e.printStackTrace();
 			} 
-			permissionsLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11}});
-			addPermPane.setLayout(permissionsLayout);
-			vmc.weightx = 0.2; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
-			viewPane.add(createTable("permissions"), vmc);
-			vmc.weightx = 0.8; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
-			viewPane.add(addPermPane, vmc);
-			rightPane.add(viewPane);
+			viewPane.add(createTable("permissions"));
+			rightPane.add(viewPane, new GridBagConstraints());
 		}
-//		else if (node == prefNode){
-//			[TODO]
-//		}
+		//		else if (node == prefNode){
+		//			[TODO]
+		//		}
 		rightPane.revalidate();
 	}
 
@@ -651,7 +655,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 		else{
 			clear();
-			
 			uploadLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 			uploadDataPane.setLayout(uploadLayout);
 			if(node == uploadAlbums || node == uploadSeries){
@@ -668,7 +671,6 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				uploadButton.setEnabled(false);
 				uploadDataPane.add(uploadButton,cc.xy(1, 17));
 			}
-
 			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(new JLabel("*"), cc.xy(2,1)); uploadDataPane.add(titleField,cc.xy(3, 1));
 			if (node == uploadAlbums){
 				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
@@ -771,47 +773,59 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	 * @param node the String of the node selected
 	 * @return boolean whether metadata fields are empty or not
 	 */
-	public boolean verify(DefaultMutableTreeNode node){
-		if (titleField.getText().equals(""))
-			return false;
-		else{
-			if (node == uploadAlbums){
-				if (personField.getText().equals("") || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("") || genreField.getText().equals("") )
-					return false;
-				else return true;
-			}
-			else if (node == uploadBooks){
-				if (personField.getText().equals("")|| visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
-					return false;
-				else return true;
-			}
-			else if (node == uploadEpisodes){
-				if (seriesBox.getSelectedItem() == null)
-					return false;
-				else return true;	
-			}
-			else if (node == uploadImages){
-				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
-					return false;
-				else return true;
-			}
-			else if (node == uploadMusic){
-				if (personField == null || albumBox.getSelectedItem() == null || genreField == null)
-					return false;
-				else return true;
-			}
-			else if (node == uploadMovies){
-				if ( visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
-					return false;
-				else return true;
-			}
-			else if (node == uploadSeries){
-				if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("")|| genreField.getText().equals(""))
-					return false;
-				else return true;
-			}
-			else
+	public boolean verify(){
+		if (node == userNode){
+			if(userField.getText().equals("") || passField.getPassword().equals("") || confirmPassField.getPassword().equals("") || mailField.getText().equals("")
+					|| firstNameField.getText().equals("") || lastNameField.getText().equals("") || birthField.getText().equals("") 
+					|| permissionsBox.getSelectedItem() == null){
 				return false;
+			}
+			else{
+				return true;
+			}
+		}
+		else{
+			if (titleField.getText().equals(""))
+				return false;
+			else{
+				if (node == uploadAlbums){
+					if (personField.getText().equals("") || visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("") || genreField.getText().equals("") )
+						return false;
+					else return true;
+				}
+				else if (node == uploadBooks){
+					if (personField.getText().equals("")|| visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
+						return false;
+					else return true;
+				}
+				else if (node == uploadEpisodes){
+					if (seriesBox.getSelectedItem() == null)
+						return false;
+					else return true;	
+				}
+				else if (node == uploadImages){
+					if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null)
+						return false;
+					else return true;
+				}
+				else if (node == uploadMusic){
+					if (personField.getText().equals("") || albumBox.getSelectedItem() == null || genreField.getText().equals(""))
+						return false;
+					else return true;
+				}
+				else if (node == uploadMovies){
+					if ( visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals(""))
+						return false;
+					else return true;
+				}
+				else if (node == uploadSeries){
+					if (visibilityBox.getSelectedItem() == null || modificationBox.getSelectedItem() == null || yearField.getText().equals("")|| genreField.getText().equals(""))
+						return false;
+					else return true;
+				}
+				else
+					return false;
+			}
 		}
 	}
 
@@ -877,6 +891,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			clear();
 			setProfilPane();
 			initFields("profil");
+			menuBar.clearSelection();
 			rightPane.removeAll();
 			rightPane.setLayout(new GridBagLayout());
 			rightPane.add(profilePane, new GridBagConstraints());
@@ -924,45 +939,93 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		} else if (e.getSource() == cancelButton){
 			passDialog.dispose();
 			modifyButton.setEnabled(false);
-		} else if(e.getSource() == addButton){
-			if (!verify(node)){
-				JOptionPane.showMessageDialog(getContentPane(),
-						"Tous les champs requis n'ont pas été rempli",
-						"Pas asssez de données",
-						JOptionPane.ERROR_MESSAGE);
+		} else if(e.getSource() == addButton){ // [TODO]
+			if (node == userNode){
+				if (!verify()){
+					JOptionPane.showMessageDialog(getContentPane(),
+							"Tous les champs requis n'ont pas été rempli",
+							"Pas asssez de données",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				else if(!String.valueOf(passField.getPassword()).equals(String.valueOf(confirmPassField.getPassword()))){
+					JOptionPane.showMessageDialog(getContentPane(),
+							"Passwords do not match",
+							"Bad Credentials",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				else if(passField.getPassword().length < 8){
+					JOptionPane.showMessageDialog(getContentPane(),
+							"Passwords must be at least 8 characters",
+							"Bad Credentials",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				else{
+					long sql = 0;
+					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+					try {
+						Date parsed = format.parse(birthField.getText());
+				        sql = parsed.getTime();
+					} catch (ParseException e1) {
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Date must be encoded as dd/MM/YYYY",
+								"Bad Date",
+								JOptionPane.ERROR_MESSAGE);
+						e1.printStackTrace();
+						return;
+					}
+					Profil tmp = new Profil(userField.getText(), Crypter.encrypt(passField.getPassword().toString()), mailField.getText(), firstNameField.getText(),
+							lastNameField.getText(), new java.sql.Date(sql), ((Permissions)permissionsBox.getSelectedItem()).getId());
+					if(SocketManager.getInstance().createUser(tmp))
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Un nouveau utilisateur a été crée!",
+								"Ajout effectué",
+								JOptionPane.INFORMATION_MESSAGE);
+					else
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Un nouveau utilisateur n'a pas pu etre crée",
+								"Echec",
+								JOptionPane.WARNING_MESSAGE);
+				}
 			}
 			else{
-				if (node == uploadAlbums){
-					fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());
-				} else if (node == uploadSeries){
-					fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
-							(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); 
-				}
-				if(SocketManager.getInstance().sendMeta(fileC)){
-					try {
-						if (fileC instanceof AlbumCollector)
-							
-								SocketManager.getInstance().getList("albums");
-						else 
-							SocketManager.getInstance().getList("series");
-					} catch (ClassNotFoundException | IOException e1) {
-						JOptionPane.showMessageDialog(getContentPane(),
-								"Impossible de récupérer la liste mise à jour après l'ajout d'une série ou d'un album."
-								+ "Veuillez relancer l'application",
-								"Erreur de mise à jour",
-								JOptionPane.WARNING_MESSAGE);
-						e1.printStackTrace();
-					}	
-					populateLists();
+				if (!verify()){
 					JOptionPane.showMessageDialog(getContentPane(),
-							"Votre série / album a bien été ajouté!",
-							"Ajout effectué",
-							JOptionPane.INFORMATION_MESSAGE);
+							"Tous les champs requis n'ont pas été rempli",
+							"Pas asssez de données",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				else{
+					if (node == uploadAlbums){
+						fileC = new AlbumCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+								(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), personField.getText(), synopsisField.getText(), genreField.getText());
+					} else if (node == uploadSeries){
+						fileC = new SeriesCollector(titleField.getText(), yearField.getText(), (int)((Permissions) modificationBox.getSelectedItem()).getLevel(), 
+								(int)((Permissions) visibilityBox.getSelectedItem()).getLevel(), synopsisField.getText(), genreField.getText()); 
+					}
+					if(SocketManager.getInstance().sendMeta(fileC)){
+						try {
+							if (fileC instanceof AlbumCollector)
+								SocketManager.getInstance().getList("albums");
+							else 
+								SocketManager.getInstance().getList("series");
+						} catch (ClassNotFoundException | IOException e1) {
+							JOptionPane.showMessageDialog(getContentPane(),
+									"Impossible de récupérer la liste mise à jour après l'ajout d'une série ou d'un album."
+											+ "Veuillez relancer l'application",
+											"Erreur de mise à jour",
+											JOptionPane.WARNING_MESSAGE);
+							e1.printStackTrace();
+						}	
+						populateLists();
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Votre série / album a bien été ajouté!",
+								"Ajout effectué",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 			}
 		} else if(e.getSource() == uploadButton){
-			if (!verify(node)){
+			if (!verify()){
 				JOptionPane.showMessageDialog(getContentPane(),
 						"Tous les champs requis n'ont pas été rempli",
 						"Pas asssez de données",

@@ -75,6 +75,10 @@ public class ServerListener implements Runnable {
 			oos.writeObject("ACK");
 			recieveMeta();
 			break;
+		case "create" :
+			oos.writeObject("ACK");
+			createUser();
+			break;
 		case "del" :
 			oos.writeObject("ACK");
 			delObject();
@@ -255,6 +259,29 @@ public class ServerListener implements Runnable {
 			if(Main.getDebug()) e.printStackTrace();
 		} catch (SQLException e){
 			System.out.println("[Error] - SQL ERROR");
+			if(Main.getDebug()) e.printStackTrace();
+		}
+	}
+	
+	private void createUser() {
+		Profil profil = null;
+		Injecter inj = new Injecter();
+		try {
+			profil = (Profil) ois.readObject();
+		} catch (ClassNotFoundException | IOException e) {
+			System.out.println("[Error] - Reception of New User from: "+cl.getInetAddress()+" failed");
+			if(Main.getDebug()) e.printStackTrace();
+		}
+		try {
+			inj.injector(profil);
+		} catch (SQLException e) {
+			System.out.println("[SQL Error] - Could not create new user!");
+			if(Main.getDebug()) e.printStackTrace();
+		}
+		try {
+			oos.writeObject("ACK");
+		} catch (IOException e){
+			System.out.println("[Error] - ACK couldn't be sent to: "+cl.getInetAddress());
 			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
