@@ -71,14 +71,15 @@ public class SocketManager extends Socket {
 			do{
 				oos.writeObject("connec");
 				ack = (String) ois.readObject();
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			do{
 				oos.writeObject(credentials);
 				ack = (String) ois.readObject();
 			} while(ack.compareTo("CRED ACK") != 0);
 			oos.writeObject("Ready");
 		} catch(ClassNotFoundException | IOException e){
-			JOptionPane.showMessageDialog(null, "Unable to send credentials to the server.\nPlease verify the server is up.");
+			JOptionPane.showMessageDialog(null, "Unable to send credentials to the server. "
+					+ "Please verify the server is up.");
 			e.printStackTrace();
 		}
 		try {
@@ -105,7 +106,7 @@ public class SocketManager extends Socket {
 			do{
 				oos.writeObject("init");
 				ack = (String) ois.readObject();
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			oos.writeObject("Ready");
 			Properties prop = (Properties) ois.readObject();
 			Config conf = Config.getInstance();
@@ -131,56 +132,58 @@ public class SocketManager extends Socket {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void getList(String type){
-		try {
-			Lists lists = Lists.getInstance();
-			if (type != "startup"){
-				String ack = null;
-				do{
-					oos.writeObject("list");
-					ack = (String) ois.readObject();
-				} while(ack.compareTo("ACK") != 0);
-				oos.writeObject(type);
-			}
-			else
-				oos.writeObject(type);
-			switch(type){
-			case "startup":
-				Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
-						(ArrayList<Permissions>)ois.readObject(),
-						(ArrayList<AlbumCollector>)ois.readObject(),
-						(ArrayList<SeriesCollector>)ois.readObject()));
-				break;
-			case "albums": 
-				lists.setAlbumList((ArrayList<AlbumCollector>)ois.readObject());
-				break;
-			case "series":
-				lists.setSeriesList((ArrayList<SeriesCollector>)ois.readObject());
-				break;
-			case "audio": 
-				lists.setAudioList((ArrayList<AudioCollector>) ois.readObject());
-				break;
-			case "books": 
-				lists.setBookList((ArrayList<BookCollector>) ois.readObject());
-				break;
-			case "episodes": 
-				lists.setEpisodeList((ArrayList<EpisodeCollector>) ois.readObject());
-				break;
-			case "images": 
-				lists.setImageList((ArrayList<ImageCollector>) ois.readObject());
-				break;
-			case "permissions": 
-				lists.setPermissionsList((ArrayList<Permissions>)ois.readObject());
-				break;
-			case "users": 
-				lists.setUsersList((ArrayList<Profil>)ois.readObject());
-				break;
-			case "videos": 
-				lists.setVideoList((ArrayList<VideoCollector>) ois.readObject());
-				break;
-			}
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
+	public void getList(String type) throws ClassNotFoundException, IOException{
+		Lists lists = Lists.getInstance();
+		if (type != "startup"){
+			String ack = null;
+			do{
+				oos.writeObject("list");
+				ack = (String) ois.readObject();
+			} while(!ack.equals("ACK"));
+			oos.writeObject(type);
+		}
+		else
+			oos.writeObject(type);
+		switch(type){
+		case "startup":
+			Lists.setInstance(new Lists((ArrayList<Profil>)ois.readObject(),
+					(ArrayList<Permissions>)ois.readObject(),
+					(ArrayList<AlbumCollector>)ois.readObject(),
+					(ArrayList<SeriesCollector>)ois.readObject()));
+			break;
+		case "albums": 
+			lists.setAlbumList((ArrayList<AlbumCollector>)ois.readObject());
+			for (AlbumCollector var: Lists.getInstance().getAlbumList())
+				System.out.println(var);
+			break;
+		case "series":
+			lists.setSeriesList((ArrayList<SeriesCollector>)ois.readObject());
+			for (SeriesCollector var: Lists.getInstance().getSeriesList())
+				System.out.println(var);
+			break;
+		case "audio": 
+			lists.setAudioList((ArrayList<AudioCollector>) ois.readObject());
+			break;
+		case "books": 
+			lists.setBookList((ArrayList<BookCollector>) ois.readObject());
+			for (BookCollector var: Lists.getInstance().getBookList())
+				System.out.println(var);
+			break;
+		case "episodes": 
+			lists.setEpisodeList((ArrayList<EpisodeCollector>) ois.readObject());
+			break;
+		case "images": 
+			lists.setImageList((ArrayList<ImageCollector>) ois.readObject());
+			break;
+		case "permissions": 
+			lists.setPermissionsList((ArrayList<Permissions>)ois.readObject());
+			break;
+		case "users": 
+			lists.setUsersList((ArrayList<Profil>)ois.readObject());
+			break;
+		case "videos": 
+			lists.setVideoList((ArrayList<VideoCollector>) ois.readObject());
+			break;
 		}
 
 	}
@@ -190,13 +193,12 @@ public class SocketManager extends Socket {
 	 * @param mdc : MetaDataCollector à envoyer
 	 */
 	public boolean sendMeta(MetaDataCollector mdc){
-		System.out.println("Sending :" +mdc.toString());
 		try {
 			String ack = null;
 			do {
 				oos.writeObject("meta");
 				ack = String.valueOf(ois.readObject());
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			ack = null;
 			do {
 				oos.writeObject(mdc);
@@ -205,13 +207,12 @@ public class SocketManager extends Socket {
 					JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
 					return false;
 				}
-			} while(ack.compareTo("ACK") != 0);			
+			} while(!ack.equals("ACK"));			
 		} catch (IOException | ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
 			e.printStackTrace();
 			return false;
 		}
-		System.out.println("Metadata Successfully Sent");
 		return true;
 	}
 
@@ -222,7 +223,7 @@ public class SocketManager extends Socket {
 			do {
 				oos.writeObject("last");
 				ack = String.valueOf(ois.readObject());
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			do{
 				id = (int) ois.readObject();
 			}while(id == -1) ;
@@ -231,7 +232,53 @@ public class SocketManager extends Socket {
 			e.printStackTrace();
 			return false;
 		}
-		System.out.println("Return ID: "+id);
+		return true;
+	}
+	
+	public boolean createUser(Profil user){
+		String ack = null;
+		try{
+			do{
+				oos.writeObject("create");
+				ack = String.valueOf(ois.readObject());
+			} while (!ack.equals("ACK"));
+			ack = null;
+			do{
+				oos.writeObject(user);
+				ack = String.valueOf(ois.readObject());
+				if(ack.equals("NACK")){
+					JOptionPane.showMessageDialog(null,
+							"Utilisateur deja existant!",
+							"Echec",
+							JOptionPane.WARNING_MESSAGE);
+					return false;
+				}
+			} while (!ack.equals("ACK"));
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	public boolean modifyUser(String pass) {
+		Profil temp = Profil.getInstance();
+		temp.setPassword(Crypter.encrypt(pass));
+		String ack = null;
+		try{
+			do{
+				oos.writeObject("modify");
+				ack = String.valueOf(ois.readObject());
+			} while (!ack.equals("ACK"));
+			ack = null;
+			do{
+				oos.writeObject(temp);
+				ack = String.valueOf(ois.readObject());
+			} while (!ack.equals("ACK"));
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 
@@ -247,9 +294,7 @@ public class SocketManager extends Socket {
 			ois.close();
 			if(!this.isClosed()) this.close();
 		} catch (IOException e) {
-			System.out.println("[Warning] - Socket and Streams are already closed!");
 			e.printStackTrace();
 		}
 	}
-
 }

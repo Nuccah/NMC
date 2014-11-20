@@ -126,7 +126,6 @@ public class UploadTask extends SwingWorker<Void, Void> {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(mdc.toString() + "has been uploaded");
 		} catch (SftpException e){
 			JOptionPane.showMessageDialog(null,  "SFTP Error: " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
@@ -147,7 +146,7 @@ public class UploadTask extends SwingWorker<Void, Void> {
 		Toolkit.getDefaultToolkit().beep();
 		if (!isCancelled()) {
 			JOptionPane.showMessageDialog(null,
-					"File has been converted & uploaded successfully!", "Message",
+					"Le fichier a bien été converti et téléversé!", "Info",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 	}

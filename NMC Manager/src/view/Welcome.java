@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -19,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 
 import model.Config;
 import controller.SocketManager;
@@ -42,13 +40,6 @@ public class Welcome extends JFrame implements ActionListener {
 	public Welcome() {
 		super(Config.getInstance().getProp("base_title")+"Bienvenue");
 		setResizable(false);
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
-			UIManager.put("OptionPane.background",Color.WHITE);
-		} catch (Exception e) {
-			// If Nimbus is not available, you can set the GUI to another look and feel.
-		}
 		BoxLayout mainBox = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
 		getContentPane().setLayout(mainBox);
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -108,7 +99,7 @@ public class Welcome extends JFrame implements ActionListener {
 		btnSeConnecter.addActionListener(this);
 		footerPanel.add(btnSeConnecter);
 
-		btnChangeIP = new JButton("Change Server IP");
+		btnChangeIP = new JButton("Changer l'adresse serveur");
 		btnChangeIP.setBounds(155, 28, 140, 29);
 		btnChangeIP.addActionListener(this);
 		footerPanel.add(btnChangeIP);

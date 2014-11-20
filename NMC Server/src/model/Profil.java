@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  * @version 1.0
  */
 public class Profil implements Serializable {
-	private static final long serialVersionUID = 1399111452938397134L;
+	private static final long serialVersionUID = 1245938594141489262L;
 	private static Profil instance = null;
 	private int id;
 	private String username;
@@ -35,6 +35,16 @@ public class Profil implements Serializable {
 		birthdate = null;
 		reg_date  = null;
 		permissions_id = 0;
+	}
+	
+	public Profil(String login, String password, String email, String first_name, String last_name, Date birthdate, int permissions_id){
+		this.username = login;
+		this.password = password;
+		this.mail = email;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.birthdate = birthdate;
+		this.permissions_id = permissions_id;
 	}
 	
 	public Profil(int users_id, String login, String email, String first_name, String last_name, Date birthdate, Timestamp reg_date, int permissions_id){

@@ -20,11 +20,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
-import controller.SocketManager;
 import model.Config;
+import controller.SocketManager;
 
 public class IpAsk extends JFrame implements ActionListener{
 	private static final long serialVersionUID = -1447417979022041682L;
@@ -35,16 +33,6 @@ public class IpAsk extends JFrame implements ActionListener{
 	public IpAsk(){
 		super(Config.getInstance().getProp("base_title")+"Initialisation");
 		setResizable(false);
-		try {
-		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Nimbus".equals(info.getName())) {
-		        	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		            break;
-		        }
-		    }
-		} catch (Exception e) {
-		    // If Nimbus is not available, you can set the GUI to another look and feel.
-		}
 		BoxLayout mainBox = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
 		getContentPane().setLayout(mainBox);
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
