@@ -939,7 +939,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		} else if (e.getSource() == cancelButton){
 			passDialog.dispose();
 			modifyButton.setEnabled(false);
-		} else if(e.getSource() == addButton){ // [TODO]
+		} else if(e.getSource() == addButton){
 			if (node == userNode){
 				if (!verify()){
 					JOptionPane.showMessageDialog(getContentPane(),

@@ -266,6 +266,7 @@ public class ServerListener implements Runnable {
 	private void createUser() {
 		Profil profil = null;
 		Injecter inj = new Injecter();
+		boolean succeeded = true;
 		try {
 			profil = (Profil) ois.readObject();
 		} catch (ClassNotFoundException | IOException e) {
@@ -275,14 +276,23 @@ public class ServerListener implements Runnable {
 		try {
 			inj.injector(profil);
 		} catch (SQLException e) {
+			succeeded = false;
 			System.out.println("[SQL Error] - Could not create new user!");
+			try {
+				oos.writeObject("NACK");
+			} catch (IOException e1) {
+				System.out.println("[Error] - NACK couldn't be sent to: "+cl.getInetAddress());
+				if(Main.getDebug()) e.printStackTrace();
+			}
 			if(Main.getDebug()) e.printStackTrace();
 		}
-		try {
-			oos.writeObject("ACK");
-		} catch (IOException e){
-			System.out.println("[Error] - ACK couldn't be sent to: "+cl.getInetAddress());
-			if(Main.getDebug()) e.printStackTrace();
+		if (succeeded){
+			try {
+				oos.writeObject("ACK");
+			} catch (IOException e){
+				System.out.println("[Error] - ACK couldn't be sent to: "+cl.getInetAddress());
+				if(Main.getDebug()) e.printStackTrace();
+			}
 		}
 	}
 

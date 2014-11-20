@@ -71,7 +71,7 @@ public class SocketManager extends Socket {
 			do{
 				oos.writeObject("connec");
 				ack = (String) ois.readObject();
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			do{
 				oos.writeObject(credentials);
 				ack = (String) ois.readObject();
@@ -106,7 +106,7 @@ public class SocketManager extends Socket {
 			do{
 				oos.writeObject("init");
 				ack = (String) ois.readObject();
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			oos.writeObject("Ready");
 			Properties prop = (Properties) ois.readObject();
 			Config conf = Config.getInstance();
@@ -139,7 +139,7 @@ public class SocketManager extends Socket {
 			do{
 				oos.writeObject("list");
 				ack = (String) ois.readObject();
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			oos.writeObject(type);
 		}
 		else
@@ -198,7 +198,7 @@ public class SocketManager extends Socket {
 			do {
 				oos.writeObject("meta");
 				ack = String.valueOf(ois.readObject());
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			ack = null;
 			do {
 				oos.writeObject(mdc);
@@ -207,7 +207,7 @@ public class SocketManager extends Socket {
 					JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
 					return false;
 				}
-			} while(ack.compareTo("ACK") != 0);			
+			} while(!ack.equals("ACK"));			
 		} catch (IOException | ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Unable to send meta data for: "+mdc.getTitle());
 			e.printStackTrace();
@@ -223,7 +223,7 @@ public class SocketManager extends Socket {
 			do {
 				oos.writeObject("last");
 				ack = String.valueOf(ois.readObject());
-			} while(ack.compareTo("ACK") != 0);
+			} while(!ack.equals("ACK"));
 			do{
 				id = (int) ois.readObject();
 			}while(id == -1) ;
@@ -241,12 +241,19 @@ public class SocketManager extends Socket {
 			do{
 				oos.writeObject("create");
 				ack = String.valueOf(ois.readObject());
-			} while (ack.compareTo("ACK") != 0);
+			} while (!ack.equals("ACK"));
 			ack = null;
 			do{
 				oos.writeObject(user);
 				ack = String.valueOf(ois.readObject());
-			} while (ack.compareTo("ACK") != 0);
+				if(ack.equals("NACK")){
+					JOptionPane.showMessageDialog(null,
+							"Utilisateur deja existant!",
+							"Echec",
+							JOptionPane.WARNING_MESSAGE);
+					return false;
+				}
+			} while (!ack.equals("ACK"));
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			return false;
@@ -262,12 +269,12 @@ public class SocketManager extends Socket {
 			do{
 				oos.writeObject("modify");
 				ack = String.valueOf(ois.readObject());
-			} while (ack.compareTo("ACK") != 0);
+			} while (!ack.equals("ACK"));
 			ack = null;
 			do{
 				oos.writeObject(temp);
 				ack = String.valueOf(ois.readObject());
-			} while (ack.compareTo("ACK") != 0);
+			} while (!ack.equals("ACK"));
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			return false;
