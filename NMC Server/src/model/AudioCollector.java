@@ -15,6 +15,14 @@ public class AudioCollector extends MetaDataCollector{
 		this.albumName = albumName;
 	}
 	
+	public AudioCollector(String title, String filename, String artist, int album, String albumName, int adder) {
+		super(title, adder);
+		this.artist = artist;
+		this.filename = filename;
+		this.album = album;
+		this.albumName = albumName;
+	}
+	
 	public AudioCollector(int id, String title, String filename, String artist, int album, String albumName) {
 		super(id, title);
 		this.artist = artist;

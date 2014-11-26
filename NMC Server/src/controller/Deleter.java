@@ -1,7 +1,11 @@
 package controller;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import model.ConnectorDB;
 
 /**
  * Classe de suppression définitive de fichiers sur le serveur
@@ -10,12 +14,12 @@ import java.util.ArrayList;
  */
 public class Deleter {
 	private static Deleter instance = null;
-	private ArrayList<File> listFileToDelete;
-	
+	private ConnectorDB db;
+
 	protected Deleter(){
-		listFileToDelete = new ArrayList<File>();
+		this.db = ConnectorDB.getInstance();
 	}
-	
+
 	public static Deleter getInstance(){
 		if(instance == null){
 			instance = new Deleter();
@@ -25,18 +29,210 @@ public class Deleter {
 	/**
 	 * Supprime les fichiers contenus dans l'arraylist listToDelete
 	 */
-	public void deleteFile(){
-		while(!listFileToDelete.isEmpty()){
-			listFileToDelete.get(listFileToDelete.size() - 1).delete();
-			listFileToDelete.remove(listFileToDelete.size() - 1);
+	private boolean deleteFile(ResultSet rs, String type){
+		String path = null;
+		try {
+			if (!rs.next()){
+				return false;
+			}
+		} catch (SQLException e) {
+			System.out.println("[ERROR] - NO SQL RESULT");
+			if(Main.getDebug()) e.printStackTrace();
+			return false;
 		}
+		try {
+			switch (type){
+			case "pathfilename": 
+				path = rs.getString("path");
+				path.concat(rs.getString("filename"));
+				break;
+			case "path": 
+				path = rs.getString("path");
+				break;
+			}
+		} catch (SQLException e) {
+			System.out.println("[ERROR] - Could not retrieve path or filename");
+			if(Main.getDebug()) e.printStackTrace();
+			return false;
+		}
+		try {
+			if (!delete(path)){
+				System.out.println(path);
+				return false;
+			}
+				
+		} catch (IOException e) {
+			System.out.println("[ERROR] - Error when attempting to delete file/folder");
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
-	
-	/**
-	 * Permet de récupérer la liste des fichiers à supprimer
-	 * @return L'ArrayList des fichiers à supprimer
-	 */
-	public ArrayList<File> getFilesToConvert(){
-		return listFileToDelete;
+
+	public boolean delete(String path) throws IOException {
+		File f = new File(path);
+		if (!f.exists()) {
+			System.out.println("3");
+			return false;
+		}
+
+		if (!f.isDirectory()){
+			f.delete();
+			return true;
+		}
+		
+		String[] list = f.list();
+		for (int i = 0; i < list.length; i++) {
+			System.out.println(f.getAbsolutePath() + File.separator + list[i]);
+			delete(f.getAbsolutePath() + File.separator + list[i]);
+		}
+		f.delete();
+		return true;
+	}
+
+	public boolean deleteAlbum(int id) throws SQLException{
+		db.openConnection();
+
+		String query0 = "SELECT path FROM nmc_media WHERE id = "+id+";";
+		String query1 = "DELETE FROM nmc_tracks WHERE id = (SELECT tracks_id FROM nmc_tracks_albums WHERE media_id = "+id+");";
+		String query2 = "DELETE FROM nmc_media WHERE id = "+id+";";
+
+		if (deleteFile(db.select(query0), "path")){
+			db.modify(query1);
+			db.modify(query2);
+		}
+		else{
+			db.closeConnection();
+			return false;
+		}
+		db.closeConnection();
+		return true;
+	}
+
+	public boolean deleteAudio(int id) throws SQLException{
+		db.openConnection();
+
+		String query0 = "SELECT path, filename FROM nmc_tracks as nt"
+				+ " INNER JOIN nmc_tracks_albums as nta ON nt.id = nta.tracks_id"
+				+ " INNER JOIN nmc_media as nm ON nta.media_id = nm.id"
+				+ " WHERE nt.id = "+id+";";
+		String query1 = "DELETE from nmc_tracks WHERE nt.id = "+id+";";
+
+		if (deleteFile(db.select(query0), "pathfilename")){
+			db.modify(query1);
+		}
+		else{
+			db.closeConnection();
+			return false;
+		}
+		db.closeConnection();
+		return true;
+	}
+
+	public boolean deleteBook(int id) throws SQLException{
+		db.openConnection();
+
+		String query0 = "SELECT path FROM nmc_media WHERE id = "+id+";";
+		String query1 = "DELETE FROM nmc_media WHERE id = "+id+";";
+
+		if (deleteFile(db.select(query0), "path")){
+			db.modify(query1);
+		}
+		else{
+			db.closeConnection();
+			return false;
+		}
+		db.modify(query1);
+		db.closeConnection();
+		return true;
+	}
+
+	public boolean deleteEpisode(int id) throws SQLException{
+		db.openConnection();
+
+		String query0 = "SELECT path, filename FROM nmc_videos as nv"
+				+ " INNER JOIN nmc_media_series as nms ON nv.id = nms.episodes_id"
+				+ " INNER JOIN nmc_media as nm ON nms.media_id = nm.id"
+				+ " WHERE nv.id = "+id+";";
+		String query1 = "DELETE FROM nmc_videos WHERE id = "+id+";"; 
+
+		if (deleteFile(db.select(query0), "pathfilename")){
+			db.modify(query1);
+		}
+		else{
+			db.closeConnection();
+			return false;
+		}
+		db.modify(query1);
+		db.closeConnection();
+		return true;
+	}
+
+	public boolean deleteImage(int id) throws SQLException{
+		db.openConnection();
+
+		String query0 = "SELECT path FROM nmc_media WHERE id = "+id+";";
+		String query1 = "DELETE FROM nmc_media WHERE id = "+id+";"; 
+
+		if (deleteFile(db.select(query0), "path")){
+			db.modify(query1);
+		}
+		else{
+			db.closeConnection();
+			return false;
+		}
+		db.modify(query1);
+		db.closeConnection();
+		return true;
+	}
+
+	public boolean deleteSeries(int id) throws SQLException{
+		db.openConnection();
+		String query0 = "SELECT path FROM nmc_media WHERE id = "+id+";";
+		String query1 = "DELETE FROM nmc_videos WHERE id = (SELECT episodes_id FROM nmc_media_series WHERE media_id = "+id+");";
+		String query2 = "DELETE FROM nmc_media WHERE id = "+id+";"; 
+
+		if (deleteFile(db.select(query0), "path")){
+			db.modify(query1);
+			db.modify(query2);
+		}
+		else{
+			System.out.println("yolo shit");
+			db.closeConnection();
+			return false;
+		}
+		db.closeConnection();
+		return true;
+	}
+
+	public boolean deleteVideo(int id) throws SQLException{
+		db.openConnection();
+		String query0 = "SELECT path, filename FROM nmc_media as nm"
+				+ " INNER JOIN nmc_media_films as nmf ON nm.id = nmf.media_id"
+				+ " INNER JOIN nmc_videos as nv ON nmf.videos_id = nv.id"
+				+ " WHERE nm.id = "+id+";";
+		String query1 = "DELETE FROM nmc_videos WHERE id = (SELECT videos_id FROM nmc_media_films WHERE media_id = "+id+");";
+		String query2 =	"DELETE FROM nmc_media WHERE id = "+id+";";  	
+		
+		if (deleteFile(db.select(query0), "path")){
+			db.modify(query1);
+			db.modify(query2);
+		}
+		else{
+			db.closeConnection();
+			return false;
+		}
+		db.closeConnection();
+		return true;
+	}
+
+	public boolean deleteUser(int id) throws SQLException{
+		db.openConnection();
+
+		String query1 = "DELETE FROM nmc_users WHERE id = "+id+";";		
+
+		db.modify(query1);
+		db.closeConnection();
+		return true;
 	}
 }
