@@ -71,8 +71,8 @@ public class Injecter {
 	}
 
 	public void injector(AlbumCollector album) throws SQLException{
-		album.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Music"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+album.getTitle()+Parser.getInstance().getSlash());
 		db.openConnection();
+		album.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Music"+Parser.getInstance().getSlash()+album.getTitle()+Parser.getInstance().getSlash());
 		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+album.getAdder()+"');";
 		String query2;
 		if(album.getDescription().isEmpty())
@@ -83,20 +83,26 @@ public class Injecter {
 		String query4 = "INSERT INTO nmc_media_bands VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_bands WHERE name = '"+album.getArtist()+"'));";
 		String query5 = "INSERT INTO nmc_categories(\"category\") SELECT '"+album.getGenre()+"' WHERE NOT EXISTS (SELECT id FROM nmc_categories WHERE category = '"+album.getGenre()+"');";
 		String query6 = "INSERT INTO nmc_albums_categories VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_categories WHERE category = '"+album.getGenre()+"'));";
-
 		db.modify(query1);
 		db.modify(query2);
 		db.modify(query3);
 		db.modify(query4);
 		db.modify(query5);
 		db.modify(query6);
-
+		db.closeConnection();
+		
+		int lastEntry = Retriever.getInstance().selectLastEntry();
+		album.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Music"+Parser.getInstance().getSlash()+lastEntry+album.getTitle()+Parser.getInstance().getSlash());
+		String query8 = "UPDATE nmc_media SET path = '"+album.getAbsPath()+"' WHERE id = '"+lastEntry+"';";
+		
+		db.openConnection();
+		db.modify(query8);
 		db.closeConnection();		
 	}
 
 	public void injector(BookCollector book) throws SQLException{
-		book.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Books"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+book.getFilename());
 		db.openConnection();
+		book.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Books"+Parser.getInstance().getSlash()+book.getFilename());
 		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+book.getAdder()+"');";
 		String query2;
 		String query4 = null;
@@ -125,12 +131,20 @@ public class Injecter {
 			db.modify(query6);
 			db.modify(query7);
 		}
+		db.closeConnection();
+		
+		int lastEntry = Retriever.getInstance().selectLastEntry();
+		book.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Books"+Parser.getInstance().getSlash()+lastEntry+book.getFilename());
+		String query8 = "UPDATE nmc_media SET path = '"+book.getAbsPath()+"' WHERE id = '"+lastEntry+"';";
+		
+		db.openConnection();
+		db.modify(query8);
 		db.closeConnection();		
 	}
 
 	public void injector(ImageCollector image) throws SQLException{
-		image.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Images"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+image.getFilename());
 		db.openConnection();
+		image.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Images"+Parser.getInstance().getSlash()+image.getFilename());
 		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+image.getAdder()+"');"; 
 		String query2 = null;
 		if (!image.getYear().isEmpty())
@@ -143,20 +157,26 @@ public class Injecter {
 			query3 =	"INSERT INTO nmc_persons(\"name\") SELECT '"+image.getPhotographer()+"' WHERE NOT EXISTS (SELECT id FROM nmc_persons WHERE name = '"+image.getPhotographer()+"');";
 			query4 = "INSERT INTO nmc_media_photographers VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+image.getPhotographer()+"'));";
 		}
-
 		db.modify(query1);
 		db.modify(query2);
 		if (!image.getPhotographer().isEmpty()){
 			db.modify(query3);
 			db.modify(query4);
 		}
-
+		db.closeConnection();
+		
+		int lastEntry = Retriever.getInstance().selectLastEntry();
+		image.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Images"+Parser.getInstance().getSlash()+lastEntry+image.getFilename());
+		String query8 = "UPDATE nmc_media SET path = '"+image.getAbsPath()+"' WHERE id = '"+lastEntry+"';";
+		
+		db.openConnection();
+		db.modify(query8);
 		db.closeConnection();		
 	}
 
 	public void injector(VideoCollector video) throws SQLException{
 		video.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Movies"+Parser.getInstance().getSlash());
-		String temp = (Retriever.getInstance().selectLastEntry()+1)+video.getFilename();
+		String temp = video.getFilename();
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+video.getAdder()+"');";
 		String query2;
@@ -179,7 +199,6 @@ public class Injecter {
 			query9 = "INSERT INTO nmc_videos_directors VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+video.getDirector()+"'));";
 		}
 		String query10 = "INSERT INTO nmc_users_watched_videos VALUES ('"+Profil.getInstance().getId()+"',(SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1), 'false');";
-
 		db.modify(query1);
 		db.modify(query2);
 		db.modify(query4);
@@ -193,13 +212,20 @@ public class Injecter {
 			db.modify(query9);
 		}
 		db.modify(query10);
-
+		db.closeConnection();
+		
+		int lastEntry = Retriever.getInstance().selectLastEntry();
+		temp = lastEntry+video.getFilename();
+		String query11 = "UPDATE nmc_videos SET filename = '"+temp+"' WHERE id = '"+lastEntry+"';";
+		
+		db.openConnection();
+		db.modify(query11);
 		db.closeConnection();
 	}
 
-	public void injector(SeriesCollector series) throws SQLException{
-		series.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Series"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+series.getTitle()+Parser.getInstance().getSlash());
+	public void injector(SeriesCollector series) throws SQLException{		
 		db.openConnection();
+		series.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Series"+Parser.getInstance().getSlash()+series.getTitle()+Parser.getInstance().getSlash());
 		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+series.getAdder()+"');";
 		String query2;
 		if(series.getSynopsis().isEmpty())
@@ -208,12 +234,18 @@ public class Injecter {
 			query2 = "INSERT INTO nmc_media VALUES (DEFAULT, '"+series.getTitle()+"', '"+series.getAbsPath()+"', 'series', '"+series.getSynopsis()+"', '"+Integer.parseInt(series.getYear())+"', 0, (SELECT id FROM nmc_permissions WHERE level = '"+series.getVisibilityID()+"'), (SELECT id FROM nmc_permissions WHERE level = '"+series.getModificiationID()+"'), (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		String query4 = "INSERT INTO nmc_categories(\"category\") SELECT '"+series.getGenre()+"' WHERE NOT EXISTS (SELECT id FROM nmc_categories WHERE category = '"+series.getGenre()+"');";
 		String query5 = "INSERT INTO nmc_series_categories VALUES ((SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_categories WHERE category = '"+series.getGenre()+"'));";
-
 		db.modify(query1);
 		db.modify(query2);
 		db.modify(query4);
 		db.modify(query5);
-
+		db.closeConnection();
+		
+		int lastEntry = Retriever.getInstance().selectLastEntry();
+		series.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Series"+Parser.getInstance().getSlash()+lastEntry+series.getTitle()+Parser.getInstance().getSlash());
+		String query8 = "UPDATE nmc_media SET path = '"+series.getAbsPath()+"' WHERE id = '"+lastEntry+"';";
+		
+		db.openConnection();
+		db.modify(query8);
 		db.closeConnection();		
 	}
 
@@ -237,7 +269,6 @@ public class Injecter {
 			query5 = "INSERT INTO nmc_persons(\"name\") SELECT '"+episode.getDirector()+"' WHERE NOT EXISTS (SELECT id FROM nmc_persons WHERE name = '"+episode.getDirector()+"');";
 			query6 = "INSERT INTO nmc_videos_directors VALUES ((SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_persons WHERE name = '"+episode.getDirector()+"'));";
 		}
-
 		db.modify(query1);
 		db.modify(query2);
 		db.modify(query3);
@@ -245,9 +276,7 @@ public class Injecter {
 		if (!episode.getDirector().isEmpty()){
 			db.modify(query5);
 			db.modify(query6);
-
 		}
-
 		db.closeConnection();	
 	}
 }

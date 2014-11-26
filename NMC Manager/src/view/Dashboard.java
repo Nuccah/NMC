@@ -809,7 +809,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 					else return true;
 				}
 				else if (node == uploadMusic){
-					if (personField.getText().equals("") || albumBox.getSelectedItem() == null || genreField.getText().equals(""))
+					if (personField.getText().equals("") || albumBox.getSelectedItem() == null)
 						return false;
 					else return true;
 				}
