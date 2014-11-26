@@ -79,7 +79,7 @@ public class ServerListener implements Runnable {
 			oos.writeObject("ACK");
 			createUser();
 			break;
-		case "del" :
+		case "delete" :
 			oos.writeObject("ACK");
 			delObject();
 			break;
@@ -262,7 +262,7 @@ public class ServerListener implements Runnable {
 			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
-	
+
 	private void createUser() {
 		Profil profil = null;
 		Injecter inj = new Injecter();
@@ -357,7 +357,61 @@ public class ServerListener implements Runnable {
 	}
 
 	private void delObject(){
-
+		MetaDataCollector mdc = null;
+		Boolean success = true;
+		Deleter del = Deleter.getInstance();
+		try {
+			mdc = (MetaDataCollector) ois.readObject();
+		} catch (ClassNotFoundException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			if(mdc instanceof AudioCollector){
+				if (!del.deleteAudio(mdc.getId())) success = false;
+			}
+			else if(mdc instanceof AlbumCollector){
+				if (!del.deleteAlbum(mdc.getId())) success = false;
+			}
+			else if(mdc instanceof BookCollector){
+				if (!del.deleteBook(mdc.getId())) success = false;
+			}
+			else if(mdc instanceof EpisodeCollector){
+				if (!del.deleteEpisode(mdc.getId())) success = false;
+			}
+			else if(mdc instanceof ImageCollector){
+				if (!del.deleteImage(mdc.getId())) success = false;
+			}
+			else if(mdc instanceof SeriesCollector){
+				if (!del.deleteSeries(mdc.getId())) success = false;
+			}
+			else if(mdc instanceof VideoCollector){
+				if (!del.deleteVideo(mdc.getId())) success = false;
+			}
+			else{
+				success = false;
+				System.out.println("[Error] - Could not cast MetaDataCollector");
+			}
+		}
+		catch (SQLException e) {
+			System.out.println("[SQL] - SQL Exception");
+			if(Main.getDebug()) e.printStackTrace();
+		}
+		if (!success)
+			try {
+				oos.writeObject("NACK");
+			} catch (IOException e) {
+				System.out.println("[Error] - NACK couldn't be sent to: "+cl.getInetAddress());
+				if(Main.getDebug()) e.printStackTrace();
+			}
+		else{
+			try {
+				oos.writeObject("ACK");
+			} catch (IOException e) {
+				System.out.println("[Error] - ACK couldn't be sent to: "+cl.getInetAddress());
+				if(Main.getDebug()) e.printStackTrace();
+			}
+		}
 	}
 
 	private void logout() {
