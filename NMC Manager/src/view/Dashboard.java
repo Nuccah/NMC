@@ -32,6 +32,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -41,19 +42,16 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeSelectionModel;
 
 import model.AlbumCollector;
 import model.AudioCollector;
@@ -77,22 +75,21 @@ import controller.SocketManager;
 
 /**
  * Fenêtre principale du programme
- * @author Derek
+ * @author Derek & Antoine
  *
  */
 
-public class Dashboard extends JFrame implements ActionListener, TreeSelectionListener, PropertyChangeListener{
+public class Dashboard extends JFrame implements ActionListener, PropertyChangeListener, ChangeListener{
 	private static final long serialVersionUID = -5998048938167814342L;
 	private JPanel topPane = new JPanel();
-	private JPanel leftPane = new JPanel();
-	private JPanel rightPane = new JPanel();
+	private JPanel titlePane = new JPanel();
 	private JPanel centerPane = new JPanel();
 	private JPanel bottomPane = new JPanel();
 	private JPanel uploadDataPane = new JPanel();
 	private JPanel viewPane = new JPanel();
 	private JPanel createUserPane = new JPanel();
 	private JPanel profilePane = new JPanel();
-
+	
 	private static final JButton uploadButton = new JButton("Uploader");
 	private static final JButton addButton = new JButton("Ajouter");
 	private static final JButton modifyButton = new JButton("Confirmer");
@@ -128,7 +125,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final JLabel birthLabel= new JLabel("Date de naissance (dd/MM/YYYY)");
 	private static final JLabel regLabel= new JLabel("Date d'enregistrement");
 	private static final JLabel permLabel= new JLabel("Droits d'accès");
-
+	
 	private JTextField userField = new JTextField();
 	private JPasswordField passField = new JPasswordField();
 	private JPasswordField confirmPassField = new JPasswordField();
@@ -147,39 +144,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private JTextField personField = new JTextField();
 	private JTextField chronoField = new JTextField();
 	private JTextField seasonField = new JTextField();
-
-
-
-	private JTree menuBar;
-	private JFileChooser fc = new JFileChooser();
-
-	private DefaultMutableTreeNode node;
-	private final DefaultMutableTreeNode home = new DefaultMutableTreeNode("Accueil");
-	private final DefaultMutableTreeNode mediaNode = new DefaultMutableTreeNode("Affichage des Médias");
-	private final DefaultMutableTreeNode uploadNode = new DefaultMutableTreeNode("Téléverser sur le serveur");
-	private final DefaultMutableTreeNode usersNode = new DefaultMutableTreeNode("Gérer les utilisateurs");
-	private final DefaultMutableTreeNode seriesNode = new DefaultMutableTreeNode("Séries");
-	private final DefaultMutableTreeNode musicNode = new DefaultMutableTreeNode("Musiques");
-
-	private static final DefaultMutableTreeNode viewBooks = new DefaultMutableTreeNode("Voir les livres");
-	private static final DefaultMutableTreeNode viewImages = new DefaultMutableTreeNode("Voir les images");
-	private static final DefaultMutableTreeNode viewMusic = new DefaultMutableTreeNode("Voir les musiques");
-	private static final DefaultMutableTreeNode viewMovies = new DefaultMutableTreeNode("Voir les films");
-	private static final DefaultMutableTreeNode viewSeries = new DefaultMutableTreeNode("Voir les séries");
-
-	private static final DefaultMutableTreeNode uploadBooks = new DefaultMutableTreeNode("Ajouter un livre");
-	private static final DefaultMutableTreeNode uploadImages = new DefaultMutableTreeNode("Ajouter une image");
-	private static final DefaultMutableTreeNode uploadMusic = new DefaultMutableTreeNode("Ajouter une musique");
-	private static final DefaultMutableTreeNode uploadAlbums = new DefaultMutableTreeNode("Ajouter un album de musique");
-	private static final DefaultMutableTreeNode uploadMovies = new DefaultMutableTreeNode("Ajouter un film");
-	private static final DefaultMutableTreeNode uploadEpisodes = new DefaultMutableTreeNode("Ajouter un épisode");
-	private static final DefaultMutableTreeNode uploadSeries = new DefaultMutableTreeNode("Ajouter une série");
-
-	private static final DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("Créer un utilisateur");
-	private static final DefaultMutableTreeNode adminNode = new DefaultMutableTreeNode("Administration");
-	private static final DefaultMutableTreeNode permNode = new DefaultMutableTreeNode("Gérer les droits d'accès");
-	//	private static final DefaultMutableTreeNode prefNode = new DefaultMutableTreeNode("Préférences"); [TODO]
-
+	
 	private JComboBox<AlbumCollector> albumBox = new JComboBox<AlbumCollector>();
 	private JComboBox<SeriesCollector> seriesBox = new JComboBox<SeriesCollector>();
 	private JComboBox<Permissions> visibilityBox = new JComboBox<Permissions>();
@@ -188,10 +153,10 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private List<JTextField> fieldList = new ArrayList<JTextField>();
 	private List<JComboBox<Permissions>> cbPList = new ArrayList<JComboBox<Permissions>>();
 
-	private static final FileFilter videoFilter = new FileNameExtensionFilter("Video file", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
-	private static final FileFilter musicFilter = new FileNameExtensionFilter("Music file", "aac", "mp3", "wav", "wma", "flac");
-	private static final FileFilter bookFilter = new FileNameExtensionFilter("Book file", "pdf", "ebook", "epub", "cbr", "cbz");
-	private static final FileFilter imageFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png", "gif", "bmp");
+	private static final FileFilter videoFilter = new FileNameExtensionFilter("Fichier Vidéo", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
+	private static final FileFilter musicFilter = new FileNameExtensionFilter("Fichier Audio", "aac", "mp3", "wav", "wma", "flac");
+	private static final FileFilter bookFilter = new FileNameExtensionFilter("Fichier Livre", "pdf", "ebook", "epub", "cbr", "cbz");
+	private static final FileFilter imageFilter = new FileNameExtensionFilter("Fichier Image", "jpg", "jpeg", "png", "gif", "bmp");
 
 	private static final String[] albumColumns = new String[]{"Title", "Artist", "Year", "Genre", "Description", "Modification Rights", "Visibility Rights"};
 	private static final String[] imageColumns = new String[]{"Title", "Photographer", "Year", "Modification Rights", "Visibility Rights"};
@@ -202,7 +167,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 	private static final String[] permissionColumns = new String[]{"Label", "Level"};
 
 	private GridBagConstraints lc = new GridBagConstraints();
-	private GridBagConstraints rc = new GridBagConstraints();
+	private GridBagConstraints tc = new GridBagConstraints();
 	private GridBagConstraints rcc = new GridBagConstraints();
 	private GridBagConstraints ltc = new GridBagConstraints();
 	private GridBagConstraints rtc = new GridBagConstraints();
@@ -226,34 +191,49 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
 					+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
 
-	//	private final FormLayout permissionsLayout = new FormLayout(
-	//			"right:pref, 4dlu, fill:130dlu",
-	//			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 10dlu, pref, 10dlu, pref,");
-
 	private JDialog dlg;
 	private JDialog passDialog;
 
+	private JTabbedPane menuBar;
+	private JTabbedPane mediaNode;
+	private JTabbedPane uploadNode;
+	private JTabbedPane usersNode;
+	private JTabbedPane profilNode;
+	
+	private String node;
+	private static final String mediaString = "Afficher";
+	private static final String uploadString = "Ajouter";
+	private static final String usersString = "Administration";
+	private static final String profilString = "Profil";
+	
+	private static final String viewBooks = "Livres";
+	private static final String viewImages = "Images";
+	private static final String viewMovies = "Vidéos";
+	private static final String viewMusic = "Albums";
+	private static final String viewSeries = "Séries";
+	
+	private static final String uploadEpisodes = "Episode";
+	private static final String uploadSeries = "Série";
+	private static final String uploadAlbums = "Album";
+	private static final String uploadMusic = "Musique";
+	private static final String uploadBooks = "Livre";
+	private static final String uploadImages = "Image";
+	private static final String uploadMovies = "Vidéo";
+	
+	private static final String userNode = "Créer un utilisateur";
+	private static final String adminNode = "Gestion des utilisateurs";        
+	private static final String permNode = "Gestion des permissions";
+	
+	private JFileChooser fc = new JFileChooser();
+	
 	private JProgressBar progressBar;
 	private UploadTask uTask;
-	private static Dashboard instance = null;
-
+	
 	private MetaDataCollector fileC;
 
 	private String messagePB;
-
-	/**
-	 * Creates instance of Dashboard
-	 * @return
-	 */
-	public static Dashboard getInstance(){
-		if(instance == null) instance = new Dashboard();
-		return instance;
-	}
-
-	/**
-	 * Initialise la fenêtre et ses composants
-	 */
-	protected Dashboard() {
+	
+	public Dashboard(){
 		super(Config.getInstance().getProp("base_title")+"Manager");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout main = new GridBagLayout();
@@ -272,23 +252,18 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		gcc.gridx = 0; gcc.gridy = 1; gcc.weightx = 1; gcc.weighty = 0.8; gcc.fill = GridBagConstraints.BOTH;
 		bc.gridx = 0; bc.gridy = 2; bc.weightx = 1; bc.weighty = 0.1; bc.fill = GridBagConstraints.BOTH;
 		lc.gridx = 0; lc.gridy = 0; lc.weightx = 0.25; lc.weighty = 1; lc.fill = GridBagConstraints.BOTH;
-		rc.gridx = 1; rc.gridy = 0; rc.weightx = 0.75; rc.weighty = 1; rc.fill = GridBagConstraints.BOTH;
-
+		tc.gridx = 1; tc.gridy = 0; tc.weightx = 0.75; tc.weighty = 1; tc.fill = GridBagConstraints.BOTH;
+		
 		topPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		centerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		leftPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		rightPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		bottomPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		topPane.setLayout(new GridBagLayout());
-		leftPane.setLayout(new GridBagLayout());
-		rightPane.setLayout(new GridLayout(1,1));
+		titlePane.setLayout(new GridBagLayout());
 		centerPane.setLayout(new GridBagLayout());
 		viewPane.setLayout(new GridBagLayout());
 
-		leftPane.setMinimumSize(new Dimension(200, 600));
 		centerPane.setMinimumSize(new Dimension(1024, 700));
-		rightPane.setMinimumSize(new Dimension(800, 600));
 
 		setTitleBar();
 		setMenuBar();
@@ -310,75 +285,82 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		modifyButton.addActionListener(this);
 
 		clear();
-
-		centerPane.add(leftPane, lc);
-		centerPane.add(rightPane, rc);
-		getContentPane().add(centerPane, gcc);
+		
+		getContentPane().add(topPane, tc);
+		//getContentPane().add(centerPane, gcc);
 		getContentPane().add(bottomPane, bc);
 
 		pack();
+		
 	}
-
+	
 	/**
 	 * Barre de menu titulaire
 	 */
 	public void setTitleBar(){
 
 		mnProfil.setHorizontalAlignment(SwingConstants.LEFT);
-		topPane.add(mnProfil);
+		titlePane.add(mnProfil);
 
 		mnAide.setHorizontalAlignment(SwingConstants.LEFT);
-		topPane.add(mnAide);
+		titlePane.add(mnAide);
 
 		mnQuitter.setHorizontalAlignment(SwingConstants.LEFT);
 		mnQuitter.addActionListener(this);
-		topPane.add(mnQuitter);
+		titlePane.add(mnQuitter);
 
-		topPane.repaint();
-		topPane.revalidate();
-		leftPane.add(topPane, ltc);
+		titlePane.repaint();
+		titlePane.revalidate();
+		topPane.add(titlePane, ltc);
 	}
-
+	
 	/**
 	 * Bar de menu pour les gestions possibles
 	 */
 	private void setMenuBar() {
-		//create the child nodes
-		mediaNode.add(viewBooks);
-		mediaNode.add(viewImages);
-		mediaNode.add(viewMovies);
-		mediaNode.add(viewMusic);
-		mediaNode.add(viewSeries);
+		mediaNode = new JTabbedPane();
+		mediaNode.addChangeListener(this);
+		mediaNode.addTab(viewBooks, mediaResultSet(viewBooks));
+		mediaNode.addTab(viewImages, mediaResultSet(viewImages));
+		mediaNode.addTab(viewMovies, mediaResultSet(viewMovies));
+		mediaNode.addTab(viewMusic, mediaResultSet(viewMusic));
+		mediaNode.addTab(viewSeries, mediaResultSet(viewSeries));
 
-		seriesNode.add(uploadEpisodes);
-		seriesNode.add(uploadSeries);
-		musicNode.add(uploadAlbums);
-		musicNode.add(uploadMusic);
+		uploadNode = new JTabbedPane();
+		uploadNode.addChangeListener(this);
+		JPanel uEpisodeTmp = new JPanel();
+		uploadNode.addTab(uploadEpisodes, uploadFilePage(uploadEpisodes, uEpisodeTmp));
+		JPanel uSerieTmp = new JPanel();
+		uploadNode.addTab(uploadSeries,uploadFilePage(uploadSeries, uSerieTmp));
+		JPanel uAlbumTmp = new JPanel();
+		uploadNode.addTab(uploadAlbums, uploadFilePage(uploadAlbums, uAlbumTmp));
+		JPanel uMusicTmp = new JPanel();
+		uploadNode.addTab(uploadMusic, uploadFilePage(uploadMusic, uMusicTmp));
+		JPanel uBookTmp = new JPanel();
+		uploadNode.addTab(uploadBooks, uploadFilePage(uploadBooks, uBookTmp));
+		JPanel uImageTmp = new JPanel();
+		uploadNode.addTab(uploadImages, uploadFilePage(uploadImages, uImageTmp));
+		JPanel uMovieTmp = new JPanel();
+		uploadNode.addTab(uploadMovies, uploadFilePage(uploadMovies, uMovieTmp));
 
-		uploadNode.add(uploadBooks);
-		uploadNode.add(uploadImages);
-		uploadNode.add(uploadMovies);
-		uploadNode.add(musicNode);
-		uploadNode.add(seriesNode);
-
-		usersNode.add(userNode);
-		usersNode.add(adminNode);        
-		usersNode.add(permNode);
-		//		usersNode.add(prefNode); [TODO]
-
-		//add the child nodes to the root node
-		home.add(mediaNode);
-		home.add(uploadNode);
-		home.add(usersNode);
-
-		//create the tree by passing in the root node
-		menuBar = new JTree(home);
-		menuBar.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		menuBar.addTreeSelectionListener(this);
-		leftPane.add(new JScrollPane(menuBar), rtc);
+		usersNode = new JTabbedPane();
+		usersNode.addChangeListener(this);
+		JPanel userTmp = new JPanel();
+		usersNode.addTab(userNode, userAdmin(userNode, userTmp));
+		JPanel adminTmp = new JPanel();
+		usersNode.addTab(adminNode, userAdmin(adminNode, adminTmp)); 
+		JPanel permTmp = new JPanel();
+		usersNode.addTab(permNode, userAdmin(permNode, permTmp));
+	
+		menuBar = new JTabbedPane();
+		menuBar.addChangeListener(this);
+		menuBar.addTab(mediaString, mediaNode);
+		menuBar.addTab(uploadString, uploadNode);
+		menuBar.addTab(usersString, usersNode);
+		getContentPane().add(menuBar, rtc);
 
 	}
-
+	
 	/**
 	 * Bottom bar containing Copyright information
 	 */
@@ -433,7 +415,29 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		cbPList.add(visibilityBox);
 		cbPList.add(permissionsBox);
 	}
-
+	
+	private void setCreateUserPane(){
+		userField.setEditable(true);
+		mailField.setEditable(true);
+		firstNameField.setEditable(true);
+		lastNameField.setEditable(true);
+		birthField.setEditable(true);
+		regField.setEditable(true);
+		permField.setEditable(true);
+		createUserPane.add(userLabel, cc.xy(1, 1)); createUserPane.add(new JLabel("*"), cc.xy(2,1)); createUserPane.add(userField, cc.xy(3,1));
+		createUserPane.add(passLabel, cc.xy(1, 3)); createUserPane.add(new JLabel("*"), cc.xy(2,3)); createUserPane.add(passField, cc.xy(3,3));
+		createUserPane.add(confirmPassLabel, cc.xy(1, 5)); createUserPane.add(new JLabel("*"), cc.xy(2,5)); createUserPane.add(confirmPassField, cc.xy(3,5));
+		createUserPane.add(mailLabel, cc.xy(1, 7)); createUserPane.add(new JLabel("*"), cc.xy(2,7)); createUserPane.add(mailField, cc.xy(3,7));
+		createUserPane.add(firstNameLabel, cc.xy(1, 9)); createUserPane.add(new JLabel("*"), cc.xy(2,9)); createUserPane.add(firstNameField, cc.xy(3,9));
+		createUserPane.add(lastNameLabel, cc.xy(1, 11)); createUserPane.add(new JLabel("*"), cc.xy(2,11)); createUserPane.add(lastNameField, cc.xy(3,11));
+		createUserPane.add(birthLabel, cc.xy(1, 13)); createUserPane.add(new JLabel("*"), cc.xy(2,13)); createUserPane.add(birthField, cc.xy(3,13));
+		createUserPane.add(permLabel, cc.xy(1, 15)); createUserPane.add(new JLabel("*"), cc.xy(2,15)); createUserPane.add(permissionsBox, cc.xy(3,15));
+		createUserPane.add(new JLabel("* = champs requis"), cc.xy(3,17));
+		createUserPane.add(addButton, cc.xy(1, 19)); createUserPane.add(clearButton, cc.xy(3,19));
+		createUserPane.revalidate(); 
+		createUserPane.repaint();
+	}
+	
 	private void setProfilPane() {
 		initFields("profil");
 		userField.setText(Profil.getInstance().getUsername()); userField.setEditable(false);
@@ -458,91 +462,30 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		modifyButton.setEnabled(false);
 	}
 
-	private void setCreateUserPane(){
-		userField.setEditable(true);
-		mailField.setEditable(true);
-		firstNameField.setEditable(true);
-		lastNameField.setEditable(true);
-		birthField.setEditable(true);
-		regField.setEditable(true);
-		permField.setEditable(true);
-		createUserPane.add(userLabel, cc.xy(1, 1)); createUserPane.add(new JLabel("*"), cc.xy(2,1)); createUserPane.add(userField, cc.xy(3,1));
-		createUserPane.add(passLabel, cc.xy(1, 3)); createUserPane.add(new JLabel("*"), cc.xy(2,3)); createUserPane.add(passField, cc.xy(3,3));
-		createUserPane.add(confirmPassLabel, cc.xy(1, 5)); createUserPane.add(new JLabel("*"), cc.xy(2,5)); createUserPane.add(confirmPassField, cc.xy(3,5));
-		createUserPane.add(mailLabel, cc.xy(1, 7)); createUserPane.add(new JLabel("*"), cc.xy(2,7)); createUserPane.add(mailField, cc.xy(3,7));
-		createUserPane.add(firstNameLabel, cc.xy(1, 9)); createUserPane.add(new JLabel("*"), cc.xy(2,9)); createUserPane.add(firstNameField, cc.xy(3,9));
-		createUserPane.add(lastNameLabel, cc.xy(1, 11)); createUserPane.add(new JLabel("*"), cc.xy(2,11)); createUserPane.add(lastNameField, cc.xy(3,11));
-		createUserPane.add(birthLabel, cc.xy(1, 13)); createUserPane.add(new JLabel("*"), cc.xy(2,13)); createUserPane.add(birthField, cc.xy(3,13));
-		createUserPane.add(permLabel, cc.xy(1, 15)); createUserPane.add(new JLabel("*"), cc.xy(2,15)); createUserPane.add(permissionsBox, cc.xy(3,15));
-		createUserPane.add(new JLabel("* = champs requis"), cc.xy(3,17));
-		createUserPane.add(addButton, cc.xy(1, 19)); createUserPane.add(clearButton, cc.xy(3,19));
-		createUserPane.revalidate(); 
-		createUserPane.repaint();
-	}
-
-	//	private void setPermsPane(){
-	//		addPermPane.add(permLabel, cc.xy(1, 1)); addPermPane.add(permField, cc.xy(3,1));
-	//		addPermPane.add(permLevelLabel, cc.xy(1,3)); addPermPane.add(permLevelField, cc.xy(3,3));
-	//		addPermPane.add(addButton, cc.xy(1, 11)); addPermPane.add(clearButton, cc.xy(3,11));
-	//		addPermPane.revalidate();
-	//		addPermPane.repaint();
-	//	}
-
 	/**
 	 * Switchcase redirection to appropriate methods
 	 * @param node
 	 */
-	private void parentPage(DefaultMutableTreeNode node) {
-		if (node.getParent() == mediaNode){
-			mediaResultSet(node); 
-		}
-		else if (node.getParent() == seriesNode){
-			uploadFilePage(node); 
-		}
-		else if (node.getParent() == musicNode){
-			uploadFilePage(node); 
-		}
-		else if (node.getParent() == usersNode){
-			userAdmin(node); 
-		}
-		else{
-			homePage(); 
-		}
-	}
-
-	/**
-	 * Home page of client program
-	 * @param node --- TO DELETE
-	 */
-	private void homePage() {
-		rightPane.removeAll();
-		rightPane.add(new JTextArea(node.toString()));
-		rightPane.revalidate();
-	}
-
-	/**
-	 * Switchcase redirection to appropriate methods
-	 * @param node
-	 */
-	private void mediaResultSet(DefaultMutableTreeNode node) {
-		rightPane.removeAll();
+	private JComponent mediaResultSet(String node) {
+		centerPane.removeAll();
 		viewPane.removeAll();
-		vmc.weightx = 1; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
-		if (node == mediaNode)
-			homePage();
-		else if (node == viewBooks)
-			viewPane.add(createTable("books"), vmc);
-		else if (node == viewImages)
-			viewPane.add(createTable("images"), vmc);
+		this.node = node;
+		//vmc.weightx = 1; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
+
+		if ((node.equals(viewBooks)))
+			viewPane.add(createTable("books"));
+		else if (node.equals(viewImages))
+			viewPane.add(createTable("images"));
 		else if (node == viewMusic)
-			viewPane.add(createTable("albums"), vmc);
+			viewPane.add(createTable("albums"));
 		else if (node == viewMovies)
-			viewPane.add(createTable("videos"), vmc);
+			viewPane.add(createTable("videos"));
 		else if (node == viewSeries)
-			viewPane.add(createTable("series"), vmc);
+			viewPane.add(createTable("series"));
 		viewPane.revalidate();
-		rightPane.add(viewPane, vmc);
-		rightPane.revalidate();
+		centerPane.add(viewPane);
+		centerPane.revalidate();
+		return centerPane;
 	}
 
 	private JScrollPane createTable(String type) {
@@ -585,24 +528,26 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		// Add the scroll pane to this panel.
 		return scrollPane;
 	}
-
+	
 	/**
 	 * Switchcase redirection to appropriate methods
 	 * @param node
 	 */
-	private void userAdmin(DefaultMutableTreeNode node) {
+	private JComponent userAdmin(String node, JPanel pane) {
 		clear();
-		rightPane.removeAll();
-		rightPane.setLayout(new GridBagLayout());
-		if (node == userNode){
+		pane.removeAll();
+		pane.setLayout(new GridBagLayout());
+		this.node = node;
+		if (node.equals(userNode)){
 			createUserPane.removeAll();
 			userLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11, 13, 15, 17, 19}});
 			createUserPane.setLayout(userLayout);
-			rightPane.add(createUserPane, new GridBagConstraints());
+			pane.add(createUserPane, new GridBagConstraints());
 			setCreateUserPane();
 		}
-		else if (node == adminNode){
-			viewPane.removeAll();
+		else if (node.equals(adminNode)){
+			JPanel admin_pane = new JPanel(); 
+			admin_pane.removeAll();
 			try {
 				SocketManager.getInstance().getList("users");
 			} catch (ClassNotFoundException | IOException e) {
@@ -614,11 +559,12 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 				e.printStackTrace();
 			}
 			vmc.weightx = 1; vmc.weighty = 1; vmc.fill = GridBagConstraints.BOTH;
-			viewPane.add(createTable("users"), vmc);
-			rightPane.add(viewPane,vmc);
+			admin_pane.add(createTable("users"), vmc);
+			pane.add(admin_pane, vmc);
 		}
-		else if (node == permNode){
-			viewPane.removeAll();
+		else if (node.equals(permNode)){
+			JPanel perm_pane = new JPanel();
+			perm_pane.removeAll();
 			try {
 				SocketManager.getInstance().getList("permissions");
 			} catch (ClassNotFoundException | IOException e) {
@@ -629,108 +575,101 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 								JOptionPane.WARNING_MESSAGE);
 				e.printStackTrace();
 			} 
-			viewPane.add(createTable("permissions"));
-			rightPane.add(viewPane, new GridBagConstraints());
+			perm_pane.add(createTable("permissions"));
+			pane.add(perm_pane, new GridBagConstraints());
 		}
-		//		else if (node == prefNode){
-		//			[TODO]
-		//		}
-		rightPane.revalidate();
+		pane.revalidate();
+		return pane;
 	}
 
 	/**
 	 * Creation and layout of required upload components
 	 * @param node
 	 */
-	private void uploadFilePage(DefaultMutableTreeNode node) {
-		rightPane.removeAll();
-		uploadDataPane.removeAll();
-		if (node == uploadNode){
-			rightPane.setLayout(new GridLayout(1,1));
-			rightPane.add(uploadDataPane);
-		}
-		else if(node == musicNode || node == seriesNode){
-			rightPane.setLayout(new GridLayout(1,1));
-			rightPane.add(uploadDataPane);
+	private JComponent uploadFilePage(String node, JPanel pane) {
+		pane.removeAll();
+		JPanel dataPane = new JPanel();
+		dataPane.removeAll();
+		this.node = node;
+		
+		clear();
+		uploadLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
+		dataPane.setLayout(uploadLayout);
+		if(node == uploadAlbums || node == uploadSeries){
+			pane.setLayout(new GridBagLayout());
+			addButton.setEnabled(true);
+			dataPane.add(addButton,cc.xy(1, 17));
+			pane.add(dataPane, new GridBagConstraints());
 		}
 		else{
-			clear();
-			uploadLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
-			uploadDataPane.setLayout(uploadLayout);
-			if(node == uploadAlbums || node == uploadSeries){
-				rightPane.setLayout(new GridBagLayout());
-				addButton.setEnabled(true);
-				uploadDataPane.add(addButton,cc.xy(1, 17));
-				rightPane.add(uploadDataPane, new GridBagConstraints());
-			}
-			else{
-				rightPane.setLayout(new GridBagLayout());
-				rcc.weightx = 1; rcc.weighty = 1; rcc.fill = GridBagConstraints.BOTH;
-				rightPane.add(fc, rcc);
-				rightPane.add(uploadDataPane, rcc);
-				uploadButton.setEnabled(false);
-				uploadDataPane.add(uploadButton,cc.xy(1, 17));
-			}
-			uploadDataPane.add(titleLabel,cc.xy(1, 1)); uploadDataPane.add(new JLabel("*"), cc.xy(2,1)); uploadDataPane.add(titleField,cc.xy(3, 1));
-			if (node == uploadAlbums){
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
-				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(genreField,cc.xy(3, 7));
-				uploadDataPane.add(synopsisLabel,cc.xy(1, 9) ); uploadDataPane.add(synopsisField,cc.xy(3, 9));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
-			}
-			else if (node == uploadBooks){
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
-				uploadDataPane.add(authorLabel,cc.xy(1, 5) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(synopsisLabel,cc.xy(1, 7)); uploadDataPane.add(synopsisField,cc.xy(3, 7));
-				uploadDataPane.add(genreLabel,cc.xy(1, 9)); uploadDataPane.add(genreField,cc.xy(3, 9));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(new JLabel("*"), cc.xy(2,13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
-				fc.setFileFilter(bookFilter);
-			}
-			else if (node == uploadEpisodes){
-				uploadDataPane.add(seriesLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(seriesBox,cc.xy(3, 3));
-				uploadDataPane.add(directorLabel,cc.xy(1, 5) ); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(seasonLabel,cc.xy(1, 7) ); uploadDataPane.add(seasonField,cc.xy(3, 7));
-				uploadDataPane.add(chronoLabel,cc.xy(1, 9) ); uploadDataPane.add(chronoField,cc.xy(3, 9));
-				fc.setFileFilter(videoFilter);
-			}
-			else if (node == uploadImages){
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(yearField,cc.xy(3, 3));
-				uploadDataPane.add(photographerLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 7)); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(visibilityBox,cc.xy(3, 7)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 9)); uploadDataPane.add(new JLabel("*"), cc.xy(2,9)); uploadDataPane.add(modificationBox,cc.xy(3, 9));
-				fc.setFileFilter(imageFilter);
-			}
-			else if (node == uploadMusic){
-				uploadDataPane.add(albumLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(albumBox,cc.xy(3, 3));
-				uploadDataPane.add(artistLabel,cc.xy(1, 5)); uploadDataPane.add(new JLabel("*"), cc.xy(2,5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				fc.setFileFilter(musicFilter);
-			}
-			else if (node == uploadMovies){
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
-				uploadDataPane.add(directorLabel,cc.xy(1, 5)); uploadDataPane.add(personField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7)); uploadDataPane.add(genreField,cc.xy(3, 7));
-				uploadDataPane.add(synopsisLabel,cc.xy(1, 9)); uploadDataPane.add(synopsisField,cc.xy(3, 9));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(visibilityBox,cc.xy(3, 11)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 13)); uploadDataPane.add(new JLabel("*"), cc.xy(2,13)); uploadDataPane.add(modificationBox,cc.xy(3, 13));
-				fc.setFileFilter(videoFilter);
-			}
-			else if (node == uploadSeries){
-				uploadDataPane.add(yearLabel,cc.xy(1, 3)); uploadDataPane.add(new JLabel("*"), cc.xy(2,3)); uploadDataPane.add(yearField,cc.xy(3, 3));
-				uploadDataPane.add(synopsisLabel,cc.xy(1, 5) ); uploadDataPane.add(synopsisField,cc.xy(3, 5));
-				uploadDataPane.add(genreLabel,cc.xy(1, 7) ); uploadDataPane.add(new JLabel("*"), cc.xy(2,7)); uploadDataPane.add(genreField,cc.xy(3, 7));
-				uploadDataPane.add(visibilityLabel,cc.xy(1, 9)); uploadDataPane.add(new JLabel("*"), cc.xy(2,9)); uploadDataPane.add(visibilityBox,cc.xy(3, 9)); 
-				uploadDataPane.add(modificationLabel,cc.xy(1, 11)); uploadDataPane.add(new JLabel("*"), cc.xy(2,11)); uploadDataPane.add(modificationBox,cc.xy(3, 11));
-			}
-			uploadDataPane.add(new JLabel("* = champs requis"), cc.xy(3,15));
-			uploadDataPane.add(clearButton,cc.xy(3, 17));
+			pane.setLayout(new GridBagLayout());
+			rcc.weightx = 1; rcc.weighty = 1; rcc.fill = GridBagConstraints.BOTH;
+			pane.add(fc, rcc);
+			pane.add(dataPane, rcc);
+			uploadButton.setEnabled(false);
+			dataPane.add(uploadButton,cc.xy(1, 17));
 		}
-		uploadDataPane.repaint(); uploadDataPane.revalidate();
-		rightPane.revalidate();
+		dataPane.add(titleLabel,cc.xy(1, 1)); dataPane.add(new JLabel("*"), cc.xy(2,1)); dataPane.add(titleField,cc.xy(3, 1));
+		if (node == uploadAlbums){
+			dataPane.add(yearLabel,cc.xy(1, 3)); dataPane.add(new JLabel("*"), cc.xy(2,3)); dataPane.add(yearField,cc.xy(3, 3));
+			dataPane.add(artistLabel,cc.xy(1, 5)); dataPane.add(new JLabel("*"), cc.xy(2,5)); dataPane.add(personField,cc.xy(3, 5));
+			dataPane.add(genreLabel,cc.xy(1, 7) ); dataPane.add(new JLabel("*"), cc.xy(2,7)); dataPane.add(genreField,cc.xy(3, 7));
+			dataPane.add(synopsisLabel,cc.xy(1, 9) ); dataPane.add(synopsisField,cc.xy(3, 9));
+			dataPane.add(visibilityLabel,cc.xy(1, 11)); dataPane.add(visibilityBox,cc.xy(3, 11)); 
+			dataPane.add(modificationLabel,cc.xy(1, 13)); dataPane.add(modificationBox,cc.xy(3, 13));
+		}
+		else if (node == uploadBooks){
+			dataPane.add(yearLabel,cc.xy(1, 3)); dataPane.add(new JLabel("*"), cc.xy(2,3)); dataPane.add(yearField,cc.xy(3, 3));
+			dataPane.add(authorLabel,cc.xy(1, 5) ); dataPane.add(new JLabel("*"), cc.xy(2,5)); dataPane.add(personField,cc.xy(3, 5));
+			dataPane.add(synopsisLabel,cc.xy(1, 7)); dataPane.add(synopsisField,cc.xy(3, 7));
+			dataPane.add(genreLabel,cc.xy(1, 9)); dataPane.add(genreField,cc.xy(3, 9));
+			dataPane.add(visibilityLabel,cc.xy(1, 11)); dataPane.add(new JLabel("*"), cc.xy(2,11)); dataPane.add(visibilityBox,cc.xy(3, 11)); 
+			dataPane.add(modificationLabel,cc.xy(1, 13)); dataPane.add(new JLabel("*"), cc.xy(2,13)); dataPane.add(modificationBox,cc.xy(3, 13));
+			fc.setFileFilter(bookFilter);
+		}
+		else if (node == uploadEpisodes){
+			dataPane.add(seriesLabel,cc.xy(1, 3)); dataPane.add(new JLabel("*"), cc.xy(2,3)); dataPane.add(seriesBox,cc.xy(3, 3));
+			dataPane.add(directorLabel,cc.xy(1, 5) ); dataPane.add(personField,cc.xy(3, 5));
+			dataPane.add(seasonLabel,cc.xy(1, 7) ); dataPane.add(seasonField,cc.xy(3, 7));
+			dataPane.add(chronoLabel,cc.xy(1, 9) ); dataPane.add(chronoField,cc.xy(3, 9));
+			fc.setFileFilter(videoFilter);
+		}
+		else if (node == uploadImages){
+			dataPane.add(yearLabel,cc.xy(1, 3)); dataPane.add(yearField,cc.xy(3, 3));
+			dataPane.add(photographerLabel,cc.xy(1, 5)); dataPane.add(personField,cc.xy(3, 5));
+			dataPane.add(visibilityLabel,cc.xy(1, 7)); dataPane.add(new JLabel("*"), cc.xy(2,7)); dataPane.add(visibilityBox,cc.xy(3, 7)); 
+			dataPane.add(modificationLabel,cc.xy(1, 9)); dataPane.add(new JLabel("*"), cc.xy(2,9)); dataPane.add(modificationBox,cc.xy(3, 9));
+			fc.setFileFilter(imageFilter);
+		}
+		else if (node == uploadMusic){
+			dataPane.add(albumLabel,cc.xy(1, 3)); dataPane.add(new JLabel("*"), cc.xy(2,3)); dataPane.add(albumBox,cc.xy(3, 3));
+			dataPane.add(artistLabel,cc.xy(1, 5)); dataPane.add(new JLabel("*"), cc.xy(2,5)); dataPane.add(personField,cc.xy(3, 5));
+			fc.setFileFilter(musicFilter);
+		}
+		else if (node == uploadMovies){
+			dataPane.add(yearLabel,cc.xy(1, 3)); dataPane.add(new JLabel("*"), cc.xy(2,3)); dataPane.add(yearField,cc.xy(3, 3));
+			dataPane.add(directorLabel,cc.xy(1, 5)); dataPane.add(personField,cc.xy(3, 5));
+			dataPane.add(genreLabel,cc.xy(1, 7)); dataPane.add(genreField,cc.xy(3, 7));
+			dataPane.add(synopsisLabel,cc.xy(1, 9)); dataPane.add(synopsisField,cc.xy(3, 9));
+			dataPane.add(visibilityLabel,cc.xy(1, 11)); dataPane.add(new JLabel("*"), cc.xy(2,11)); dataPane.add(visibilityBox,cc.xy(3, 11)); 
+			dataPane.add(modificationLabel,cc.xy(1, 13)); dataPane.add(new JLabel("*"), cc.xy(2,13)); dataPane.add(modificationBox,cc.xy(3, 13));
+			fc.setFileFilter(videoFilter);
+		}
+		else if (node == uploadSeries){
+			dataPane.add(yearLabel,cc.xy(1, 3)); dataPane.add(new JLabel("*"), cc.xy(2,3)); dataPane.add(yearField,cc.xy(3, 3));
+			dataPane.add(synopsisLabel,cc.xy(1, 5) ); dataPane.add(synopsisField,cc.xy(3, 5));
+			dataPane.add(genreLabel,cc.xy(1, 7) ); dataPane.add(new JLabel("*"), cc.xy(2,7)); dataPane.add(genreField,cc.xy(3, 7));
+			dataPane.add(visibilityLabel,cc.xy(1, 9)); dataPane.add(new JLabel("*"), cc.xy(2,9)); dataPane.add(visibilityBox,cc.xy(3, 9)); 
+			dataPane.add(modificationLabel,cc.xy(1, 11)); dataPane.add(new JLabel("*"), cc.xy(2,11)); dataPane.add(modificationBox,cc.xy(3, 11));
+		}
+		dataPane.add(new JLabel("* = champs requis"), cc.xy(3,15));
+		dataPane.add(clearButton,cc.xy(3, 17));
+			
+		dataPane.repaint(); dataPane.revalidate();
+		pane.revalidate();
+		return pane;
 	}
-
+	
 	public void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText(null);
@@ -766,6 +705,50 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 		for(AlbumCollector albums : Lists.getInstance().getAlbumList()){
 			albumBox.addItem(albums);
+		}
+	}
+	
+	/**
+	 * Creation of new progress bar, dialog for each upload
+	 */
+	public void progressBar(String message) {
+		//Create the demo's UI.
+		dlg = new JDialog((Frame) getOwner(), "Progression", true);
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		progressBar.setString(message);
+		dlg.add(BorderLayout.CENTER, progressBar);
+		dlg.add(BorderLayout.NORTH, new JLabel("En cours..."));
+		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dlg.setSize(300, 75);
+		dlg.setLocationRelativeTo((Frame) getOwner());
+		dlg.setVisible(true);
+	}
+
+	private void setPassDialog() {
+		passDialog = new JDialog((Frame) getOwner(), "Modifier le mot de passe", true);
+		passDialog.setLayout(new GridLayout(3, 2));
+		passDialog.add(passLabel);
+		passDialog.add(confirmPassLabel);
+		passDialog.add(passField);
+		passDialog.add(confirmPassField);
+		passDialog.add(confirmButton);
+		passDialog.add(cancelButton);
+		passDialog.setSize(300, 125);
+		passDialog.setLocationRelativeTo((Frame) getOwner());
+		passDialog.setVisible(true);
+	}
+
+	/**
+	 * Invoked when task's progress property changes.
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ("progress" == evt.getPropertyName()) {
+			int progress = (Integer) evt.getNewValue();
+			progressBar.setValue(progress);
+			if(progress == 100) dlg.dispose();
+			else progressBar.setString("Téléversement en cours");
 		}
 	}
 
@@ -829,50 +812,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 	}
 
-	/**
-	 * Creation of new progress bar, dialog for each upload
-	 */
-	public void progressBar(String message) {
-		//Create the demo's UI.
-		dlg = new JDialog((Frame) getOwner(), "Progression", true);
-		progressBar = new JProgressBar(0, 100);
-		progressBar.setValue(0);
-		progressBar.setStringPainted(true);
-		progressBar.setString(message);
-		dlg.add(BorderLayout.CENTER, progressBar);
-		dlg.add(BorderLayout.NORTH, new JLabel("En cours..."));
-		dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		dlg.setSize(300, 75);
-		dlg.setLocationRelativeTo((Frame) getOwner());
-		dlg.setVisible(true);
-	}
-
-	private void setPassDialog() {
-		passDialog = new JDialog((Frame) getOwner(), "Modifier le mot de passe", true);
-		passDialog.setLayout(new GridLayout(3, 2));
-		passDialog.add(passLabel);
-		passDialog.add(confirmPassLabel);
-		passDialog.add(passField);
-		passDialog.add(confirmPassField);
-		passDialog.add(confirmButton);
-		passDialog.add(cancelButton);
-		passDialog.setSize(300, 125);
-		passDialog.setLocationRelativeTo((Frame) getOwner());
-		passDialog.setVisible(true);
-	}
-
-	/**
-	 * Invoked when task's progress property changes.
-	 */
-	public void propertyChange(PropertyChangeEvent evt) {
-		if ("progress" == evt.getPropertyName()) {
-			int progress = (Integer) evt.getNewValue();
-			progressBar.setValue(progress);
-			if(progress == 100) dlg.dispose();
-			else progressBar.setString("Téléversement en cours");
-		}
-	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == mnQuitter){
@@ -891,12 +831,11 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 			clear();
 			setProfilPane();
 			initFields("profil");
-			menuBar.clearSelection();
-			rightPane.removeAll();
-			rightPane.setLayout(new GridBagLayout());
-			rightPane.add(profilePane, new GridBagConstraints());
+			centerPane.removeAll();
+			centerPane.setLayout(new GridBagLayout());
+			centerPane.add(profilePane, new GridBagConstraints());
 			profilePane.repaint(); profilePane.revalidate();
-			rightPane.revalidate();
+			centerPane.revalidate();
 		} else if(e.getSource() == modifyButton){
 			if(SocketManager.getInstance().modifyUser(String.valueOf(passField.getPassword())))
 				JOptionPane.showMessageDialog(getContentPane(),
@@ -1098,25 +1037,7 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		}
 	}
 
-	public void valueChanged(TreeSelectionEvent e) {
-		node = (DefaultMutableTreeNode)
-				menuBar.getLastSelectedPathComponent();
-
-		/* if nothing is selected */ 
-		if (node == null) return;
-
-		/* React to the node selection. */
-		if (node == home){
-			homePage();
-		} else{
-			if (node.getParent() == mediaNode) mediaResultSet(node);
-			else if (node.getParent() == uploadNode) uploadFilePage(node);  
-			else if (node.getParent() == usersNode) userAdmin(node);
-			else parentPage(node);
-		}
-	}
-
-	public static String chooseDirectory(DefaultMutableTreeNode node) {
+	public static String chooseDirectory(String node) {
 		if (node == uploadAlbums) return "Music";
 		else if (node == uploadBooks) return "Books";
 		else if (node == uploadEpisodes) return "Series";
@@ -1126,4 +1047,23 @@ public class Dashboard extends JFrame implements ActionListener, TreeSelectionLi
 		else if (node == uploadSeries) return "Series";
 		else return null;
 	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if(e.getSource() == uploadNode){
+			if(uploadNode.getSelectedComponent() != null) uploadNode.getSelectedComponent().revalidate();
+			else uploadNode.revalidate();
+		} else if(e.getSource() == mediaNode){			
+			if(mediaNode.getSelectedComponent() != null) mediaNode.getSelectedComponent().revalidate();
+			else mediaNode.revalidate();
+		} else if(e.getSource() == usersNode){
+			if(usersNode.getSelectedComponent() != null) usersNode.getSelectedComponent().revalidate();
+			else usersNode.revalidate();
+		} else if(e.getSource() == menuBar){
+			if(menuBar.getSelectedComponent() != null) menuBar.getSelectedComponent().revalidate();
+		}
+		//topPane.revalidate();
+		//centerPane.revalidate();
+	}
+	
 }
