@@ -235,7 +235,7 @@ public class SocketManager extends Socket {
 		}
 		return true;
 	}
-	
+
 	public boolean createUser(Profil user){
 		String ack = null;
 		try{
@@ -270,11 +270,15 @@ public class SocketManager extends Socket {
 			do{
 				oos.writeObject("modify");
 				ack = String.valueOf(ois.readObject());
+				if(ack.equals("NACK"))
+					return false;
 			} while (!ack.equals("ACK"));
 			ack = null;
 			do{
 				oos.writeObject(temp);
 				ack = String.valueOf(ois.readObject());
+				if(ack.equals("NACK"))
+					return false;
 			} while (!ack.equals("ACK"));
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -283,9 +287,28 @@ public class SocketManager extends Socket {
 		return true;
 	}
 
-	public void delObject(Object o){
-		//TODO: Trouver comment envoyer la requête de suppression
-		throw new UnsupportedOperationException("Method not yet implemented!");
+	public boolean delObject(MetaDataCollector mdc){
+		String ack = null;
+		try {
+			do {
+				oos.writeObject("delete");
+				ack = String.valueOf(ois.readObject());
+			} while (!ack.equals("ACK"));
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		ack = null;
+		try{
+			do{
+				oos.writeObject(mdc);
+				ack = String.valueOf(ois.readObject());
+			} while (!ack.equals("ACK"));
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	public void logout(){

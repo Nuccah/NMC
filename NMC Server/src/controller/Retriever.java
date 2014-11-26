@@ -74,7 +74,7 @@ public class Retriever {
 		db.openConnection();
 		String query = "SELECT nmis.id as id, nmis.title as title, filename, nmi.id as series, nmi.title as seriesName, season, chrono FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_series as nmis ON nmi.id = nmis.media_id "
-				+ "INNER JOIN nmc_videos as nv ON nmis.media_id = nv.id ";
+				+ "INNER JOIN nmc_videos as nv ON nmis.episodes_id = nv.id ";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(" ORDER BY title DESC;");
