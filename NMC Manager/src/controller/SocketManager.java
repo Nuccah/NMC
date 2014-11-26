@@ -195,6 +195,7 @@ public class SocketManager extends Socket {
 	public boolean sendMeta(MetaDataCollector mdc){
 		try {
 			String ack = null;
+			mdc.setAdder(Profil.getInstance().getId());
 			do {
 				oos.writeObject("meta");
 				ack = String.valueOf(ois.readObject());

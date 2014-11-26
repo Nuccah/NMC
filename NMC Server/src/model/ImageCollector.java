@@ -13,6 +13,13 @@ public class ImageCollector extends MetaDataCollector{
 		this.filename = filename;
 	}
 	
+	public ImageCollector(String title, String year, int modId, int visId, String filename, String photographer, String relPath, int adder) {
+		super(title, modId,visId, relPath, adder);
+		this.photographer = photographer;
+		this.year = year;
+		this.filename = filename;
+	}
+	
 	public ImageCollector(int id, String title, String year, int modId, int visId, String filename, String photographer) {
 		super(id, title, modId,visId);
 		this.photographer = photographer;

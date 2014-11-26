@@ -18,6 +18,15 @@ public class BookCollector extends MetaDataCollector{
 		this.synopsis = synopsis;
 	}
 	
+	public BookCollector(String title, String year, int modId, int visId, String filename, String author, String genre, String synopsis, String relPath, int adder) {
+		super(title, modId,visId, relPath, adder);
+		this.author = author;
+		this.filename = filename;
+		this.year = year;
+		this.genre = genre;
+		this.synopsis = synopsis;
+	}
+	
 	public BookCollector(int id, String title, String year, int modId, int visId, String filename, String author, String genre, String synopsis) {
 		super(id, title, modId, visId);
 		this.author = author;

@@ -55,7 +55,7 @@ public class Injecter {
 
 	public void injector(AudioCollector audio) throws SQLException{
 		db.openConnection();
-		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+audio.getAdder()+"');";
 		String query2 = "INSERT INTO nmc_tracks values (DEFAULT, '"+audio.getTitle()+"', '"+audio.getFilename()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
 		String query3 =	"INSERT INTO nmc_bands(\"name\") SELECT '"+audio.getArtist()+"' WHERE NOT EXISTS (SELECT id FROM nmc_bands WHERE name = '"+audio.getArtist()+"');";
 		String query4 = "INSERT INTO nmc_tracks_bands VALUES ((SELECT id FROM nmc_tracks ORDER BY id DESC LIMIT 1),(SELECT id FROM nmc_bands WHERE name = '"+audio.getArtist()+"'));";
@@ -73,7 +73,7 @@ public class Injecter {
 	public void injector(AlbumCollector album) throws SQLException{
 		album.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Music"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+album.getTitle()+Parser.getInstance().getSlash());
 		db.openConnection();
-		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+album.getAdder()+"');";
 		String query2;
 		if(album.getDescription().isEmpty())
 			query2 = "INSERT INTO nmc_media values (DEFAULT, '"+album.getTitle()+"', '"+album.getAbsPath()+"', 'album', null, '"+Integer.parseInt(album.getYear())+"',  0, (SELECT id FROM nmc_permissions WHERE level = '"+album.getVisibilityID()+"'), (SELECT id FROM nmc_permissions WHERE level = '"+album.getModificiationID()+"'), (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
@@ -97,7 +97,7 @@ public class Injecter {
 	public void injector(BookCollector book) throws SQLException{
 		book.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Books"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+book.getFilename());
 		db.openConnection();
-		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+book.getAdder()+"');";
 		String query2;
 		String query4 = null;
 		String query5 = null;
@@ -131,7 +131,7 @@ public class Injecter {
 	public void injector(ImageCollector image) throws SQLException{
 		image.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Images"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+image.getFilename());
 		db.openConnection();
-		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');"; 
+		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+image.getAdder()+"');"; 
 		String query2 = null;
 		if (!image.getYear().isEmpty())
 			query2 = "INSERT INTO nmc_media values (DEFAULT, '"+image.getTitle()+"', '"+image.getAbsPath()+"', 'image', null, '"+Integer.parseInt(image.getYear())+"', 0, (SELECT id FROM nmc_permissions WHERE level = '"+image.getVisibilityID()+"'), (SELECT id FROM nmc_permissions WHERE level = '"+image.getModificiationID()+"'), (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
@@ -158,7 +158,7 @@ public class Injecter {
 		video.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Movies"+Parser.getInstance().getSlash());
 		String temp = (Retriever.getInstance().selectLastEntry()+1)+video.getFilename();
 		db.openConnection();
-		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+video.getAdder()+"');";
 		String query2;
 		String query6 = null;
 		String query7 = null;
@@ -200,7 +200,7 @@ public class Injecter {
 	public void injector(SeriesCollector series) throws SQLException{
 		series.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Series"+Parser.getInstance().getSlash()+(Retriever.getInstance().selectLastEntry()+1)+series.getTitle()+Parser.getInstance().getSlash());
 		db.openConnection();
-		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+series.getAdder()+"');";
 		String query2;
 		if(series.getSynopsis().isEmpty())
 			query2 = "INSERT INTO nmc_media VALUES (DEFAULT, '"+series.getTitle()+"', '"+series.getAbsPath()+"', 'series', null, '"+Integer.parseInt(series.getYear())+"', 0, (SELECT id FROM nmc_permissions WHERE level = '"+series.getVisibilityID()+"'), (SELECT id FROM nmc_permissions WHERE level = '"+series.getModificiationID()+"'), (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";
@@ -219,9 +219,9 @@ public class Injecter {
 
 	public void injector(EpisodeCollector episode) throws SQLException{
 		db.openConnection();
-		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+Profil.getInstance().getId()+"');";
+		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+episode.getAdder()+"');";
 		String query2 = "INSERT INTO nmc_videos(id, filename) VALUES (DEFAULT, '"+episode.getFilename()+"');";
-		String query3 = "INSERT INTO nmc_users_watched_videos VALUES ('"+Profil.getInstance().getId()+"', (SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1),  'false');";
+		String query3 = "INSERT INTO nmc_users_watched_videos VALUES ('"+episode.getAdder()+"', (SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1),  'false');";
 		String query4;
 		if (episode.getSeason().isEmpty() && episode.getChrono().isEmpty())
 			query4 = "INSERT INTO nmc_media_series(media_id, episodes_id, title, additions_id) VALUES ((SELECT id FROM nmc_media WHERE id = "+episode.getSeries()+"), (SELECT id FROM nmc_videos ORDER BY id DESC LIMIT 1),'"+episode.getTitle()+"', (SELECT id FROM nmc_additions ORDER BY id DESC LIMIT 1));";

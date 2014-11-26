@@ -17,9 +17,17 @@ public class MetaDataCollector implements Serializable{
 	protected int visibilityID;
 	protected String absPath;
 	protected String relPath;
+	protected int adder;
 
 	public MetaDataCollector(String title){
 		this.title = title;
+		this.absPath = null;
+		this.relPath = null;
+	}
+	
+	public MetaDataCollector(String title, int adder){
+		this.title = title;
+		this.adder = adder;
 		this.absPath = null;
 		this.relPath = null;
 	}
@@ -39,12 +47,30 @@ public class MetaDataCollector implements Serializable{
 		this.relPath = null;
 	}
 	
+	public MetaDataCollector(String title, int modId, int visId, String relPath, int adder){
+		this.title = title;
+		this.modificiationID = modId;
+		this.visibilityID = visId;
+		this.absPath = null;
+		this.relPath = relPath;
+		this.adder = adder;
+	}
+	
 	public MetaDataCollector(String title, int modId, int visId, String relPath){
 		this.title = title;
 		this.modificiationID = modId;
 		this.visibilityID = visId;
 		this.absPath = null;
 		this.relPath = relPath;
+	}
+	
+	public MetaDataCollector(String title, int modId, int visId, int adder){
+		this.title = title;
+		this.modificiationID = modId;
+		this.visibilityID = visId;
+		this.absPath = null;
+		this.relPath = null;
+		this.adder = adder;
 	}
 	
 	public MetaDataCollector(int id, String title, int modId, int visId){
@@ -103,5 +129,13 @@ public class MetaDataCollector implements Serializable{
 	public String toString() {
 		// TODO Auto-generated method stub
 		return this.title;
+	}
+	
+	public int getAdder() {
+		return adder;
+	}
+
+	public void setAdder(int adder) {
+		this.adder = adder;
 	}
 }
