@@ -17,6 +17,8 @@ public class MetaDataCollector implements Serializable{
 	protected int visibilityID;
 	protected String relPath;
 	protected String absPath;
+	protected int adder;
+
 
 	public MetaDataCollector(String title){
 		this.title = title;
@@ -110,5 +112,13 @@ public class MetaDataCollector implements Serializable{
 	
 	public String toString() {
 		return this.title;
+	}
+	
+	public int getAdder() {
+		return adder;
+	}
+
+	public void setAdder(int adder) {
+		this.adder = adder;
 	}
 }

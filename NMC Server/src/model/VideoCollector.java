@@ -26,6 +26,15 @@ public class VideoCollector extends MetaDataCollector{
 		this.synopsis = synopsis;
 	}
 	
+	public VideoCollector(String title, String year, int modId, int visId, String filename, String director, String genre, String synopsis, String relPath, int adder) {
+		super(title, modId,visId, relPath, adder);
+		this.director = director;
+		this.filename = filename;
+		this.year = year;
+		this.genre = genre;
+		this.synopsis = synopsis;
+	}
+	
 	public String getDirector() {
 		return director;
 	}

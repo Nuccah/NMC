@@ -15,7 +15,7 @@ public class TestDeleter {
 		Config.getInstance();
 		Deleter del = Deleter.getInstance();
 		try {
-			del.deleteBook(9);
+			del.deleteAlbum(15);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
