@@ -116,6 +116,7 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 			this.setLayout(new GridBagLayout());
 			rcc.weightx = 1; rcc.weighty = 1; rcc.fill = GridBagConstraints.BOTH;
 			this.add(fc, rcc);
+			this.add(new JPanel(), rcc);
 			this.add(dataPane, rcc);
 			cu.uploadButton.setEnabled(false);
 			dataPane.add(cu.uploadButton,cu.cc.xy(1, 17));
