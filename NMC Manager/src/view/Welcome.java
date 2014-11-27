@@ -81,7 +81,7 @@ public class Welcome extends JFrame implements ActionListener, KeyListener {
 		centerPanel.setLayout(null);
 		
 		txtLogin = new JTextField();
-		txtLogin.setToolTipText("Login");
+		txtLogin.setToolTipText("Identifiant");
 		txtLogin.setHorizontalAlignment(SwingConstants.CENTER);
 		txtLogin.setBounds(180, 11, 140, 30);
 		txtLogin.addKeyListener(this);
@@ -110,18 +110,18 @@ public class Welcome extends JFrame implements ActionListener, KeyListener {
 		footerPanel.setLayout(null);
 
 		btnSeConnecter = new JButton("Se connecter");
-		btnSeConnecter.setBounds(25, 28, 122, 29);
+		btnSeConnecter.setBounds(15, 28, 122, 29);
 		btnSeConnecter.addActionListener(this);
 		footerPanel.add(btnSeConnecter);
 
 		btnChangeIP = new JButton("Changer l'adresse serveur");
-		btnChangeIP.setBounds(155, 28, 140, 29);
+		btnChangeIP.setBounds(145, 28, 160, 29);
 		btnChangeIP.addActionListener(this);
 		footerPanel.add(btnChangeIP);
 
 		btnQuitter = new JButton("Quitter");
 		btnQuitter.addActionListener(this);
-		btnQuitter.setBounds(300, 28, 122, 29);
+		btnQuitter.setBounds(310, 28, 122, 29);
 		footerPanel.add(btnQuitter);
 	}
 

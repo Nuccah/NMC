@@ -120,6 +120,7 @@ public class Dashboard extends JFrame implements ActionListener{
 	 */
 	private void setMenuBar() {
 		mediaNode = new JTabbedPane();
+		mediaNode.setBorder(new EmptyBorder(5, 5, 5, 5));
 		mediaNode.addTab(cu.viewBooks, new ViewPane(cu.viewBooks));
 		mediaNode.addTab(cu.viewImages, new ViewPane(cu.viewImages));
 		mediaNode.addTab(cu.viewMovies, new ViewPane(cu.viewMovies));
@@ -127,6 +128,7 @@ public class Dashboard extends JFrame implements ActionListener{
 		mediaNode.addTab(cu.viewSeries, new ViewPane(cu.viewSeries));
 
 		uploadNode = new JTabbedPane();
+		uploadNode.setBorder(new EmptyBorder(5, 5, 5, 5));
 		uploadNode.addTab(cu.uploadEpisodes, new UploadPane(cu.uploadEpisodes, (Frame) getOwner()));
 		uploadNode.addTab(cu.uploadSeries, new UploadPane(cu.uploadSeries, (Frame) getOwner()));
 		uploadNode.addTab(cu.uploadAlbums, new UploadPane(cu.uploadAlbums, (Frame) getOwner()));
@@ -136,6 +138,7 @@ public class Dashboard extends JFrame implements ActionListener{
 		uploadNode.addTab(cu.uploadMovies, new UploadPane(cu.uploadMovies, (Frame) getOwner()));
 
 		usersNode = new JTabbedPane();
+		usersNode.setBorder(new EmptyBorder(5, 5, 5, 5));
 		usersNode.addTab(cu.userNode, new AdminPane(cu.userNode));
 		usersNode.addTab(cu.adminNode, new AdminPane(cu.adminNode)); 
 		usersNode.addTab(cu.permNode, new AdminPane(cu.permNode));
