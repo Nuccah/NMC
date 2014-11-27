@@ -7,6 +7,10 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URL;
 
 import javax.swing.BoxLayout;
@@ -26,7 +30,7 @@ import controller.SocketManager;
  * @author Antoine
  *
  */
-public class Welcome extends JFrame implements ActionListener {
+public class Welcome extends JFrame implements ActionListener, KeyListener {
 	private static final long serialVersionUID = -5711057253134386117L;
 	private JTextField txtLogin;
 	private JPasswordField pwdMotDePasse;
@@ -46,8 +50,17 @@ public class Welcome extends JFrame implements ActionListener {
 		int width = gd.getDisplayMode().getWidth();
 		int height = gd.getDisplayMode().getHeight();
 		setBounds((width/2) - (450/2), (height/2) - (300/2), 450, 300);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		this.addWindowListener(new WindowAdapter() 
+		{
+			@Override
+			public void windowClosing(WindowEvent e){
+				SocketManager.getInstance().logout();
+				System.exit(0);
+			}
+		});
+		
+		getContentPane().addKeyListener(this);
+		
 		URL iconURL = getClass().getResource("nmc.png");
 		ImageIcon icon = new ImageIcon(iconURL);
 		setIconImage(icon.getImage());
@@ -66,18 +79,20 @@ public class Welcome extends JFrame implements ActionListener {
 		centerPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		getContentPane().add(centerPanel);
 		centerPanel.setLayout(null);
-
+		
 		txtLogin = new JTextField();
-		txtLogin.setToolTipText("Login");
+		txtLogin.setToolTipText("Identifiant");
 		txtLogin.setHorizontalAlignment(SwingConstants.CENTER);
 		txtLogin.setBounds(180, 11, 140, 30);
-		centerPanel.add(txtLogin);
+		txtLogin.addKeyListener(this);
 		txtLogin.setColumns(10);
+		centerPanel.add(txtLogin);		
 
 		pwdMotDePasse = new JPasswordField();
 		pwdMotDePasse.setToolTipText("Mot de Passe");
 		pwdMotDePasse.setHorizontalAlignment(SwingConstants.CENTER);
 		pwdMotDePasse.setBounds(180, 59, 140, 30);
+		pwdMotDePasse.addKeyListener(this);
 		centerPanel.add(pwdMotDePasse);
 
 		JLabel lblLogin = new JLabel("Login :");
@@ -95,18 +110,18 @@ public class Welcome extends JFrame implements ActionListener {
 		footerPanel.setLayout(null);
 
 		btnSeConnecter = new JButton("Se connecter");
-		btnSeConnecter.setBounds(25, 28, 122, 29);
+		btnSeConnecter.setBounds(15, 28, 122, 29);
 		btnSeConnecter.addActionListener(this);
 		footerPanel.add(btnSeConnecter);
 
 		btnChangeIP = new JButton("Changer l'adresse serveur");
-		btnChangeIP.setBounds(155, 28, 140, 29);
+		btnChangeIP.setBounds(145, 28, 160, 29);
 		btnChangeIP.addActionListener(this);
 		footerPanel.add(btnChangeIP);
 
 		btnQuitter = new JButton("Quitter");
 		btnQuitter.addActionListener(this);
-		btnQuitter.setBounds(300, 28, 122, 29);
+		btnQuitter.setBounds(310, 28, 122, 29);
 		footerPanel.add(btnQuitter);
 	}
 
@@ -125,7 +140,6 @@ public class Welcome extends JFrame implements ActionListener {
 					}
 				});
 			}
-
 		} else if(e.getSource() == btnChangeIP){
 			this.dispose();
 			EventQueue.invokeLater(new Runnable(){
@@ -136,4 +150,44 @@ public class Welcome extends JFrame implements ActionListener {
 			});
 		}
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {	
+		if(e.getExtendedKeyCode() == KeyEvent.VK_ENTER){
+			if(SocketManager.getInstance().connect(txtLogin.getText(), 
+					String.valueOf(pwdMotDePasse.getPassword()))){				
+				this.dispose();
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						Dashboard dbScreen = new Dashboard();
+						dbScreen.setVisible(true);
+					}
+				});
+			}
+		}	
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		if(e.getExtendedKeyCode() == KeyEvent.VK_ENTER){
+			if(SocketManager.getInstance().connect(txtLogin.getText(), 
+					String.valueOf(pwdMotDePasse.getPassword()))){				
+				this.dispose();
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						Dashboard dbScreen = new Dashboard();
+						dbScreen.setVisible(true);
+					}
+				});
+			}
+		}	
+	}
+	
+	
 }
