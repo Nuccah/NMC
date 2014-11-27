@@ -72,9 +72,11 @@ public class Retriever {
 	
 	public ResultSet selectEpisodeList(String queryAdd) throws SQLException{
 		db.openConnection();
-		String query = "SELECT nv.id as id, nmis.title as title, filename, nmi.id as series, nmi.title as seriesName, season, chrono FROM nmc_media as nmi "
+		String query = "SELECT nv.id as id, nmis.title as title, filename, nmi.id as series, nmi.title as seriesName, np.name as name, season, chrono FROM nmc_media as nmi "
 				+ "INNER JOIN nmc_media_series as nmis ON nmi.id = nmis.media_id "
-				+ "INNER JOIN nmc_videos as nv ON nmis.episodes_id = nv.id ";
+				+ "INNER JOIN nmc_videos as nv ON nmis.episodes_id = nv.id "
+				+ "OUTER LEFT JOIN nmc_videos_directors as nvd ON nv.id = nvd.videos_id "
+				+ "OUTER LEFT JOIN nmc_persons as np ON nvd.persons_id = np.id";
 		if (queryAdd != null)
 			query.concat(queryAdd);
 		query.concat(" ORDER BY title DESC;");
@@ -86,8 +88,8 @@ public class Retriever {
 	public ResultSet selectImageList(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name FROM nmc_media as nmi "
-				+ "LEFT OUTER JOIN nmc_media_photographers as nmp ON nmi.id = nmp.media_id "
-				+ "LEFT OUTER JOIN nmc_persons as np ON nmp.persons_id = np.id "
+				+ "OUTER LEFT JOIN nmc_media_photographers as nmp ON nmi.id = nmp.media_id "
+				+ "OUTER LEFT JOIN nmc_persons as np ON nmp.persons_id = np.id "
 				+ "WHERE type = 'image' ";
 		if (queryAdd != null)
 			query.concat(queryAdd);

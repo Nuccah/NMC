@@ -440,6 +440,7 @@ public class ServerListener implements Runnable {
 			while(rs.next()){
 				albumList.add(new AlbumCollector(rs.getInt("id"), rs.getString("title"), String.valueOf(rs.getInt("release_date")), rs.getInt("modification"), rs.getInt("visibility"), rs.getString("name"), rs.getString("description"), rs.getString("category")));
 			}
+			System.out.println(albumList.toString());
 			return albumList;
 		case "audio":
 			audioList = new ArrayList<AudioCollector>();
@@ -461,6 +462,7 @@ public class ServerListener implements Runnable {
 			while(rs.next()){
 				episodeList.add(new EpisodeCollector(rs.getInt("id"), rs.getString("title"), rs.getString("filename"), rs.getInt("series"), rs.getString("seriesName"), rs.getString("name"), String.valueOf(rs.getInt("season")), String.valueOf(rs.getInt("chrono"))));
 			}
+			
 			return episodeList;
 		case "images": 
 			imageList = new ArrayList<ImageCollector>();
