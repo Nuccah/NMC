@@ -74,7 +74,7 @@ public class CommonUsed {
 	
 	protected final String userNode = "Créer un utilisateur";
 	protected final String adminNode = "Gestion des utilisateurs";        
-	protected final String permNode = "Gestion des permissions";
+	protected final String permNode = "Gestion des rangs";
 	
 	protected String node;
 	

@@ -23,6 +23,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import model.Config;
 import controller.SocketManager;
@@ -33,7 +35,7 @@ import controller.SocketManager;
  *
  */
 
-public class Dashboard extends JFrame implements ActionListener{
+public class Dashboard extends JFrame implements ActionListener, ChangeListener{
 	private static final long serialVersionUID = -5998048938167814342L;
 	private JPanel topPane = new JPanel();
 	private JPanel titlePane = new JPanel();
@@ -104,11 +106,8 @@ public class Dashboard extends JFrame implements ActionListener{
 	public void setTitleBar(){
 
 		cu.mnAide.setHorizontalAlignment(SwingConstants.LEFT);
+		cu.mnAide.addActionListener(this);
 		titlePane.add(cu.mnAide);
-
-		cu.mnQuitter.setHorizontalAlignment(SwingConstants.LEFT);
-		cu.mnQuitter.addActionListener(this);
-		titlePane.add(cu.mnQuitter);
 
 		titlePane.repaint();
 		titlePane.revalidate();
@@ -121,11 +120,17 @@ public class Dashboard extends JFrame implements ActionListener{
 	private void setMenuBar() {
 		mediaNode = new JTabbedPane();
 		mediaNode.setBorder(new EmptyBorder(5, 5, 5, 5));
-		mediaNode.addTab(cu.viewBooks, new ViewPane(cu.viewBooks));
-		mediaNode.addTab(cu.viewImages, new ViewPane(cu.viewImages));
-		mediaNode.addTab(cu.viewMovies, new ViewPane(cu.viewMovies));
-		mediaNode.addTab(cu.viewMusic, new ViewPane(cu.viewMusic));
-		mediaNode.addTab(cu.viewSeries, new ViewPane(cu.viewSeries));
+		ViewPane vBook = new ViewPane(cu.viewBooks);
+		mediaNode.addTab(cu.viewBooks, vBook);
+		ViewPane vImage = new ViewPane(cu.viewImages);
+		mediaNode.addTab(cu.viewImages, vImage);
+		ViewPane vMovie = new ViewPane(cu.viewMovies);
+		mediaNode.addTab(cu.viewMovies, vMovie);
+		ViewPane vMusic = new ViewPane(cu.viewMusic);
+		mediaNode.addTab(cu.viewMusic, vMusic);
+		ViewPane vSerie = new ViewPane(cu.viewSeries);
+		mediaNode.addTab(cu.viewSeries, vSerie);
+		mediaNode.addChangeListener(this);
 
 		uploadNode = new JTabbedPane();
 		uploadNode.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -164,10 +169,7 @@ public class Dashboard extends JFrame implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == cu.mnQuitter){
-			SocketManager.getInstance().logout();
-			System.exit(0);
-		} else if(e.getSource() == cu.mnAide){
+		if(e.getSource() == cu.mnAide){
 			if(Desktop.isDesktopSupported())
 			{
 				try {
@@ -177,5 +179,17 @@ public class Dashboard extends JFrame implements ActionListener{
 				}
 			}
 		} 
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if(e.getSource() == mediaNode){
+			ViewPane tmp = (ViewPane) mediaNode.getSelectedComponent();
+			tmp.refreshDisplay();
+		} else if(e.getSource() == uploadNode){
+			
+		} else if(e.getSource() == usersNode){
+			
+		}
 	}	
 }
