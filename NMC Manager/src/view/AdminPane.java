@@ -33,8 +33,8 @@ public class AdminPane extends JPanel implements ActionListener{
 			"right:pref, 4dlu, fill:130dlu",
 			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
 					+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
-	private static final String[] userColumns = new String[]{"Username", "First Name", "Last Name", "Email", "Birthdate", "Registration Date", "Permission Level"};
-	private static final String[] permissionColumns = new String[]{"Label", "Level"};
+	private static final String[] userColumns = new String[]{"Nom d'utilisateur", "Prénom", "Nom", "Email", "Date de naissance", "Date de création", "Rang"};
+	private static final String[] permissionColumns = new String[]{"Nom de rang", "Niveau"};
 	
 	public AdminPane(String tab){
 		cu.addButton.addActionListener(this);
