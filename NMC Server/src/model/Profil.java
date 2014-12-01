@@ -82,62 +82,129 @@ public class Profil implements Serializable {
 		if(instance == null) instance = new Profil();
 		return instance;
 	}
-	
+	/**
+	 * Permet d'obtenir l'identifiant du profil
+	 * @return L'identifiant du profil
+	 */
 	public int getId() {
 		return id;
 	}
-
+	/**
+	 * Permet de modifier l'identifiant du profil
+	 * @param id : Le nouvel identifiant du profil
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+	/**
+	 * Permet d'obtenir le nom d'utilisateur
+	 * @return Le nom d'utilisateur
+	 */
 	public String getUsername() {
 		return username;
 	}
+	/**
+	 * Permet de modifier le nom d'utilisateur
+	 * @param username : Le nouveau nom d'utilisateur
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	/**
+	 * Permet d'obtenir le mot de passe 
+	 * @return Le mot de passe
+	 */
 	public String getPassword() {
 		return password;
 	}
-
+	/**
+	 * Permet modifier le mot de passe
+	 * @param password : Le nouveau mot de passe
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	/**
+	 * Permet d'obtenir l'adresse mail
+	 * @return l'adresse mail
+	 */
 	public String getMail() {
 		return mail;
 	}
+	/**
+	 * Permet de modifier l'adresse mail
+	 * @param mail : La nouvelle adresse mail
+	 */
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
+	/**
+	 * Permet d'obtenir le prénom
+	 * @return Le prénom
+	 */
 	public String getFirstName() {
 		return first_name;
 	}
+	/**
+	 * Permet de modifier le prénom
+	 * @param first_name : Le nouveau prénom
+	 */
 	public void setFirstName(String first_name) {
 		this.first_name = first_name;
 	}
+	/**
+	 * Permet d'obtenir le nom
+	 * @return Le nom
+	 */
 	public  String getLastName() {
 		return last_name;
 	}
+	/**
+	 * Permet de modifier le nom
+	 * @param last_name : Le nouveau nom
+	 */
 	public void setLastName(String last_name) {
 		this.last_name = last_name;
 	}
+	/**
+	 * Permet d'obtenir la date de naissance
+	 * @return La date de naissance
+	 */
 	public Date getBirthdate() {
 		return birthdate;
 	}
+	/**
+	 * Permet de modifier la date de naissance
+	 * @param birthdate : La nouvelle date de naissance
+	 */
 	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
 	}
+	/**
+	 * Permet d'obtenir la date d'enregistrement
+	 * @return La date d'enregistrement
+	 */
 	public Timestamp getRegDate() {
 		return reg_date;
 	}
+	/**
+	 * Permet de modifier la date d'enregistrement
+	 * @param reg_date : La nouvelle date d'enregistrement
+	 */
 	public void setRegDate(Timestamp reg_date) {
 		this.reg_date = reg_date;
 	}
+	/**
+	 * Permet d'obtenir le rang
+	 * @return L'identifiant du rang
+	 */
 	public int getPermissions_id() {
 		return permissions_id;
 	}
-
+	/**
+	 * Permet de modifier le rang
+	 * @param permissions_id : L'identifiant du nouveau rang
+	 */
 	public void setPermissions_id(int permissions_id) {
 		this.permissions_id = permissions_id;
 	}

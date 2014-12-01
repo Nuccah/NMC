@@ -25,7 +25,7 @@ import model.Config;
  * &nbsp;- restart : crée une nouvelle instance du serveur et tue celle existante. <br />
  * &nbsp;- stop : tue l'instance existante.
  * @author Antoine Ceyssens & Derek Van Hove
- * @version RC3-3.3
+ * @version RC4.2
  *
  */
 public class Main {

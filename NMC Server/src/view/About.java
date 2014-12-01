@@ -16,10 +16,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
 import model.Config;
-
+/**
+ * Classe de génération de la fenêtre A Propos
+ * @author Antoine
+ *
+ */
 public class About extends JFrame {
 	private static final long serialVersionUID = -7754918383926484094L;
-	
+	/**
+	 * Permet de créer la fenêtre A Propos
+	 */
 	public About(){
 		super(Config.getInstance().getProp("base_title")+" - A propos");
 		URL url = getClass().getResource("nmc.png");

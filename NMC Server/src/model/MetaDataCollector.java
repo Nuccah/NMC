@@ -81,53 +81,87 @@ public class MetaDataCollector implements Serializable{
 		this.absPath = null;
 		this.relPath = null;
 	}
-	
+	/**
+	 * Permet d'obtenir l'identifiant du média
+	 * @return L'identifiant du média
+	 */
 	public int getId() {
 		return id;
 	}
-
+	/**
+	 * Permet de modifier l'id du média
+	 * @param id : Identifiant à placer
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+	/**
+	 * Permet d'obtenir le titre du média
+	 * @return Le titre du média
+	 */
 	public String getTitle(){
 		return title;
 	}
-
+	/**
+	 * Permet d'obtenir le chemin absolu du fichier
+	 * @return Le chemin absolu du fichier
+	 */
 	public String getAbsPath() {
 		return absPath;
 	}
-
+	/**
+	 * Permet de modifier le chemin absolu du fichier
+	 * @param absPath : Le nouveau chemin absolu du fichier
+	 */
 	public void setAbsPath(String absPath) {
 		this.absPath = absPath;
 	}
-
+	/**
+	 * Permet d'obtenir le chemin relatif du fichier
+	 * @return Le chemin relatif du fichier
+	 */
 	public String getRelPath() {
 		return relPath;
 	}
-
+	/**
+	 * Permet de modifier le chemin relatif du fichier
+	 * @param relPath : Le chemin relatif du fichier
+	 */
 	public void setRelPath(String relPath) {
 		this.relPath = relPath;
 	}
-
+	/**
+	 * Permet d'obtenir le rang requis pour la modification
+	 * @return L'identifiant du rang requis
+	 */
 	public int getModificiationID() {
 		return modificiationID;
 	}
-
+	/**
+	 * Permet de modifier le rang de modification requis
+	 * @param modificiationID : Identifiant du nouveau rang
+	 */
 	public void setModificiationID(int modificiationID) {
 		this.modificiationID = modificiationID;
 	}
-
+	/**
+	 * Permet d'obtenir le rang requis pour accéder au média
+	 * @return L'identifiant du rang requis
+	 */
 	public int getVisibilityID() {
 		return visibilityID;
 	}
-
+	/**
+	 * Permet de modifier le rang requis pour accéder au média
+	 * @param visibilityID : Identifiant du nouveau rang
+	 */
 	public void setVisibilityID(int visibilityID) {
 		this.visibilityID = visibilityID;
 	}
-
+	/**
+	 * @throws
+	 */
 	public String toString() {
-		// TODO Auto-generated method stub
 		return this.title;
 	}
 	
