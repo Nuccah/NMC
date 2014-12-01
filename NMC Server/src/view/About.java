@@ -40,7 +40,7 @@ public class About extends JFrame {
 		JPanel tempTop = new JPanel();
 		tempTop.setLayout(new FlowLayout());
 		tempTop.setBackground(Color.WHITE);
-		JLabel title = new JLabel("Nukama Media Center");
+		JLabel title = new JLabel("NMC");
 		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
 		title.setBackground(Color.WHITE);
 		tempTop.add(title);
@@ -48,7 +48,6 @@ public class About extends JFrame {
 		
 		JTextPane text = new JTextPane();
 		text.setText("Ce programme a été développé par Nukama Team.\n"
-				+ "La partie serveur applicative a été développée par Antoine Ceyssens et Derek Van Hove.\n"
 				+ "Plus d'informations et de renseignements sur https://mediacenter.nukama.be");
 		text.setFont(new Font(Font.SANS_SERIF, Font.CENTER_BASELINE, 14));
 		text.setMargin(new Insets(25, 25, 5, 15));

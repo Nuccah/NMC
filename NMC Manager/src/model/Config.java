@@ -64,7 +64,7 @@ public class Config {
 	 * Permet d'initialiser les propriétés de bases
 	 */
 	public void defaultConf(){
-		setProp("program_title", "Nukama MediaCenter Manager");
+		setProp("program_title", "NMC Manager");
 		setProp("base_title", "NMC - ");
 		setProp("srv_port", "50002");
 		setProp("init", "0");
