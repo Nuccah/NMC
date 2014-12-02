@@ -159,17 +159,23 @@ public class MetaDataCollector implements Serializable{
 		this.visibilityID = visibilityID;
 	}
 	/**
+	 * Permet d'obtenir l'identifiant de l'user qui à ajouté le media
+	 * @return L'identifiant de l'user
+	 */
+	public int getAdder() {
+		return adder;
+	}
+	/**
+	 * Permet de modifier l'identifiant de l'user qui à ajouté le media
+	 * @param visibilityID : Identifiant de l'user
+	 */
+	public void setAdder(int adder) {
+		this.adder = adder;
+	}
+	/**
 	 * @throws
 	 */
 	public String toString() {
 		return this.title;
-	}
-	
-	public int getAdder() {
-		return adder;
-	}
-
-	public void setAdder(int adder) {
-		this.adder = adder;
 	}
 }

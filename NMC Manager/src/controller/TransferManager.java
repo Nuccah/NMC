@@ -85,6 +85,12 @@ public class TransferManager {
 		}
 	}
 
+	/** Permet de renommer le fichier avant de l'envoyer
+	 * @param mdc les metadonnées du fichier à envoyer
+	 * @param uploadFile Fichier qui doit etre renommé avant le téléverser sur le serveur 
+	 * @return le fichier renommé à téléverser sur le serveur 
+	 * @throws IOException si il y eu un erreur lors de l'ecriture sur le outputstream
+	 */
 	public File setFilename(MetaDataCollector mdc, File uploadFile) throws IOException {
 
 	    // File (or directory) with new name
@@ -122,7 +128,9 @@ public class TransferManager {
 	 * 			Ce paramètre est facultatif <br />
 	 * 			Attention : Le dossier doit avoir été créé au préalable sur le serveur
 	 * @param fToSend : Fichier à téléverser sur le serveur 
-	 * @throws SftpException if client-server communication error occurred
+	 * @param mdc : les metadonnées du fichier a énvoyer
+	 * @throws SftpException si il y eu une erreur de communication entre le serveur et le client
+	 * @throws si il y eu un erreur lors de l'ecriture sur le outputstream
 	 */
 	@SuppressWarnings("unused")
 	public void sendFile(String directory, File fToSend, MetaDataCollector mdc) throws SftpException, IOException{
@@ -170,11 +178,11 @@ public class TransferManager {
 	}
 
 	/**
-	 * Write of file onto outputstream
-	 * @param bytes bytes to read
-	 * @param offset from which location in file
-	 * @param length total length of file
-	 * @throws IOException if error when writing to outputstream
+	 * Ecriture du fichier sur le outputstream
+	 * @param bytes les bytes a lire
+	 * @param offset le offset dans le fichier
+	 * @param length la longeur du fichier
+	 * @throws IOException si il y eu un erreur lors de l'ecriture sur le outputstream
 	 */
 	public void writeFile(byte[] bytes, int offset, int length) 
 			throws IOException{
@@ -190,7 +198,7 @@ public class TransferManager {
 	}
 
 	/** 
-	 * Closes connection between client and server
+	 * Fermeture de la connexion entre le client et le serveur
 	 */
 	public void close() {
 		if (sftpChannel.isConnected()) sftpChannel.disconnect();

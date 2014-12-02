@@ -85,7 +85,10 @@ public class EpisodeCollector extends MetaDataCollector{
 	public String getSeason() {
 		return season;
 	}
-
+	/**
+	 * Permet d'obtenir le chrono de l'episode dans la saison
+	 * @return Le chrono de l'episode dans la saison
+	 */
 	public String getChrono() {
 		return chrono;
 	}

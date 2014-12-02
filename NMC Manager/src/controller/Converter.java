@@ -31,11 +31,9 @@ public class Converter {
 	/**
 	 * Convertit le fichier vidéo entré au format .mp4<br />
 	 * Le fichier créé est placé dans le même dossier que celui d'origine
-	 * @param mdc 
-	 * 
+	 * @param mdc le type et les metadonnées du fichier a convertir
 	 * @param fToConvert : Fichier vidéo à convertir au format .mp4
-	 * @return 
-	 * @return 
+	 * @return le nouveau nom si il a été converti sinon le nom d'origine
 	 */
 	public String convertToMP4(MetaDataCollector mdc, File fToConvert){
 		String newFileName = fToConvert.getName().substring(0, fToConvert.getName().lastIndexOf("."))+".mp4";
@@ -55,10 +53,9 @@ public class Converter {
 	/**
 	 * Convertit le fichier audio entré au format .mp3<br />
 	 * Le fichier créé est placé dans le même dossier que celui d'origine
-	 * @param mdc 
-	 * 
+	 * @param mdc les metadonnées du fichier a convertir
 	 * @param fToConvert : Fichier audio à convertir au format .mp3
-	 * @return 
+	 * @return le nouveau nom si il a été converti sinon le nom d'origine
 	 */
 	public String convertToMP3(AudioCollector mdc, File fToConvert){
 		String newFileName = fToConvert.getName().substring(0, fToConvert.getName().lastIndexOf("."))+".mp3";
