@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
+/** Classe qui herites de AbstractTableModel et qui permet de créer des 
+ * tableaux contenant les differents types de media
+ * @author Derek
+ *
+ */
 public class NMCTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 510301159530188722L;
 	private String[] columnNames = null;

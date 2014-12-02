@@ -25,6 +25,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import controller.Crypter;
 import controller.SocketManager;
 
+/**Les panneaux utilisées pour l'administration des utilisateurs
+ * @author Derek & Antoine 
+ *
+ */
 public class AdminPane extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 6053063954351925886L;
 	private CommonUsed cu = new CommonUsed();
@@ -88,6 +92,10 @@ public class AdminPane extends JPanel implements ActionListener{
 		}
 	}
 	
+	/** Fonction permettant la creation des differents tables de administration
+	 * @param type le type de table a créer
+	 * @return le tableau contenant le type de données indiqué par le type
+	 */
 	private JScrollPane createTable(String type) {
 		try {
 			SocketManager.getInstance().getList(type);
@@ -114,7 +122,7 @@ public class AdminPane extends JPanel implements ActionListener{
 		return scrollPane;
 	}
 	
-	/** Determines whether  metadata fields are empty or not
+	/** Determines whether metadata fields are empty or not
 	 * @param node the String of the node selected
 	 * @return boolean whether metadata fields are empty or not
 	 */
@@ -129,6 +137,9 @@ public class AdminPane extends JPanel implements ActionListener{
 		}
 	}
 	
+	/** Ajoute des differents field components dans leur listes respectives
+	 * 
+	 */
 	private void setComponentLists() {
 		cu.fieldList.add(cu.passField);
 		cu.fieldList.add(cu.confirmPassField);
@@ -144,6 +155,9 @@ public class AdminPane extends JPanel implements ActionListener{
 		cu.cbPList.add(cu.permissionsBox);
 	}
 	
+	/** Fonction qui s'occupe de la mise en place des composants du createUserPane
+	 * 
+	 */
 	private void setCreateUserPane(){
 		cu.userField.setEditable(true);
 		cu.mailField.setEditable(true);

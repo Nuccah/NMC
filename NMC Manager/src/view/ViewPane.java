@@ -17,6 +17,10 @@ import model.MetaDataCollector;
 import model.NMCTableModel;
 import controller.SocketManager;
 
+/** Les panneaux utilisées pour l'affichage et l'apercu des medias
+ * @author Derek & Antoine
+ *
+ */
 public class ViewPane extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 7182514090249903324L;
 	private CommonUsed cu = new CommonUsed();
@@ -45,6 +49,9 @@ public class ViewPane extends JPanel implements ActionListener{
 		refreshDisplay();
 	}
 	
+	/**
+	 * Fonction qui rafraîchit la table pour afficher
+	 */
 	public void refreshDisplay(){
 		this.removeAll();
 		viewPane.removeAll();
@@ -70,6 +77,9 @@ public class ViewPane extends JPanel implements ActionListener{
 		this.revalidate();
 	}
 	
+	/** Function that creates the different types of media necessary
+	 * @param type le type de media a afficher
+	 */
 	private void createTable(String type) {
 		try {
 			SocketManager.getInstance().getList(type);

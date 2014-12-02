@@ -15,6 +15,10 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import controller.SocketManager;
 
+/** Les panneaux utilisées pour le modification du profil
+ * @author Derek & Antoine
+ *
+ */
 public class ProfilPane extends JPanel implements ActionListener{
 	private static final long serialVersionUID = -5634060463486776841L;
 	private CommonUsed cu = new CommonUsed();
@@ -39,6 +43,9 @@ public class ProfilPane extends JPanel implements ActionListener{
 		profilePane.repaint(); profilePane.revalidate();
 	}
 	
+	/** Initialise les champs de mot de passe
+	 * @param type
+	 */
 	public void initFields(String type){
 		if (type.equals("profil")){
 			cu.passField.setText(null);
@@ -47,6 +54,9 @@ public class ProfilPane extends JPanel implements ActionListener{
 		}
 	}
 	
+	/**
+	 * Définit le panneau de modification de profil
+	 */
 	private void setProfilPane() {
 		initFields("profil");
 		cu.userField.setText(Profil.getInstance().getUsername()); cu.userField.setEditable(false);

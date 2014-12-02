@@ -43,18 +43,22 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import controller.SocketManager;
 
+/** Les panneaux utilisées pour l'ajout des medias
+ * @author Derek
+ *
+ */
 public class UploadPane extends JPanel implements ActionListener, PropertyChangeListener {
 	private static final long serialVersionUID = 4071471356054977303L;
 	private JFileChooser fc = new JFileChooser();
 	private CommonUsed cu = new CommonUsed();
-	
+
 	private JProgressBar progressBar;
 	private UploadTask uTask;
-	
+
 	private MetaDataCollector fileC;
 	private String messagePB;
 	private JDialog dlg;
-	
+
 	private final FormLayout uploadLayout = new FormLayout(
 			"right:pref, 4dlu, fill:130dlu",
 			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
@@ -74,7 +78,7 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 	private final JLabel seasonLabel = new JLabel("Saison");
 	private final JLabel chronoLabel = new JLabel("Chronologie");
 	private final JLabel seriesLabel = new JLabel("Séries");
-	
+
 	private JTextField titleField = new JTextField();
 	private JTextField yearField = new JTextField();
 	private JTextField synopsisField = new JTextField();
@@ -82,14 +86,14 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 	private JTextField personField = new JTextField();
 	private JTextField chronoField = new JTextField();
 	private JTextField seasonField = new JTextField();
-	
+
 	private final FileFilter videoFilter = new FileNameExtensionFilter("Fichier Vidéo", "mp4", "avi", "mkv", "flv", "mov", "wmv", "vob", "3gp", "3g2");
 	private final FileFilter musicFilter = new FileNameExtensionFilter("Fichier Audio", "aac", "mp3", "wav", "wma", "flac");
 	private final FileFilter bookFilter = new FileNameExtensionFilter("Fichier Livre", "pdf", "ebook", "epub", "cbr", "cbz");
 	private final FileFilter imageFilter = new FileNameExtensionFilter("Fichier Image", "jpg", "jpeg", "png", "gif", "bmp");
 
 	private GridBagConstraints rcc = new GridBagConstraints();
-	
+
 	public UploadPane(String tab, Frame frame_owner){
 		JPanel dataPane = new JPanel();
 		dataPane.removeAll();
@@ -97,12 +101,12 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 		cu.frameOwner = frame_owner;
 		setFileChooser(fc.getComponents());
 		setComponentLists();
-		
+
 		cu.uploadButton.addActionListener(this);
 		cu.clearButton.addActionListener(this);
 		cu.addButton.addActionListener(this);
 		cu.modifyButton.addActionListener(this);
-		
+
 		clear();
 		uploadLayout.setRowGroups(new int[][]{{1, 3, 5, 7, 9, 11,13,15,17}});
 		dataPane.setLayout(uploadLayout);
@@ -176,10 +180,13 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 		}
 		dataPane.add(new JLabel("* = champs requis"), cu.cc.xy(3,15));
 		dataPane.add(cu.clearButton,cu.cc.xy(3, 17));
-			
+
 		dataPane.repaint(); dataPane.revalidate();
 	}
 
+	/**
+	 * Fonction qui réinitialise les composants
+	 */
 	public void clear(){
 		for (JTextField fl : cu.fieldList) 
 			fl.setText(null);
@@ -190,7 +197,11 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 		cu.uploadButton.setEnabled(false);
 		cu.modifyButton.setEnabled(false);
 	}
-	
+
+	/** Fonction qui choisissent quels médias dossier de transférer à en fonction du type de media
+	 * @param node le type de media a televerser
+	 * @return le nom de dossier cible
+	 */
 	public String chooseDirectory(String node) {
 		if (node == cu.uploadAlbums) return "Music";
 		else if (node == cu.uploadBooks) return "Books";
@@ -201,7 +212,10 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 		else if (node == cu.uploadSeries) return "Series";
 		else return null;
 	}
-	
+
+	/** Ajoute des differents field components dans leur listes respectives
+	 * 
+	 */
 	private void setComponentLists() {
 		cu.fieldList.add(titleField);
 		cu.fieldList.add(yearField);
@@ -215,7 +229,10 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 		cu.cbPList.add(cu.visibilityBox);
 		cu.cbPList.add(cu.permissionsBox);
 	}
-	
+
+	/** Fonction définir les options JFileChooser
+	 * @param components
+	 */
 	private void setFileChooser(Component[] components) {
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setControlButtonsAreShown(false);
@@ -229,6 +246,11 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 		fc.setOpaque(true);
 	}
 
+	/** Fonction qui définit le fond de la JFileChooser
+	 * @param jc
+	 * @param bg
+	 * @param depth
+	 */
 	private void setBG( Component[] jc, Color bg, int depth )
 	{
 		for( int i = 0; i < jc.length; i++ ) {
@@ -238,9 +260,9 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 			c.setBackground( bg );
 		}
 	}
-	
+
 	/**
-	 * Invoked when task's progress property changes.
+	 * Appelé lorsque les changements de propriété de progression de la tâche.
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress" == evt.getPropertyName()) {
@@ -250,9 +272,9 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 			else progressBar.setString("Téléversement en cours");
 		}
 	}
-	
+
 	/**
-	 * Creation of new progress bar, dialog for each upload
+	 * Création d'une nouvelle barre de progression de dialogue pour chaque téléchargement
 	 */
 	public void progressBar(String message) {
 		//Create the demo's UI.
@@ -268,10 +290,9 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 		dlg.setLocationRelativeTo(cu.frameOwner);
 		dlg.setVisible(true);
 	}
-	
-	/** Determines whether  metadata fields are empty or not
-	 * @param cu.node the String of the cu.node selected
-	 * @return boolean whether metadata fields are empty or not
+
+	/** Détermine si les champs de métadonnées sont vides ou non
+	 * @return boolean si les champs de métadonnées sont vides ou non
 	 **/
 	private boolean verify(){
 		if (titleField.getText().equals(""))
@@ -316,7 +337,7 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 				return false;
 		}
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == cu.uploadButton){
@@ -427,7 +448,7 @@ public class UploadPane extends JPanel implements ActionListener, PropertyChange
 				cu.uploadButton.setEnabled(false);
 			}
 		}
-		
+
 	}
 
 }
