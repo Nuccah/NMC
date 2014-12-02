@@ -80,8 +80,7 @@ public class Deleter {
 	public boolean delete(String path) throws IOException {
 		File f = new File(path);
 		if (!f.exists()) {
-			System.out.println("3");
-			return false;
+			return true;
 		}
 
 		if (!f.isDirectory()){
@@ -239,7 +238,6 @@ public class Deleter {
 			db.modify(query2);
 		}
 		else{
-			System.out.println("yolo shit");
 			db.closeConnection();
 			return false;
 		}

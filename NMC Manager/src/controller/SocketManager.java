@@ -319,10 +319,12 @@ public class SocketManager extends Socket {
 
 	/** Permet de supprimer un element dans la base de données
 	 * @param mdc l'element a supprimer
+	 * @param type 
 	 * @return Vrai si l'operation à réussi
 	 */
-	public boolean delObject(MetaDataCollector mdc){
+	public boolean delObject(int id, String type){
 		String ack = null;
+		String[] object = {String.valueOf(id), type};
 		try {
 			do {
 				oos.writeObject("delete");
@@ -335,8 +337,11 @@ public class SocketManager extends Socket {
 		ack = null;
 		try{
 			do{
-				oos.writeObject(mdc);
+				oos.writeObject(object);
 				ack = String.valueOf(ois.readObject());
+				if (ack.equals("NACK")){
+					return false;
+				}
 			} while (!ack.equals("ACK"));
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();

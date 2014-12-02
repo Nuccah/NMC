@@ -13,7 +13,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import model.Lists;
-import model.MetaDataCollector;
 import model.NMCTableModel;
 import controller.SocketManager;
 
@@ -26,6 +25,7 @@ public class ViewPane extends JPanel implements ActionListener{
 	private CommonUsed cu = new CommonUsed();
 	private JPanel viewPane;
 	private String node;
+	private String type;
 	
 	private GridBagConstraints vmc = new GridBagConstraints();
 	private final JButton deleteBtn = new JButton("Supprimer");
@@ -92,12 +92,13 @@ public class ViewPane extends JPanel implements ActionListener{
 			e.printStackTrace();
 		}
 		table = null;
+		this.type = type;
 		switch (type){
 		case "albums": 
-			table = new JTable(new NMCTableModel(Lists.getInstance().getAlbumList(), albumColumns)); 
+			table = new JTable(new NMCTableModel(Lists.getInstance().getAlbumList(), albumColumns));
 			break;
 		case "books": 
-			table = new JTable(new NMCTableModel(Lists.getInstance().getBookList(), bookColumns)); 
+			table = new JTable(new NMCTableModel(Lists.getInstance().getBookList(), bookColumns));
 			break;
 		case "images": 
 			table = new JTable(new NMCTableModel(Lists.getInstance().getImageList(), imageColumns)); 
@@ -123,8 +124,7 @@ public class ViewPane extends JPanel implements ActionListener{
 			if((JOptionPane.showConfirmDialog(this, 
 					"Confirmer la suppression?", 
 					"Suppression", JOptionPane.YES_NO_OPTION) == 0) && (table.getSelectedRow() != -1))
-			SocketManager.getInstance().delObject(new MetaDataCollector((int)table.getValueAt(table.getSelectedRow(), 0),
-					(String)table.getValueAt(table.getSelectedRow(), 1)));
+			SocketManager.getInstance().delObject((int)table.getValueAt(table.getSelectedRow(), 0), type);
 		}		
 	}
 }
