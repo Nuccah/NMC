@@ -56,6 +56,18 @@ public class ServerListener implements Runnable {
 	}
 	/**
 	 * Permet de définir l'action à exécuter au niveau du socket
+	 * <br /><br />
+	 * Les actions possibles sont:
+	 * <ul>
+	 * <li>init : Intialisation du client</li>
+	 * <li>connec : Connexion d'un utilisateur</li>
+	 * <li>meta : Obtention des métadonnées d'un média par le client</li>
+	 * <li>create : Ajout d'un utilisateur</li>
+	 * <li>delete : Suppression d'un élément du serveur</li>
+	 * <li>list : Récupération de la liste des médias</li>
+	 * <li>modify : Modification des données d'un utilisateur / d'un média</li>
+	 * <li>logout : Déconnexion d'un utilisateur</li>
+	 * </ul>
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
@@ -104,9 +116,6 @@ public class ServerListener implements Runnable {
 		}
 	}
 
-	/**
-	 * Permet d'envoyer les configurations de bases au client
-	 */
 	private void sendAutoConfig(){
 		Config conf = Config.getInstance();
 		try{
@@ -128,11 +137,8 @@ public class ServerListener implements Runnable {
 			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
-	/**
-	 * Permet de connecter un client avec les données reçues.
-	 * Le client récupère un objet Profil dans le cas d'une connexion réussie
-	 * @param action 
-	 */
+
+	
 	private void connectCl(){
 		String[] credentials = new String[2];
 		try{
@@ -194,9 +200,8 @@ public class ServerListener implements Runnable {
 			if(Main.getDebug()) e.printStackTrace();
 		}
 	}
-	/**
-	 * Permet de recevoir les méta données et de les injecter dans la base de données
-	 */
+
+	
 	private void recieveMeta(){
 		MetaDataCollector mdc = null;
 		try {

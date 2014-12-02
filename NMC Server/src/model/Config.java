@@ -137,25 +137,43 @@ public class Config {
 			}
 		}
 	}
-	
+	/**
+	 * Permet de créer le dossier d'une série dans le dossier primaire Series/
+	 * @param sc : Données de la série nécessitant un sous-dossier
+	 */
 	public void createSeriesFolders(SeriesCollector sc){
 		File series = new File(getProp("root_dir")+slash+"Series"+slash+sc.toString());
 		if(!series.exists()) series.mkdir();
 	}
-	
+	/**
+	 * Permet de créer le dossier d'un album dans le dossier primaire Albums/
+	 * @param ac : Données de l'album nécessitant un sous-dossier
+	 */	
 	public void createAlbumFolders(AlbumCollector ac){
 		File album = new File(getProp("root_dir")+slash+"Music"+slash+ac.toString());
 		if(!album.exists()) album.mkdir();
 	}
 	
+	/**
+	 * Permet de créer une nouvelle propriété
+	 * @param key : Nom de la propriété
+	 * @param value : Valeur de la propriété
+	 */
 	public void setProp(String key, String value){
 		prop.setProperty(key, value);
 	}
-	
+	/**
+	 * Permet d'obtenir la valeur d'une propriété
+	 * @param key : Nom de la propriété à obtenir
+	 * @return Valeur de la propriété voulue
+	 */
 	public String getProp(String key){
 		return prop.getProperty(key);
 	}
-	
+	/**
+	 * Permet de supprimer une propriété
+	 * @param key : Le nom de la propriété à supprimer
+	 */
 	public void removeProp(String key){
 		prop.remove(key);
 	}
@@ -180,7 +198,7 @@ public class Config {
 	}
 	/**
 	 * Permet d'ajouter les propriétés passées en paramètres aux propriétés existantes
-	 * @param new_prop
+	 * @param new_prop : Nouvelle propriétés à ajouter aux actuelles
 	 */
 	public void saveProp(Properties new_prop){
 		try {

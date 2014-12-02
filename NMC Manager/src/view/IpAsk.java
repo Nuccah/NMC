@@ -24,6 +24,10 @@ import javax.swing.JTextPane;
 import model.Config;
 import controller.SocketManager;
 
+/** Fenêtre pour définir le serveur IP
+ * @author Antoine
+ *
+ */
 public class IpAsk extends JFrame implements ActionListener{
 	private static final long serialVersionUID = -1447417979022041682L;
 	private JButton bQuitter;
@@ -88,6 +92,10 @@ public class IpAsk extends JFrame implements ActionListener{
 		setVisible(true);
 	}
 	
+	/** Fonction qui vérifie le format IP saisie
+	 * @param ip l'IP pour vérifier
+	 * @return Vrai si l'IP est vérifiée
+	 */
 	private boolean checkIpFormat(String ip){
 		int i, k = 0;
 		for(i = 0; i < ip.length(); i++){

@@ -28,6 +28,9 @@ public class Deleter {
 	}
 	/**
 	 * Supprime les fichiers contenus dans l'arraylist listToDelete
+	 * @param rs : Le resultset de la requête 
+	 * @param type : Type d'élément à supprimer (Dossier ou Fichier)
+	 * @return Vrai si les fichiers ont bien été supprimé
 	 */
 	private boolean deleteFile(ResultSet rs, String type){
 		String path = null;
@@ -68,7 +71,12 @@ public class Deleter {
 		}
 		return true;
 	}
-
+	/**
+	 * Supprime le fichier physiquement du serveur
+	 * @param path : Chemin du fichier à supprimer
+	 * @return Vrai si le fichier a bien été supprimé
+	 * @throws IOException
+	 */
 	public boolean delete(String path) throws IOException {
 		File f = new File(path);
 		if (!f.exists()) {
@@ -89,7 +97,13 @@ public class Deleter {
 		f.delete();
 		return true;
 	}
-
+	
+	/**
+	 * Supprime les métadonnées d'un album
+	 * @param id : Identifiant de l'albume à supprimer
+	 * @return Vrai si l'album a bien été supprimé
+	 * @throws SQLException
+	 */
 	public boolean deleteAlbum(int id) throws SQLException{
 		db.openConnection();
 
@@ -108,7 +122,13 @@ public class Deleter {
 		db.closeConnection();
 		return true;
 	}
-
+	
+	/**
+	 * Supprime les métadonnées d'une musique
+	 * @param id : Identifiant de la musique à supprimer
+	 * @return Vrai si la musique a bien été supprimée
+	 * @throws SQLException
+	 */
 	public boolean deleteAudio(int id) throws SQLException{
 		db.openConnection();
 
@@ -129,6 +149,12 @@ public class Deleter {
 		return true;
 	}
 
+	/**
+	 * Supprime les métadonnées d'un livre
+	 * @param id : Identifiant du livre à supprimer
+	 * @return Vrai si le livre a bien été supprimé
+	 * @throws SQLException
+	 */
 	public boolean deleteBook(int id) throws SQLException{
 		db.openConnection();
 
@@ -147,6 +173,12 @@ public class Deleter {
 		return true;
 	}
 
+	/**
+	 * Supprime les métadonnées d'un épisode
+	 * @param id : Identifiant de l'albume à supprimer
+	 * @return Vrai si l'album a bien été supprimé
+	 * @throws SQLException
+	 */
 	public boolean deleteEpisode(int id) throws SQLException{
 		db.openConnection();
 
@@ -167,7 +199,12 @@ public class Deleter {
 		db.closeConnection();
 		return true;
 	}
-
+	/**
+	 * Supprime les métadonnées d'une image
+	 * @param id : Identifiant de l'image à supprimer
+	 * @return Vrai si l'image a bien été supprimée
+	 * @throws SQLException
+	 */
 	public boolean deleteImage(int id) throws SQLException{
 		db.openConnection();
 
@@ -185,7 +222,12 @@ public class Deleter {
 		db.closeConnection();
 		return true;
 	}
-
+	/**
+	 * Supprime les métadonnées d'une série
+	 * @param id : Identifiant de la série à supprimer
+	 * @return Vrai si la série a bien été supprimée
+	 * @throws SQLException
+	 */
 	public boolean deleteSeries(int id) throws SQLException{
 		db.openConnection();
 		String query0 = "SELECT path FROM nmc_media WHERE id = "+id+";";
@@ -204,7 +246,12 @@ public class Deleter {
 		db.closeConnection();
 		return true;
 	}
-
+	/**
+	 * Supprime les métadonnées d'une vidéo
+	 * @param id : Identifiant de la vidéo à supprimer
+	 * @return Vrai si la vidéo a bien été supprimée
+	 * @throws SQLException
+	 */
 	public boolean deleteVideo(int id) throws SQLException{
 		db.openConnection();
 		String query0 = "SELECT path, filename FROM nmc_media as nm"
@@ -225,7 +272,12 @@ public class Deleter {
 		db.closeConnection();
 		return true;
 	}
-
+	/**
+	 * Supprime les métadonnées d'un utilisateur
+	 * @param id : Identifiant de l'utilisateur à supprimer
+	 * @return Vrai si l'utilisateur a bien été supprimé
+	 * @throws SQLException
+	 */
 	public boolean deleteUser(int id) throws SQLException{
 		db.openConnection();
 

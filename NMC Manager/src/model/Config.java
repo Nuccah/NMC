@@ -145,10 +145,16 @@ public class Config {
 		}
 	}
 	
+	/**
+	 * Permet de supprimer la configuration
+	 */
 	public void delCfg(){
 		cfg_file.delete();
 	}
 	
+	/** Permet de retourner le chemin absolu du dossier par defaut
+	 * @return le chemin absolu du dossier par defaut
+	 */
 	public String getDefaultDir(){
 		return defaultDir.getAbsolutePath();
 	}

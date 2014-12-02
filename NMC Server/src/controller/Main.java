@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.SystemTray;
 import java.io.BufferedReader;
@@ -14,6 +15,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.swing.UIManager;
+
 import view.MinIcon;
 import model.Config;
 
@@ -25,7 +28,7 @@ import model.Config;
  * &nbsp;- restart : crée une nouvelle instance du serveur et tue celle existante. <br />
  * &nbsp;- stop : tue l'instance existante.
  * @author Antoine Ceyssens & Derek Van Hove
- * @version RC3-3.3
+ * @version RC4.2
  *
  */
 public class Main {
@@ -35,6 +38,13 @@ public class Main {
 	private static final String pidFileLocation = "server.pid";
 	
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
+			UIManager.put("OptionPane.background",Color.WHITE);
+		} catch (Exception e) {
+			// If Nimbus is not available, you can set the GUI to another look and feel.
+		}
 		int initInd = -1;
 		for(int i = 0; i < args.length; i++){
 			if(args[i].compareTo("--debug") == 0) DEBUG = true;

@@ -40,6 +40,11 @@ public class SocketManager extends Socket {
 		ois = new ObjectInputStream(this.getInputStream());
 	}
 
+	/**
+	 * Permet de récupérer l'instance de SocketManager
+	 * Instancie l'obojet SocketManager si ce n'était pas déjà le cas
+	 * @return L'instance SocketManager 
+	 */
 	public static SocketManager getInstance(){
 		if(instance == null){
 			try {
@@ -97,6 +102,7 @@ public class SocketManager extends Socket {
 		}
 		return false;		
 	}
+	
 	/**
 	 * Permet de récupérer les configurations de bases automatiquement via le serveur
 	 */
@@ -131,6 +137,16 @@ public class SocketManager extends Socket {
 		}
 	}
 
+	/**
+	 * @param type
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	/**
+	 * @param type
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
 	public void getList(String type) throws ClassNotFoundException, IOException{
 		Lists lists = Lists.getInstance();
@@ -191,6 +207,7 @@ public class SocketManager extends Socket {
 	/**
 	 * Permet d'envoyer les méta données liées à un fichier uploadé
 	 * @param mdc : MetaDataCollector à envoyer
+	 * @return Vrai si les metadonnées ont été énvoyé et traité par le serveur
 	 */
 	public boolean sendMeta(MetaDataCollector mdc){
 		try {
@@ -217,6 +234,11 @@ public class SocketManager extends Socket {
 		return true;
 	}
 
+	/** Permet de démander au serveur le dernier ID de media ajouté dans la DB
+	 * Ce qui permet de renommer le fichier avant de l'uploader
+	 * @param mdc MetaDataCollector à renommer avant de l'envoyer 
+	 * @return Vrai si le serveur à réussi de traiter la demande et le manager l'a bien recu
+	 */
 	public boolean lastID(MetaDataCollector mdc){
 		int id = 0;
 		String ack = null;
@@ -236,6 +258,10 @@ public class SocketManager extends Socket {
 		return true;
 	}
 
+	/** Permet de créer un nouveau utilisateur dans le media center
+	 * @param user le Profil à envoyé au serveur avec les données necessaires pour l'ajouter
+	 * @return Vrai si l'operation à réussi
+	 */
 	public boolean createUser(Profil user){
 		String ack = null;
 		try{
@@ -262,6 +288,10 @@ public class SocketManager extends Socket {
 		return true;
 	}
 
+	/** Permet de modifier le mot de passe de l'utilisateur courant
+	 * @param pass le nouveau mot de passe
+	 * @return Vrai si l'operation à réussi
+	 */
 	public boolean modifyUser(String pass) {
 		Profil temp = Profil.getInstance();
 		temp.setPassword(Crypter.encrypt(pass));
@@ -287,6 +317,10 @@ public class SocketManager extends Socket {
 		return true;
 	}
 
+	/** Permet de supprimer un element dans la base de données
+	 * @param mdc l'element a supprimer
+	 * @return Vrai si l'operation à réussi
+	 */
 	public boolean delObject(MetaDataCollector mdc){
 		String ack = null;
 		try {
@@ -311,6 +345,8 @@ public class SocketManager extends Socket {
 		return true;
 	}
 
+	/** Permet que l'utilisateur peut se délogger
+	 */
 	public void logout(){
 		Profil.getInstance().reset();
 		try {

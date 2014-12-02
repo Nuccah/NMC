@@ -30,7 +30,9 @@ import controller.Main;
 public class MinIcon {
 	private PopupMenu popup;
 	private SystemTray tray;
-	
+	/**
+	 * Permet de créer l'icône du serveur dans le System Tray
+	 */
 	public MinIcon(){
 		popup = new PopupMenu();
 		URL url = getClass().getResource("nmc.png");

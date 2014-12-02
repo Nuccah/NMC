@@ -24,7 +24,12 @@ public class Retriever {
 		}
 		return instance;
 	}
-	
+	/**
+	 * Permet de récupérer la liste des musiques
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des musiques
+	 * @throws SQLException
+	 */
 	public ResultSet selectAudioList(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT nt.id as id, nt.title as title, filename, name, nmi.id as album, nmi.title as albumName FROM nmc_media as nmi "
@@ -39,7 +44,12 @@ public class Retriever {
 		db.closeConnection();
 		return (rs);		
 	}
-	
+	/**
+	 * Permet de récupérer la liste des albums
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des albums
+	 * @throws SQLException
+	 */	
 	public ResultSet selectAlbumList(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, name, nmi.description as description, category FROM nmc_media as nmi "
@@ -54,7 +64,12 @@ public class Retriever {
 		db.closeConnection();
 		return (rs);		
 	}
-	
+	/**
+	 * Permet de récupérer la liste des livres
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des livres
+	 * @throws SQLException
+	 */
 	public ResultSet selectBookList(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name, category, description FROM nmc_media as nmi "
@@ -69,7 +84,12 @@ public class Retriever {
 		db.closeConnection();
 		return (rs);		
 	}
-	
+	/**
+	 * Permet de récupérer la liste des livres
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des livres
+	 * @throws SQLException
+	 */	
 	public ResultSet selectEpisodeList(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT nv.id as id, nmis.title as title, filename, nmi.id as series, nmi.title as seriesName, np.name as name, season, chrono FROM nmc_media as nmi "
@@ -84,7 +104,12 @@ public class Retriever {
 		db.closeConnection();
 		return (rs);		
 	}
-	
+	/**
+	 * Permet de récupérer la liste des images
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des images
+	 * @throws SQLException
+	 */
 	public ResultSet selectImageList(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, path, name FROM nmc_media as nmi "
@@ -98,7 +123,12 @@ public class Retriever {
 		db.closeConnection();
 		return (rs);		
 	}
-	
+	/**
+	 * Permet de récupérer la liste des séries
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des séries
+	 * @throws SQLException
+	 */
 	public ResultSet selectSeriesList(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, description, category FROM nmc_media as nmi "
@@ -112,7 +142,12 @@ public class Retriever {
 		return (rs);		
 
 	}
-	
+	/**
+	 * Permet de récupérer la liste des vidéos
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des vidéos
+	 * @throws SQLException
+	 */
 	public ResultSet selectVideoList(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT nmi.id as id, title, release_date, modification, visibility, filename, name, category, description FROM nmc_media as nmi "
@@ -129,7 +164,12 @@ public class Retriever {
 		db.closeConnection();
 		return (rs);		
 	}
-	
+	/**
+	 * Permet de récupérer la liste des utilisateurs
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des utilisateurs
+	 * @throws SQLException
+	 */
 	public ResultSet selectUsers(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT * FROM nmc_users ";
@@ -140,7 +180,12 @@ public class Retriever {
 		db.closeConnection();
 		return (rs);
 	}
-	
+	/**
+	 * Permet de récupérer la liste des permissions
+	 * @param queryAdd : (optionnel) Ajout d'un filtre de sélection
+	 * @return Le resultset contenant la liste des permissions
+	 * @throws SQLException
+	 */
 	public ResultSet selectPermissions(String queryAdd) throws SQLException{
 		db.openConnection();
 		String query = "SELECT * FROM nmc_permissions ";
@@ -151,7 +196,11 @@ public class Retriever {
 		db.closeConnection();
 		return (rs);		
 	}
-
+	/**
+	 * Permet de récupérer l'identifiant de la dernière entrée
+	 * @return L'identifiant de la dernière entrée
+	 * @throws SQLException
+	 */
 	public int selectLastEntry() throws SQLException{
 		db.openConnection();
 		String query = "SELECT id FROM nmc_media ORDER BY id DESC LIMIT 1;";

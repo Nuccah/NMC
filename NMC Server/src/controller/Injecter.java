@@ -18,7 +18,7 @@ import model.SeriesCollector;
 import model.VideoCollector;
 
 /**
- * Class permitting to inject metadata into database
+ * Classe permettant l'injection de données dans la base de données
  * @author Derek
  *
  */
@@ -34,7 +34,11 @@ public class Injecter {
 		if(instance == null) instance = new Injecter();
 		return instance;
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'un utilisateur dans la base de données
+	 * @param user : Métadonnées de l'utilisateur à injecter
+	 * @throws SQLException
+	 */
 	public void injector(Profil user) throws SQLException{
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_users VALUES (DEFAULT, '"+user.getUsername()+"', '"+user.getPassword()+"', '"+user.getMail()+"', '"+user.getFirstName()+"', '"+user.getLastName()+"', '"+user.getBirthdate()+"', NOW(), '"+user.getPermissions_id()+"');";
@@ -43,7 +47,11 @@ public class Injecter {
 
 		db.closeConnection();
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'un rang dans la base de données
+	 * @param permissions : Les données du rang à injecter
+	 * @throws SQLException
+	 */
 	public void injector(Permissions permissions) throws SQLException{
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_permissions VALUES (DEFAULT, '"+permissions.getLabel()+"', '"+permissions.getLevel()+"');";
@@ -52,7 +60,11 @@ public class Injecter {
 
 		db.closeConnection();
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'une musique dans la base de données
+	 * @param audio : Métadonnées de la musique à injecter
+	 * @throws SQLException
+	 */
 	public void injector(AudioCollector audio) throws SQLException{
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_additions values (DEFAULT, NOW(), '"+audio.getAdder()+"');";
@@ -69,7 +81,11 @@ public class Injecter {
 
 		db.closeConnection();
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'un album dans la base de données
+	 * @param album : Métadonnées de l'album à ajouter
+	 * @throws SQLException
+	 */
 	public void injector(AlbumCollector album) throws SQLException{
 		db.openConnection();
 		album.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Music"+Parser.getInstance().getSlash()+album.getTitle()+Parser.getInstance().getSlash());
@@ -99,7 +115,11 @@ public class Injecter {
 		db.modify(query8);
 		db.closeConnection();		
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'un livre dans la base de données
+	 * @param book : Métadonnées du livre à injecter
+	 * @throws SQLException
+	 */
 	public void injector(BookCollector book) throws SQLException{
 		db.openConnection();
 		book.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Books"+Parser.getInstance().getSlash()+book.getFilename());
@@ -141,7 +161,11 @@ public class Injecter {
 		db.modify(query8);
 		db.closeConnection();		
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'une image dans la base de données
+	 * @param image : Métadonnées de l'image à injecter
+	 * @throws SQLException
+	 */
 	public void injector(ImageCollector image) throws SQLException{
 		db.openConnection();
 		image.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Images"+Parser.getInstance().getSlash()+image.getFilename());
@@ -173,7 +197,11 @@ public class Injecter {
 		db.modify(query8);
 		db.closeConnection();		
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'une vidéo dans la base de données
+	 * @param video : Métadonnées de la vidéo à injecter
+	 * @throws SQLException
+	 */
 	public void injector(VideoCollector video) throws SQLException{
 		video.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Movies"+Parser.getInstance().getSlash());
 		String temp = video.getFilename();
@@ -222,7 +250,11 @@ public class Injecter {
 		db.modify(query11);
 		db.closeConnection();
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'une série dans la base de données
+	 * @param series : Métadonnées de la série à injecter
+	 * @throws SQLException
+	 */
 	public void injector(SeriesCollector series) throws SQLException{		
 		db.openConnection();
 		series.setAbsPath(Config.getInstance().getProp("root_dir")+Parser.getInstance().getSlash()+"Series"+Parser.getInstance().getSlash()+series.getTitle()+Parser.getInstance().getSlash());
@@ -248,7 +280,11 @@ public class Injecter {
 		db.modify(query8);
 		db.closeConnection();		
 	}
-
+	/**
+	 * Permet d'injecter les métadonnées d'un épisode dans la base de données
+	 * @param episode : Métadonnées de l'épisode à injecter
+	 * @throws SQLException
+	 */
 	public void injector(EpisodeCollector episode) throws SQLException{
 		db.openConnection();
 		String query1 = "INSERT INTO nmc_additions VALUES (DEFAULT, NOW(), '"+episode.getAdder()+"');";

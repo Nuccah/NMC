@@ -6,7 +6,7 @@ import model.Config;
 
 
 /**
- * Permet de gérer l'initialisation du serveur
+ * Permet d'intialiser les configurations du serveur
  * @author Antoine
  *
  */
@@ -23,7 +23,11 @@ public class Initializer {
 		}
 		return instance;
 	}
-	
+	/**
+	 * Permet d'obtenir les configurations passées en parammètres
+	 * @param args : paramètres d'initialisation
+	 * @param initInd : Indice à partir duquel les configurations commencent dans la ligne de commande
+	 */
 	public void importDefaultConf(String[] args, int initInd){
 		Properties newProps = new Properties();
 		for(int i = 1; i <= 4; i++)

@@ -20,6 +20,9 @@ import model.SeriesCollector;
 
 import com.jgoodies.forms.layout.CellConstraints;
 
+/** Classe contenant les differents composants necessaires par tout panneaux GUI
+ * @author Derek & Antoine
+ */
 public class CommonUsed {
 	protected JButton uploadButton = new JButton("Uploader");
 	protected JButton addButton = new JButton("Ajouter");
@@ -97,6 +100,9 @@ public class CommonUsed {
 		populateLists();
 	}
 	
+	/**
+	 * Fonction qui réinitialise les composants
+	 */
 	protected void clear(){
 		for (JTextField fl : fieldList) 
 			fl.setText(null);
@@ -108,6 +114,9 @@ public class CommonUsed {
 		modifyButton.setEnabled(false);
 	}
 	
+	/**
+	 * Fonction qui remplit les différentes listes requises
+	 */
 	protected void populateLists() {
 		clear();
 		seriesBox.removeAllItems();
@@ -127,6 +136,9 @@ public class CommonUsed {
 		}
 	}
 	
+	/**
+	 * Fonction qui définit le cadre de dialogue de mot de passe
+	 */
 	protected void setPassDialog() {
 		passDialog = new JDialog(frameOwner, "Modifier le mot de passe", true);
 		passDialog.setLayout(new GridLayout(3, 2));

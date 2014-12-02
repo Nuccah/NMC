@@ -29,7 +29,9 @@ import org.apache.sshd.server.sftp.SftpSubsystem;
 
 
 /**
- * Classe de gestion de la réception des fichiers médias
+ * Classe de gestion du module SFTP
+ * <br />
+ * Permet l'envoi et la réception de fichiers médias
  * @author Antoine Ceyssens
  *
  */

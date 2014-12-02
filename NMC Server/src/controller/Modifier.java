@@ -9,6 +9,7 @@ import model.ConnectorDB;
 import model.Profil;
 
 /**
+ * Classe permettant de modifier les métadonnées dans la base de données
  * @author Derek
  *
  */
@@ -24,7 +25,11 @@ public class Modifier {
 		if(instance == null) instance = new Modifier();
 		return instance;
 	}
-	
+	/**
+	 * Permet de modifier le profil d'un utilisateur dans la base de données
+	 * @param profil : Métadonnées du profil modifiées à injecter
+	 * @throws SQLException
+	 */
 	public void modifyUser(Profil profil) throws SQLException{
 		db.openConnection();
 		
