@@ -362,40 +362,43 @@ public class ServerListener implements Runnable {
 	}
 
 	private void delObject(){
-		MetaDataCollector mdc = null;
+		String[] object = {null, null};
 		Boolean success = true;
 		Deleter del = Deleter.getInstance();
 		try {
-			mdc = (MetaDataCollector) ois.readObject();
+			object = (String[]) ois.readObject();
 		} catch (ClassNotFoundException | IOException e1) {
-			// TODO Auto-generated catch block
+			try {
+				oos.writeObject("NACK");
+			} catch (IOException e) {
+				System.out.println("[Error] - NACK couldn't be sent to: "+cl.getInetAddress());
+				e.printStackTrace();
+			}
+			System.out.println("[Error] - Reception of object failed");
 			e1.printStackTrace();
+			return;
 		}
+		System.out.println(object[0]);
+		System.out.println(object[1]);
 		try {
-			if(mdc instanceof AudioCollector){
-				if (!del.deleteAudio(mdc.getId())) success = false;
-			}
-			else if(mdc instanceof AlbumCollector){
-				if (!del.deleteAlbum(mdc.getId())) success = false;
-			}
-			else if(mdc instanceof BookCollector){
-				if (!del.deleteBook(mdc.getId())) success = false;
-			}
-			else if(mdc instanceof EpisodeCollector){
-				if (!del.deleteEpisode(mdc.getId())) success = false;
-			}
-			else if(mdc instanceof ImageCollector){
-				if (!del.deleteImage(mdc.getId())) success = false;
-			}
-			else if(mdc instanceof SeriesCollector){
-				if (!del.deleteSeries(mdc.getId())) success = false;
-			}
-			else if(mdc instanceof VideoCollector){
-				if (!del.deleteVideo(mdc.getId())) success = false;
-			}
-			else{
-				success = false;
-				System.out.println("[Error] - Could not cast MetaDataCollector");
+			switch(object[1]){
+			case "albums": if (!del.deleteAlbum(Integer.parseInt(object[0]))) success = false;
+				break;
+			case "audio": if (!del.deleteAudio(Integer.parseInt(object[0]))) success = false;
+				break;
+			case "books": if (!del.deleteBook(Integer.parseInt(object[0]))) success = false;
+				break;
+			case "episodes": if (!del.deleteEpisode(Integer.parseInt(object[0]))) success = false;
+				break;
+			case "images": if (!del.deleteImage(Integer.parseInt(object[0]))) success = false;
+				break;
+			case "series": if (!del.deleteSeries(Integer.parseInt(object[0]))) success = false;
+				break;
+			case "videos": if (!del.deleteVideo(Integer.parseInt(object[0]))) success = false;
+				break;
+			default: success = false;
+				System.out.println("[Error]");
+				break;
 			}
 		}
 		catch (SQLException e) {
