@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,12 +34,17 @@ public class AdminPane extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 6053063954351925886L;
 	private CommonUsed cu = new CommonUsed();
 	private JPanel createUserPane = new JPanel();
+	private final JButton deleteBtn = new JButton("Supprimer");
+	private GridBagConstraints amc = new GridBagConstraints();
 	private final FormLayout userLayout = new FormLayout(
 			"right:pref, 4dlu, fill:130dlu",
 			"pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, "
 					+ "2dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref,");
-	private static final String[] userColumns = new String[]{"Nom d'utilisateur", "Prénom", "Nom", "Email", "Date de naissance", "Date de création", "Rang"};
+	private static final String[] userColumns = new String[]{"Nom d'utilisateur", "Prénom", "Nom", "Email", "Date de naissance", "Date de création", "Rang", ""};
 	private static final String[] permissionColumns = new String[]{"Nom de rang", "Niveau"};
+	private JScrollPane scrollPane;
+	private JTable table;
+	private JPanel admin_pane;
 	
 	public AdminPane(String tab){
 		cu.addButton.addActionListener(this);
@@ -58,8 +64,9 @@ public class AdminPane extends JPanel implements ActionListener{
 			setCreateUserPane();
 		}
 		else if (cu.node.equals(cu.adminNode)){
-			JPanel admin_pane = new JPanel(); 
+			admin_pane = new JPanel(); 
 			admin_pane.removeAll();
+			admin_pane.setLayout(new GridBagLayout());
 			try {
 				SocketManager.getInstance().getList("users");
 			} catch (ClassNotFoundException | IOException e) {
@@ -72,7 +79,8 @@ public class AdminPane extends JPanel implements ActionListener{
 			}
 			cu.vmc.weightx = 1; cu.vmc.weighty = 1; cu.vmc.fill = GridBagConstraints.BOTH;
 			admin_pane.add(createTable("users"), cu.vmc);
-			this.add(admin_pane, cu.vmc);
+			deleteBtn.addActionListener(this);
+			this.refreshDisplay();
 		}
 		else if (cu.node.equals(cu.permNode)){
 			JPanel perm_pane = new JPanel();
@@ -92,11 +100,35 @@ public class AdminPane extends JPanel implements ActionListener{
 		}
 	}
 	
+	/**
+	 * Fonction qui rafraîchit la table pour afficher
+	 */
+	public void refreshDisplay(){
+		if(cu.node == cu.adminNode){
+			this.removeAll();
+			amc.fill = GridBagConstraints.BOTH;
+			amc.weightx = 1; amc.weighty = 1;
+			admin_pane.removeAll();
+			scrollPane = null;
+			createTable("users");
+			admin_pane.add(scrollPane, amc);
+			GridBagConstraints vmx = new GridBagConstraints();
+			vmx.gridx = 0; vmx.fill = GridBagConstraints.NONE;
+			admin_pane.add(deleteBtn, vmx);
+			admin_pane.repaint();
+			admin_pane.revalidate();
+			this.add(admin_pane, amc);
+			this.repaint();
+			this.revalidate();
+		}
+	}
+	
 	/** Fonction permettant la creation des differents tables de administration
 	 * @param type le type de table a créer
 	 * @return le tableau contenant le type de données indiqué par le type
 	 */
 	private JScrollPane createTable(String type) {
+		table = null;
 		try {
 			SocketManager.getInstance().getList(type);
 		} catch (ClassNotFoundException | IOException e) {
@@ -107,17 +139,18 @@ public class AdminPane extends JPanel implements ActionListener{
 							JOptionPane.WARNING_MESSAGE);
 			e.printStackTrace();
 		}
-		JTable table = null;
 		switch (type){
 		case "users":
 			table = new JTable(new NMCTableModel(Lists.getInstance().getUsersList(), userColumns));
+			table.getColumnModel().getColumn(7).setMinWidth(0);
+			table.getColumnModel().getColumn(7).setMaxWidth(0);
 			break;
 		case "permissions":
 			table = new JTable(new NMCTableModel(Lists.getInstance().getPermissionsList(), permissionColumns));;
 			break;
 		}
 		// Create the scroll pane and add the table to it.
-		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane = new JScrollPane(table);
 		// Add the scroll pane to this panel.
 		return scrollPane;
 	}
@@ -197,6 +230,22 @@ public class AdminPane extends JPanel implements ActionListener{
 		} else if(e.getSource() == cu.modifyPassButton){
 			cu.clear();
 			cu.setPassDialog();
+		} else if(e.getSource() == deleteBtn){
+			if((JOptionPane.showConfirmDialog(this, 
+					"Confirmer la suppression?", 
+					"Suppression", JOptionPane.YES_NO_OPTION) == 0) && (table.getSelectedRow() != -1))
+				if(SocketManager.getInstance().delObject((int)table.getValueAt(table.getSelectedRow(), 7), "users"))
+					JOptionPane.showMessageDialog(this,
+							"Suppression de l'utilisateur réussi",
+							"Succes",
+							JOptionPane.INFORMATION_MESSAGE);
+				else
+					JOptionPane.showMessageDialog(this,
+							"Le systeme n'a pas pu supprimer l'utilisateur. "
+							+ "Vérifier si vous avez les droits!",
+							"Echec",
+							JOptionPane.ERROR_MESSAGE);
+			this.refreshDisplay();
 		} else if (e.getSource() == cu.cancelButton){
 			cu.passDialog.dispose();
 			cu.modifyButton.setEnabled(false);
@@ -233,7 +282,7 @@ public class AdminPane extends JPanel implements ActionListener{
 						e1.printStackTrace();
 						return;
 					}
-					Profil tmp = new Profil(cu.userField.getText(), Crypter.encrypt(cu.passField.getPassword().toString()), cu.mailField.getText(), cu.firstNameField.getText(),
+					Profil tmp = new Profil(cu.userField.getText(), Crypter.encrypt(String.valueOf(cu.passField.getPassword())), cu.mailField.getText(), cu.firstNameField.getText(),
 							cu.lastNameField.getText(), new java.sql.Date(sql), ((Permissions)cu.permissionsBox.getSelectedItem()).getId());
 					if(SocketManager.getInstance().createUser(tmp))
 						JOptionPane.showMessageDialog(this,

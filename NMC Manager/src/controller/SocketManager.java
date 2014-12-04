@@ -71,7 +71,6 @@ public class SocketManager extends Socket {
 		credentials[0] = login;
 		credentials[1] = Crypter.encrypt(password);
 		String ack = null;
-
 		try{	
 			do{
 				oos.writeObject("connec");
@@ -102,7 +101,7 @@ public class SocketManager extends Socket {
 		}
 		return false;		
 	}
-	
+
 	/**
 	 * Permet de récupérer les configurations de bases automatiquement via le serveur
 	 */
@@ -323,6 +322,28 @@ public class SocketManager extends Socket {
 	 * @return Vrai si l'operation à réussi
 	 */
 	public boolean delObject(int id, String type){
+		if (type.equals("users")){
+			if(id == Profil.getInstance().getId()){
+				JOptionPane.showMessageDialog(null,
+						"Vous ne pouvez pas effacer vous meme!",
+						"Echec",
+						JOptionPane.ERROR_MESSAGE);
+				return false;
+			} else{
+				for(Permissions perms : Lists.getInstance().getPermissionsList()){
+					if(perms.getId() == id){
+						if(perms.getLevel() >= Lists.getInstance().returnLevel(Profil.getInstance().getId())){
+							JOptionPane.showMessageDialog(null,
+									"Vous ne pouvez pas supprimer un utilisateur "
+									+ "d'un rang plus éléver que vous!",
+									"Echec",
+									JOptionPane.ERROR_MESSAGE);
+							return false;
+						}	
+					}
+				}
+			}
+		}
 		String ack = null;
 		String[] object = {String.valueOf(id), type};
 		try {

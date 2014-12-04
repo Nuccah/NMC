@@ -177,4 +177,15 @@ public class Lists {
 		}
 		return "Unknown";
 	}
+	/** Permet d'obtenir le level du rang a partir d'un identifiant
+	 * @param le identifiant de la permission
+	 * @return le level de la permission
+	 */
+	public int returnLevel(int id){
+		for (Permissions perms : this.permissionsList) {
+			if (perms.getId() == id)
+				return perms.getLevel();
+		}
+		return 0;
+	}
 }

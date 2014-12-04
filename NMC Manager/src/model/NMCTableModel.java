@@ -165,6 +165,8 @@ public class NMCTableModel extends AbstractTableModel {
 				return profil.getRegDate();
 			case 6:
 				return Lists.getInstance().returnLabel(profil.getPermissions_id());
+			case 7:
+				return profil.getId();
 			}
 		}
 		else if (list.get(row) instanceof Permissions){

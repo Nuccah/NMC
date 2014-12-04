@@ -147,6 +147,7 @@ public class Dashboard extends JFrame implements ActionListener, ChangeListener{
 		usersNode.addTab(cu.userNode, new AdminPane(cu.userNode));
 		usersNode.addTab(cu.adminNode, new AdminPane(cu.adminNode)); 
 		usersNode.addTab(cu.permNode, new AdminPane(cu.permNode));
+		usersNode.addChangeListener(this);
 	
 		menuBar = new JTabbedPane();
 		menuBar.addTab(cu.mediaString, mediaNode);
@@ -189,7 +190,8 @@ public class Dashboard extends JFrame implements ActionListener, ChangeListener{
 		} else if(e.getSource() == uploadNode){
 			
 		} else if(e.getSource() == usersNode){
-			
+			AdminPane tmp = (AdminPane) usersNode.getSelectedComponent();
+			tmp.refreshDisplay();
 		}
 	}	
 }

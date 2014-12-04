@@ -158,6 +158,7 @@ public class ServerListener implements Runnable {
 			res.first();
 		} catch (HeadlessException | SQLException e1) {
 			try {
+				System.out.println("YOLO");
 				oos.writeObject("[Error] - Wrong login/password");
 			} catch (IOException e) {
 				if(Main.getDebug()) e.printStackTrace();
@@ -165,7 +166,7 @@ public class ServerListener implements Runnable {
 			if(Main.getDebug()) e1.printStackTrace();
 		}
 		try {
-			if(password.compareTo(res.getString("password")) == 0){
+			if(password.equals(res.getString("password"))){
 				Profil pf = Profil.getInstance();
 				pf.setUsername(username);
 				pf.setId(res.getInt("id"));
@@ -185,6 +186,7 @@ public class ServerListener implements Runnable {
 				}
 			} else {
 				try {
+					System.out.println("YOLO2");
 					oos.writeObject("[Error] - Wrong login/password");
 				} catch (IOException e) {
 					if(Main.getDebug()) e.printStackTrace();
@@ -393,6 +395,8 @@ public class ServerListener implements Runnable {
 			case "images": if (!del.deleteImage(Integer.parseInt(object[0]))) success = false;
 				break;
 			case "series": if (!del.deleteSeries(Integer.parseInt(object[0]))) success = false;
+				break;
+			case "users": if (!del.deleteUser(Integer.parseInt(object[0]))) success = false;
 				break;
 			case "videos": if (!del.deleteVideo(Integer.parseInt(object[0]))) success = false;
 				break;
