@@ -339,7 +339,14 @@ public class SocketManager extends Socket {
 									"Echec",
 									JOptionPane.ERROR_MESSAGE);
 							return false;
-						}	
+						}
+						else if(perms.getLevel() == 9){
+							JOptionPane.showMessageDialog(null,
+									"Vous ne pouvez pas supprimer le super admin",
+									"Echec",
+									JOptionPane.ERROR_MESSAGE);
+							return false;
+						}
 					}
 				}
 			}
