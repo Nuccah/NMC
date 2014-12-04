@@ -124,7 +124,18 @@ public class ViewPane extends JPanel implements ActionListener{
 			if((JOptionPane.showConfirmDialog(this, 
 					"Confirmer la suppression?", 
 					"Suppression", JOptionPane.YES_NO_OPTION) == 0) && (table.getSelectedRow() != -1))
-			SocketManager.getInstance().delObject((int)table.getValueAt(table.getSelectedRow(), 0), type);
+			if(SocketManager.getInstance().delObject((int)table.getValueAt(table.getSelectedRow(), 0), type))
+				JOptionPane.showMessageDialog(this,
+						"Suppression du média réussi",
+						"Succes",
+						JOptionPane.INFORMATION_MESSAGE);
+			else
+				JOptionPane.showMessageDialog(this,
+						"Le systeme n'a pas pu supprimer du média. "
+						+ "Vérifier si vous avez les droits!",
+						"Echec",
+						JOptionPane.ERROR_MESSAGE);
+			this.refreshDisplay();
 		}		
 	}
 }
