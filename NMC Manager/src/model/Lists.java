@@ -36,7 +36,7 @@ public class Lists {
 	}
 	/**
 	 * Permet de créer une instance statique profil à partir de celle passée en paramètre
-	 * @param pf : Profil distant à copier localement
+	 * @param lists : Lists distant à copier localement
 	 */
 	public static void setInstance(Lists lists){
 		instance = lists;
@@ -167,7 +167,7 @@ public class Lists {
 		this.permissionsList = permissionsList;
 	}
 	/** Permet d'obtenir le label du rang a partir d'un identifiant
-	 * @param le identifiant de la permission
+	 * @param id le identifiant de la permission
 	 * @return le label de la permission
 	 */
 	public String returnLabel(int id){
@@ -178,7 +178,7 @@ public class Lists {
 		return "Unknown";
 	}
 	/** Permet d'obtenir le level du rang a partir d'un identifiant
-	 * @param le identifiant de la permission
+	 * @param id le identifiant de la permission
 	 * @return le level de la permission
 	 */
 	public int returnLevel(int id){

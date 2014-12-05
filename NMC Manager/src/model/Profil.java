@@ -198,7 +198,7 @@ public class Profil implements Serializable {
 	}
 	/**
 	 * Permet de modifier la date d'enregistrement
-	 * @param birthdate : La nouvelle date d'enregistrement
+	 * @param reg_date : La nouvelle date d'enregistrement
 	 */
 	public void setRegDate(Timestamp reg_date) {
 		this.reg_date = reg_date;

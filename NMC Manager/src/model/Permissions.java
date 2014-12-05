@@ -73,7 +73,7 @@ public class Permissions implements Serializable{
 	}
 
 	/** 
-	 * @THROWS
+	 * @throws
 	 */
 	@Override
 	public String toString() {

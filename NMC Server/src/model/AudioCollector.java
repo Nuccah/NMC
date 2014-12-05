@@ -52,7 +52,7 @@ public class AudioCollector extends MetaDataCollector{
 	
 	/**
 	 * Permet de modifier l'album de la musique
-	 * @param id : L'identifiant de l'album de la musique
+	 * @param album : L'identifiant de l'album de la musique
 	 */
 	public void setAlbum(int album) {
 		this.album = album;

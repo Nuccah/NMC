@@ -156,7 +156,6 @@ public class AdminPane extends JPanel implements ActionListener{
 	}
 	
 	/** Determines whether metadata fields are empty or not
-	 * @param node the String of the node selected
 	 * @return boolean whether metadata fields are empty or not
 	 */
 	public boolean verify(){
